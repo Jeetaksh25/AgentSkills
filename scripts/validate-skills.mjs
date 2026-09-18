@@ -8,6 +8,7 @@
  *   - SKILL.md parses, has YAML frontmatter with name + description
  *   - description is a single line, <= 1024 chars, third-person, contains trigger guidance
  *   - SKILL.md under the line budget; references/ and assets/ referenced from SKILL.md exist
+ *   - JSON assets parse; scripts/ files are referenced from SKILL.md
  *   - no placeholder markers left in shipped content
  *
  * Usage: node scripts/validate-skills.mjs [rootDir]
@@ -88,17 +89,30 @@ for (const dir of dirs) {
 
   const refDir = path.join(root, dir, "references");
   const assetDir = path.join(root, dir, "assets");
-  const refs = fs.existsSync(refDir) ? fs.readdirSync(refDir) : [];
+  const scriptDir = path.join(root, dir, "scripts");
+  const refs = fs.existsSync(refDir) ? fs.readdirSync(refDir).filter((f) => f.endsWith(".md")) : [];
   const assets = fs.existsSync(assetDir) ? fs.readdirSync(assetDir) : [];
+  const scripts = fs.existsSync(scriptDir) ? fs.readdirSync(scriptDir) : [];
 
   for (const file of [...refs.map((f) => `references/${f}`), ...assets.map((f) => `assets/${f}`)]) {
     if (!text.includes(file) && !text.includes(path.basename(file))) {
       warn(`${file} exists but is never referenced from SKILL.md`);
     }
   }
-  for (const m of text.matchAll(/`(references\/[A-Za-z0-9_.-]+|assets\/[A-Za-z0-9_.-]+)`/g)) {
+  for (const s of scripts) {
+    if (!text.includes(s)) warn(`scripts/${s} exists but is never referenced from SKILL.md`);
+  }
+  for (const m of text.matchAll(/`((?:references|assets|scripts)\/[A-Za-z0-9_.-]+)`/g)) {
     const target = path.join(root, dir, m[1]);
     if (!fs.existsSync(target)) err(`SKILL.md references missing file ${m[1]}`);
+  }
+
+  for (const a of assets.filter((f) => f.endsWith(".json"))) {
+    try {
+      JSON.parse(fs.readFileSync(path.join(assetDir, a), "utf8"));
+    } catch (e) {
+      err(`assets/${a} is not valid JSON: ${e.message}`);
+    }
   }
 
   for (const [file, body] of [
@@ -117,7 +131,7 @@ for (const dir of dirs) {
   }
 
   const words = text.split(/\s+/).length;
-  console.log(`  OK      ${lines} lines, ${words} words, ${refs.length} reference(s), ${assets.length} asset(s)\n`);
+  console.log(`  OK      ${lines} lines, ${words} words, ${refs.length} reference(s), ${assets.length} asset(s), ${scripts.length} script(s)\n`);
 }
 
 console.log(`${errors} error(s), ${warnings} warning(s)`);

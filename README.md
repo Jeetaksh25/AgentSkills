@@ -14,6 +14,7 @@ exists to prevent.
 | Skill | What it does |
 |---|---|
 | [`production-suite-completion`](./production-suite-completion) | Takes a working app to genuinely production-ready: audits performance, database, API, security, UX, accessibility, SEO, legal, observability, deployment, branding and code hygiene, then fixes, verifies, re-audits and reports — autonomously, in one run, until every gate is green or explicitly blocked on real-world input. |
+| [`beyond-ui`](./beyond-ui) | The ultimate UI design skill: bootstraps the upstream design skills (impeccable, hallmark, ui-ux-pro-max, taste-skill, Anthropic frontend-design, Addy Osmani, Vercel, bencium, accesslint), scouts 60+ award-winning galleries, 55+ template/prompt sources and 40+ animated component registries, then composes real UIs from shadcn/ui plus those libraries — motion, WebGL, SVG, liquid glass and all — so nothing is invented from scratch and nothing looks AI-generated. |
 
 ## Installation
 

@@ -1,0 +1,60 @@
+{
+  "skill_name": "beyond-ui",
+  "notes": "Realistic prompts a user would actually send. Run each with the skill and without it, then compare: does the with-skill run bootstrap the upstream skills, open real galleries, produce a scout file with named references and a library map, and use shadcn primitives instead of raw HTML?",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build me a landing page for a CLI tool that turns Postgres queries into shareable charts. Next.js, Tailwind. Make it look like a real design studio made it.",
+      "expected_output": "A Next.js page using shadcn primitives; a .beyond-ui/scout.md naming real gallery URLs and a library map with install commands; an explicit direction contract (type, colour, motion); no 3-equal-cards row, no purple gradient hero, no emoji.",
+      "assertions": [
+        "Bootstrap ran or its absence is recorded in state.json skills.missing with a reason",
+        ".beyond-ui/scout.md exists and cites 6+ distinct source URLs with what was taken from each",
+        "Library map lists at least one shadcn registry install command and the base shadcn components",
+        "No raw <button>/<input> where a shadcn primitive exists",
+        "A design contract section names the type faces, the accent colour value, and the motion easing set",
+        "No gradient text headline, no three-equal-column feature row, no emoji icons",
+        "Screenshots or a rendered check at 390/768/1440 recorded as evidence"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "our dashboard looks like every other AI-generated SaaS admin. redesign the billing overview page with actual polish and some taste. it's a vite react app with tailwind v3 and shadcn already set up",
+      "expected_output": "A restrained redesign inside the existing v3 token system: no new Tailwind v4 snippets, no second motion library, borders reduced, hierarchy fixed, all states designed, contrast verified in both themes.",
+      "assertions": [
+        "Tailwind v3 confirmed before any component/library is added; no v4-only syntax",
+        "No new motion library installed when framer-motion/motion already present",
+        "Existing tokens extended rather than a parallel token set created",
+        "Loading, empty and error states present for the table/chart surface",
+        "Contrast measured for new colour pairs in both light and dark",
+        "Critique recorded with hard fails found and fixed, plus a gate mean"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "add a nice animated pricing toggle to my pricing page, with monthly/yearly and a saving badge",
+      "expected_output": "A small, scoped change: scout 3 references minimum, one registry component adapted (or shadcn Tabs animated), keyboard accessible, reduced-motion handled, no layout shift.",
+      "assertions": [
+        "Scout performed even though the task is one component (3+ references)",
+        "Component built on an accessible primitive (Tabs/radio group) with keyboard support",
+        "prefers-reduced-motion handled and verified",
+        "No layout shift when the toggle changes; card height stable",
+        "Price values are real DOM text, not canvas/SVG-only"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "build a 3D product page for a configurable sneaker — react three fiber, next.js. user should be able to rotate it and pick colourways",
+      "expected_output": "A justified 3D implementation: THREEJS.md consulted, R3F + drei scene lazy-loaded with a static poster as the LCP element, optimised GLB (gltfjsx --transform / Draco + KTX2), colourways driven by state, keyboard-operable controls, reduced-motion freeze, payload and FPS recorded.",
+      "assertions": [
+        "references/THREEJS.md followed: justification for 3D stated, not just assumed",
+        "Canvas lazy-loaded (dynamic/React.lazy) with a static poster as the LCP element",
+        "Model pipeline recorded: gltfjsx --transform or gltf-transform with Draco/KTX2; asset bytes reported",
+        "dpr capped, frameloop demand or off-screen pause, instancing/reuse where applicable",
+        "Colourway switching works without a full scene reload (material swap on the existing scene)",
+        "prefers-reduced-motion freezes auto-rotation; poster shown when WebGL unavailable",
+        "Keyboard-operable rotate/variant controls when the 3D is the product content",
+        "Asset licences recorded in scout.md; page remains readable without JS (poster + text)"
+      ]
+    }
+  ]
+}

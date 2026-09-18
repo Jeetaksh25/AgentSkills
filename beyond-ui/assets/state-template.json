@@ -1,0 +1,64 @@
+{
+  "skill": "beyond-ui",
+  "started": "<ISO date>",
+  "surface": "<landing page | dashboard | component | app>",
+  "stack": {
+    "framework": "",
+    "frameworkVersion": "",
+    "tailwind": "v3 | v4",
+    "motionLib": "motion | framer-motion | gsap | anime | css-only | none",
+    "hasShadcn": false,
+    "rn": false
+  },
+  "skills": {
+    "installed": [],
+    "missing": [{ "name": "", "reason": "", "readInstead": "<raw SKILL.md URL>" }]
+  },
+  "direction": {
+    "aesthetic": "",
+    "type": { "display": "", "body": "", "mono": "" },
+    "accent": "",
+    "motionGrammar": "",
+    "nonGoals": []
+  },
+  "scout": {
+    "artifact": ".beyond-ui/scout.md",
+    "referencesStudied": 0,
+    "promptSourcesHarvested": 0,
+    "registriesUsed": [],
+    "rejected": [{ "candidate": "", "reason": "" }]
+  },
+  "components": {
+    "shadcn": [],
+    "registry": [{ "element": "", "namespace": "", "command": "" }],
+    "handWritten": [{ "element": "", "reason": "" }]
+  },
+  "three": {
+    "justified": "yes | no",
+    "why": "",
+    "library": "three | r3f+drei | threlte | tresjs | model-viewer | babylon | spline | none",
+    "scenePattern": "hero | configurator | scroll-linked | canvas-background | inline | globe | particles | viewer+ar",
+    "assets": [{ "file": "", "bytes": 0, "compression": "draco+ktx2 | none", "licence": "" }],
+    "poster": "",
+    "guards": { "lazyLoaded": false, "dprCapped": false, "frameloopPausedOffscreen": false, "reducedMotionFreeze": false },
+    "measured": { "assetBytes": 0, "jsDelta": "", "fpsThrottled": null }
+  },
+  "critique": {
+    "hardFailsFound": 0,
+    "hardFailsFixed": 0,
+    "gates": {},
+    "mean": 0,
+    "evidence": []
+  },
+  "verify": {
+    "screenshots": [],
+    "viewports": ["390", "768", "1440"],
+    "reducedMotion": "unchecked | pass | fail",
+    "keyboard": "unchecked | pass | fail",
+    "console": "unchecked | clean | errors",
+    "lighthouse": { "performance": null, "accessibility": null, "bestPractices": null, "seo": null },
+    "bundleDelta": ""
+  },
+  "deferred": [],
+  "notes": ""
+}
