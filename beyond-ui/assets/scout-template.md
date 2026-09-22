@@ -17,6 +17,15 @@ installed upstream skills:   <from scripts/bootstrap-upstream-skills.sh output>
 missing (and why):           <name -> reason; raw SKILL.md URLs read instead>
 ```
 
+## Tool layer evidence
+
+```
+playwright:   pkg=<y/n> chromium=<y/n>   (from scripts/install-tools.mjs output)
+skillui:      <y/n>   opensrc: <y/n>
+firecrawl:    active=<y/n> key=<env|project-config|bundled|none>
+browser-use:  <y/n — optional>
+```
+
 ## Direction
 
 **Aesthetic name:** <one phrase, specific: "Swiss editorial on warm paper", not "modern and clean">
@@ -57,6 +66,21 @@ Hand-written elements and why (must be a short list):
 - **Poster / fallback:** <image path; behaviour with no WebGL, reduced motion, slow network>
 - **Reference scenes studied:** <threejsresources showcase URLs, 21st.dev three-js entries, awwwards WebGL picks>
 - **Measured:** <asset bytes · JS delta · FPS at 4× CPU throttle>
+
+## Teardown synthesis (fill from .beyond-ui/DESIGN-SKILL.md — references/TEARDOWN.md)
+
+- **Selected 10:** <count> teardowns complete (<ultra|degraded|static>) — see references-selection.json
+- **Accent chosen from:** DESIGN-SKILL.md §1 — evidence site: <slug>
+- **Type pairing chosen from:** DESIGN-SKILL.md §2 — evidence site: <slug>
+- **Motion grammar chosen from:** DESIGN-SKILL.md §4 — evidence: keyframes/transitions observed
+- **Section grammar adopted:** DESIGN-SKILL.md §5 — sections pruned for this product's content
+
+## Rule citations (running log — references/USAGE.md)
+
+| Decision | Source | Applied in |
+|---|---|---|
+| <e.g. hover = border+shadow change, no size> | teardown/<slug>/references/INTERACTIONS.md | src/components/ui/button.tsx |
+| <e.g. no three-equal-column feature row> | skill://hallmark -> structural-variety | src/app/page.tsx |
 
 ## Design contract
 

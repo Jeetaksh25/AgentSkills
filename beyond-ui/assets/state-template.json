@@ -1,7 +1,8 @@
 {
   "skill": "beyond-ui",
+  "version": 2,
   "started": "<ISO date>",
-  "surface": "<landing page | dashboard | component | app>",
+  "surface": "<landing page | dashboard | component | app | mobile app>",
   "stack": {
     "framework": "",
     "frameworkVersion": "",
@@ -10,9 +11,38 @@
     "hasShadcn": false,
     "rn": false
   },
+  "tools": {
+    "playwright": { "package": false, "chromium": false, "skill": false },
+    "skillui": false,
+    "opensrc": false,
+    "firecrawl": { "cli": false, "skills": false, "keySource": "env | project-config | none", "active": false },
+    "browserUse": { "installed": false, "note": "optional — LLM-driven agent for bot-walled/login-gated sites only; never used for deterministic capture" }
+  },
   "skills": {
     "installed": [],
     "missing": [{ "name": "", "reason": "", "readInstead": "<raw SKILL.md URL>" }]
+  },
+  "selection": {
+    "artifact": ".beyond-ui/references-selection.json",
+    "frame": { "domain": "", "pageType": "", "aesthetic": [], "platform": "web | mobile-app | both", "constraints": "" },
+    "galleriesFetched": [{ "source": "", "url": "", "ok": false, "candidates": 0 }],
+    "candidatesScored": 0,
+    "selected": [{ "url": "", "title": "", "gallery": "", "award": "", "score": 0, "why": "", "mobileEvidence": false }],
+    "constraints": { "maxPerGallery": 2, "minAwarded": 3, "minMobileEvidence": 1 },
+    "rejected": [{ "url": "", "reason": "" }]
+  },
+  "teardown": {
+    "root": ".beyond-ui/teardown",
+    "manifest": ".beyond-ui/teardown/manifest.json",
+    "sites": [{ "url": "", "slug": "", "dir": "", "status": "ultra | degraded | static | failed", "tokens": false, "screens": false, "contentMd": false, "capture": false, "seconds": 0 }],
+    "complete": 0,
+    "target": 10
+  },
+  "synthesis": {
+    "artifact": ".beyond-ui/DESIGN-SKILL.md",
+    "contributors": [],
+    "sectionsFilled": [],
+    "judgementOpen": []
   },
   "direction": {
     "aesthetic": "",
@@ -43,6 +73,7 @@
     "guards": { "lazyLoaded": false, "dprCapped": false, "frameloopPausedOffscreen": false, "reducedMotionFreeze": false },
     "measured": { "assetBytes": 0, "jsDelta": "", "fpsThrottled": null }
   },
+  "ruleCitations": [{ "decision": "", "source": "<skill://name | DESIGN-SKILL.md §n | teardown/<slug>>", "appliedIn": "<file>" }],
   "critique": {
     "hardFailsFound": 0,
     "hardFailsFixed": 0,
@@ -58,6 +89,11 @@
     "console": "unchecked | clean | errors",
     "lighthouse": { "performance": null, "accessibility": null, "bestPractices": null, "seo": null },
     "bundleDelta": ""
+  },
+  "enforcement": {
+    "verifyRun": "not-run | pass | fail",
+    "ruleCitationCount": 0,
+    "gatesBelowThree": []
   },
   "deferred": [],
   "notes": ""

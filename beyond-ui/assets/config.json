@@ -1,0 +1,42 @@
+{
+  "_comment": "beyond-ui run config. Copy to <project>/.beyond-ui/config.json and edit. Resolution order for every key: process env > project .beyond-ui/config.json.",
+
+  "firecrawlApiKey": "",
+  "_firecrawlApiKey_note": "No key ships with this repo (secrets never belong in a public repo). To enable the optional firecrawl deep crawl: set the FIRECRAWL_API_KEY env var, or put firecrawlApiKey in the project's .beyond-ui/config.json (get a key at firecrawl.dev). Firecrawl is optional: with no key, beyond-ui skips it and continues with Playwright + plain HTTP.",
+
+  "teardown": {
+    "targetSites": 10,
+    "screens": 5,
+    "timeoutSeconds": 240,
+    "skilluiVersion": "skillui@1.3.4",
+    "retries": 1
+  },
+
+  "playwright": {
+    "viewports": [390, 768, 1440],
+    "scrollSteps": 7,
+    "settleMs": 700,
+    "gotoTimeoutMs": 60000
+  },
+
+  "galleries": {
+    "web": [
+      { "name": "awwwards", "url": "https://www.awwwards.com/websites/?text={query}", "kind": "award", "signal": "SOTD/HM/DEV badges + date in HTML" },
+      { "name": "land-book", "url": "https://land-book.com/design/{pageType}?sort=featured", "kind": "directory", "signal": "sort=featured|recommended|like|view" },
+      { "name": "saaspo", "url": "https://www.saaspo.com/industry/{industry}", "kind": "saas", "signal": "page-type + industry counts in HTML" },
+      { "name": "minimal-gallery", "url": "https://minimal.gallery/tag/{tag}/", "kind": "directory", "signal": "age labels (today, N days ago)" },
+      { "name": "cssdesignawards", "url": "https://www.cssdesignawards.com/wotd-award-winners", "kind": "award", "signal": "numeric UI/UX/INN scores" },
+      { "name": "httpster", "url": "https://httpster.net/", "kind": "directory", "signal": "curated chronological" },
+      { "name": "landingfolio", "url": "https://www.landingfolio.com/inspiration/landing-page/{industry}", "kind": "directory", "signal": "industry facet + date" },
+      { "name": "lapa-ninja", "url": "https://www.lapa.ninja/category/{tag}/", "kind": "directory", "signal": "category counts" },
+      { "name": "recent", "url": "https://recent.design/", "kind": "award", "signal": "curated; web/interface/motion/3D mix" },
+      { "name": "typewolf", "url": "https://www.typewolf.com/site-of-the-day", "kind": "type", "signal": "named fonts per site" }
+    ],
+    "mobileApp": [
+      { "name": "mobbin", "url": "https://mobbin.com/llms.txt", "kind": "agent-native", "signal": "llms.txt + MCP (api.mobbin.com/mcp) + /index.md; REST/MCP paid" },
+      { "name": "pageflows", "url": "https://pageflows.com/ios/", "kind": "flows", "signal": "recorded real-user flows; listing free, content paywalled" },
+      { "name": "refero", "url": "https://refero.design/", "kind": "screens", "signal": "web + iOS screenshots; JS-rendered — Playwright capture" }
+    ],
+    "jsOnly": ["thefwa.com", "dribbble.com", "behance.net", "dark.design", "refero.design", "siteinspire.com (429 — retry with backoff)"]
+  }
+}

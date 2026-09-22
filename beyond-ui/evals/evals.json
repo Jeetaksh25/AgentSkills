@@ -55,6 +55,46 @@
         "Keyboard-operable rotate/variant controls when the 3D is the product content",
         "Asset licences recorded in scout.md; page remains readable without JS (poster + text)"
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "make me a landing page that looks like the best developer-tool sites out there - linear, vercel, stripe quality. next.js + tailwind v4",
+      "expected_output": "A run that executes the deep pipeline: tool layer self-installed (playwright+chromium, skillui), 10 references selected from verified award galleries with the weighted rubric, per-site teardowns producing tokens/keyframes/interaction evidence, ONE condensed .beyond-ui/DESIGN-SKILL.md, and a build that cites both the synthesized skill and the upstream rules. scripts/verify-run.mjs exits 0.",
+      "assertions": [
+        "Tool layer installed or its absence recorded: state.json tools.playwright.chromium true",
+        "references-selection.json lists 10 selected with scores and >=3 award signals",
+        "At least 6 teardown dirs under .beyond-ui/teardown/ with tokens/ or capture.json",
+        "DESIGN-SKILL.md exists with all 9 sections including 'Judgement still open'",
+        "state.json ruleCitations >= 5, each with decision + source + appliedIn",
+        "At least one citation sources a teardown artifact that exists on disk",
+        "node scripts/verify-run.mjs exits 0 (G1-G9)"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "redesign our fintech mobile app onboarding screens, it currently looks generic. react native + expo",
+      "expected_output": "A mobile-app-first run: selection from mobile-capable sources (Mobbin llms.txt / Page Flows / Refero), teardown evidence from real shipped app screens, a DESIGN-SKILL.md whose motion/type/colour sections cite mobile evidence, and an RN build using react-native-reusables + Reanimated idioms.",
+      "assertions": [
+        "selection.frame.platform is mobile-app and selected references include mobile evidence",
+        "Teardown ran on mobile-relevant URLs (app landing pages or recorded-flow sources)",
+        "DESIGN-SKILL.md type/motion sections cite the teardown contributors",
+        "Build uses react-native-reusables (shadcn RN port), not web shadcn primitives",
+        "Motion on the UI thread via Reanimated; no web motion library in the RN bundle",
+        "verify-run.mjs exit 0 with screenshots at mobile viewports"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "our marketing site is live and gets traffic; do NOT change the brand or copy, just make it feel as polished as the awwwards winners in our category",
+      "expected_output": "A craft-only pass: teardown of category winners extracts motion/interaction evidence; brand palette and copy untouched; upgrades confined to motion grammar, state polish, rhythm and micro-interactions; every change cites teardown or upstream-rule evidence.",
+      "assertions": [
+        "Brand colours and existing copy byte-identical after the run",
+        "DESIGN-SKILL.md consulted for motion grammar; changes cite teardown/<slug> sources",
+        "prefers-reduced-motion honoured for every added animation",
+        "No new heavy deps added where a CSS/light solution existed (perf gate)",
+        "ruleCitations include at least one a11y constraint from A11Y-PERF.md",
+        "verify-run.mjs exit 0"
+      ]
     }
   ]
 }

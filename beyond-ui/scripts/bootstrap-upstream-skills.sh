@@ -104,3 +104,10 @@ if [ "${#FAILED[@]}" -gt 0 ]; then
   exit 1
 fi
 echo "  all upstream skills present."
+
+
+# ---- tool layer (beyond-ui v2 - always installed, skip-if-present) ----
+echo
+echo "== tool layer (capture/teardown) =="
+SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+node "$SKILL_DIR/scripts/install-tools.mjs" || echo "  TOOL LAYER INCOMPLETE - ultra teardown and verify are degraded until chromium is installed."

@@ -14,7 +14,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
 const globalScope = args.includes("--global") || args.includes("-g");
@@ -154,3 +154,19 @@ if (failures.length) {
 }
 console.log("  all upstream skills present.");
 if (checkOnly) console.log("  (--check: nothing installed by this run)");
+
+// ---------------------------------------------------------------- tool layer (beyond-ui v2 — always installed, skip-if-present)
+// playwright + chromium, skillui, opensrc, firecrawl (key-gated, optional), agent skills from GitHub.
+if (!checkOnly) {
+  console.log("\n== tool layer (capture/teardown) ==");
+  try {
+    const out = execFileSync(process.execPath, [path.join(path.dirname(fileURLToPath(import.meta.url)), "install-tools.mjs")], {
+      encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+    });
+    console.log(out.trim().split("\n").map((l) => `  ${l}`).join("\n"));
+  } catch (e) {
+    // install-tools exits 1 only when chromium is unavailable — surface it, never swallow it
+    console.log(String((e.stdout || "") + (e.stderr || "")).trim() || e.message);
+    console.log("  TOOL LAYER INCOMPLETE — ultra teardown and verify are degraded until chromium is installed.");
+  }
+}
