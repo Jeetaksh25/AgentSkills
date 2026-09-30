@@ -84,5 +84,8 @@ Do not claim "followed the upstream skills". Show it:
    `/* beyond-ui · critique: P5 H4 E5 S4 R5 V5 */` on six axes (Philosophy, Hierarchy, Execution,
    Specificity, Restraint, Variety); anything below 3 forces a revision pass.
 4. `references/CRITIQUE.md` scores the rendered page; every hard fail traces to a named upstream rule.
-5. Run `npx skills update` / re-run the bootstrap periodically — a stale local copy silently diverges
+5. `.beyond-ui/state.json` → `plan` + `.beyond-ui/PLAN.json` — the hand-picked sections, the motion
+   grammar and the registries, produced deterministically from the frame and the teardown evidence
+   (G10). §10 of DESIGN-SKILL.md must contain the same build sheet.
+6. Run `npx skills update` / re-run the bootstrap periodically — a stale local copy silently diverges
    from the current rule set.

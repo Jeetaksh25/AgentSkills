@@ -59,15 +59,20 @@
     {
       "id": 6,
       "prompt": "make me a landing page that looks like the best developer-tool sites out there - linear, vercel, stripe quality. next.js + tailwind v4",
-      "expected_output": "A run that executes the deep pipeline: tool layer self-installed (playwright+chromium, skillui), 10 references selected from verified award galleries with the weighted rubric, per-site teardowns producing tokens/keyframes/interaction evidence, ONE condensed .beyond-ui/DESIGN-SKILL.md, and a build that cites both the synthesized skill and the upstream rules. scripts/verify-run.mjs exits 0.",
+      "expected_output": "A run that executes the full pipeline: tool layer self-installed with no API key (playwright+chromium, skillui, scrapling), 10 references selected from verified galleries with the weighted rubric, per-site teardowns producing tokens/keyframes/interaction/contrast evidence, ONE condensed .beyond-ui/DESIGN-SKILL.md, a hand-picked build plan embedded as §10, and a build that installs exactly what BLOCK-MAP names and cites both the synthesized skill and the upstream rules. scripts/verify-run.mjs exits 0 (G1-G12).",
       "assertions": [
-        "Tool layer installed or its absence recorded: state.json tools.playwright.chromium true",
+        "Tool layer installed or its absence recorded: state.json tools.playwright.chromium true and tools.scrapling.engine != 'none'",
         "references-selection.json lists 10 selected with scores and >=3 award signals",
         "At least 6 teardown dirs under .beyond-ui/teardown/ with tokens/ or capture.json",
-        "DESIGN-SKILL.md exists with all 9 sections including 'Judgement still open'",
+        "DESIGN-SKILL.md exists with all 12 sections including 'HAND-PICKED BUILD PLAN' and 'Contrast'",
+        "DESIGN-SKILL.md §1/§2/§4 carry REAL extracted values (colour values with owner slugs, a type scale, keyframe names, durations) rather than adjectives",
+        "PLAN.json exists with an archetype, a motion grammar and >=4 sections; every section has build rules and a primary block or sources",
+        "DESIGN-SKILL.md embeds the build sheet ('**Primary block**') and real 'npx shadcn@latest add @<ns>/<item>' commands",
+        "The install commands used match BLOCK-MAP.md primaries, and only 2-3 registry namespaces appear",
+        "state.composedSections (or state.components) names the planned sections that were built",
         "state.json ruleCitations >= 5, each with decision + source + appliedIn",
         "At least one citation sources a teardown artifact that exists on disk",
-        "node scripts/verify-run.mjs exits 0 (G1-G9)"
+        "node scripts/verify-run.mjs exits 0 (G1-G12)"
       ]
     },
     {

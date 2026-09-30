@@ -103,6 +103,13 @@ mid-build.
 | Animated component registries with install commands | `references/COMPONENTS.md` | 40+ registries |
 | Animation/3D/effect/SVG/asset libraries | `references/LIBRARIES.md` · `references/EFFECTS.md` | 45+ libraries |
 | Upstream design skills to follow and defer to | `references/SKILLS.md` | 12+ skills |
+| **Verified sections with exact registry items** (what the planner scores) | `assets/block-catalog.json` | 28 sections |
+| Motion grammars with recipes | `assets/motion-catalog.json` | 5 grammars |
+| Section order per surface | `assets/page-archetypes.json` | 11 archetypes |
+
+Scouting fetches pages through `scripts/scrapling.mjs` (keyless, auto-escalating). The three catalog
+files above are not scouting input — they are what §5 (PLAN) selects FROM, and extending
+`assets/block-catalog.json` with a verified entry is how the skill's repertoire grows.
 
 ## Scout quality bar
 

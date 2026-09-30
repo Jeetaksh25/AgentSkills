@@ -14,22 +14,34 @@ exists to prevent.
 | Skill | What it does |
 |---|---|
 | [`production-suite-completion`](./production-suite-completion) | Takes a working app to genuinely production-ready: audits performance, database, API, security, UX, accessibility, SEO, legal, observability, deployment, branding and code hygiene, then fixes, verifies, re-audits and reports — autonomously, in one run, until every gate is green or explicitly blocked on real-world input. |
-| [`beyond-ui`](./beyond-ui) | The ultimate UI design skill: bootstraps the upstream design skills (impeccable, hallmark, ui-ux-pro-max, taste-skill, Anthropic frontend-design, Addy Osmani, Vercel, bencium, accesslint), scouts 60+ award-winning galleries, 55+ template/prompt sources and 40+ animated component registries, then composes real UIs from shadcn/ui plus those libraries — motion, WebGL, SVG, liquid glass and all — so nothing is invented from scratch and nothing looks AI-generated. |
+| [`beyond-ui`](./beyond-ui) | The ultimate UI design skill: bootstraps the upstream design skills (impeccable, hallmark, ui-ux-pro-max, taste-skill, Anthropic frontend-design, Addy Osmani, Vercel, bencium, accesslint), self-installs a keyless tool layer (Playwright + chromium, skillui, opensrc, Scrapling), scouts 60+ award-winning galleries, 55+ template/prompt sources and 40+ animated component registries, tears down the best 10 references in the project's own domain into one binding `DESIGN-SKILL.md` with real extracted tokens, type scales, keyframes and measured contrast ratios — then **hand-picks the actual sections and registry blocks this project needs** (`.beyond-ui/SECTION-PLAN.md` + `BLOCK-MAP.md`, exact `npx shadcn@latest add @ns/item` commands, enforced to 2–3 registries) and gates the run with `verify-run.mjs` (G1–G12) so the evidence, the plan and the built result provably line up. Nothing is invented from scratch and nothing looks AI-generated. |
 
 ## Installation
 
-Copy a skill folder into your agent's skills directory:
+The default is **every detected harness at once** — a machine usually has Claude Code, OMP and the
+cross-tool `.agents/` layout together, and installing into only one of them is how a skill silently
+goes stale in the others:
 
 ```bash
-# Claude Code / OMP style skills directory
-cp -r production-suite-completion ~/.claude/skills/
-
-# or a project-local skills directory
-mkdir -p .agents/skills && cp -r production-suite-completion .agents/skills/
+node scripts/install-skills.mjs            # all detected harness dirs, symlinked (stays current)
+node scripts/install-skills.mjs --list     # show what would be installed
+node scripts/install-skills.mjs --target ~/.omp/skills    # one explicit destination (repeatable)
+node scripts/install-skills.mjs --copy     # copy instead of symlink (needs re-running after updates)
 ```
 
-Then reference it in a prompt: *"use the production-suite-completion skill and make this app
-production ready."*
+Symlinked installs track the repo automatically; `--copy` installs freeze and must be re-run.
+
+Or install by hand — copy the whole folder (it is self-contained):
+
+```bash
+cp -r beyond-ui ~/.claude/skills/     # Claude Code
+cp -r beyond-ui ~/.omp/skills/        # OMP (oh-my-pi)
+cp -r beyond-ui ~/.agents/skills/     # cross-tool layout
+```
+
+Then reference it in a prompt: *"use the beyond-ui skill and build me a landing page that looks
+designed."* The skill's own bootstrap then installs the upstream design skills and the tool layer on
+first use — nothing else has to be set up by hand, and no API keys are required.
 
 ## Anatomy of a skill here
 

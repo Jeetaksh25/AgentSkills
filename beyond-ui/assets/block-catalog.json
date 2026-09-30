@@ -1,0 +1,1963 @@
+{
+ "version": 1,
+ "verified": "2026-10-01",
+ "note": "Verified against the live shadcn registry index (ui.shadcn.com/r/registries.json) and each registry's own registry.json on 2026-10-01. Namespace commands are installed with `npx shadcn@latest add @ns/item`.",
+ "sections": [
+  {
+   "id": "hero-asymmetric-editorial",
+   "name": "Asymmetric editorial hero",
+   "roles": [
+    "hero"
+   ],
+   "pageTypes": [
+    "landing",
+    "marketing",
+    "home",
+    "about"
+   ],
+   "keywords": [
+    "editorial",
+    "swiss",
+    "type-led",
+    "asymmetric",
+    "restrained",
+    "b2b"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@animate-ui",
+     "item": "primitives-texts-splitting",
+     "command": "npx shadcn@latest add @animate-ui/primitives-texts-splitting",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "per-character/word reveal, no library lock-in"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "hero-parallax",
+     "command": "npx shadcn@latest add @aceternity/hero-parallax",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "only if the brief is genuinely product-visual"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "button",
+      "badge"
+     ],
+     "command": "npx shadcn@latest add button badge"
+    }
+   ],
+   "build": [
+    "12-col grid; type block occupies cols 1-7, product surface cols 8-12 at >=1024px, stacked below",
+    "display type clamp(2.75rem,5vw,4.5rem)/0.98/-0.03em from DESIGN.md; body 65ch max",
+    "one dominant element per viewport: the headline, not a card",
+    "NO centred hero - the message is not the whole design (CRITIQUE hard fail 4)",
+    "LCP element is text painted by CSS, never a JS-mounted canvas/3D scene"
+   ],
+   "content": "Real product claim in the user's own words as the h1; a real sub-claim with a number or a concrete mechanism; 1 primary + 1 secondary CTA (1-3 words each, never wrapping); an honest trust line only if the user supplied one.",
+   "motion": "ONE orchestrated moment: the type reveal (staggerChildren 0.06, y 12->0, ease.out 320ms). Nothing else on the page animates on entry.",
+   "a11y": [
+    "h1 is the single page h1; heading order h1->h2 only",
+    "contrast >=4.5:1 measured over the actual substrate incl. any gradient",
+    "reduced motion -> fades only, never opacity:0 without JS"
+   ],
+   "hardFails": [
+    "centred-everything hero",
+    "gradient-text headline",
+    "invented metric in the sub-claim",
+    "two CTAs with the same intent"
+   ],
+   "avoidWhen": [
+    "the product IS a visual/3D artefact - use hero-split-product or hero-kinetic-signature"
+   ]
+  },
+  {
+   "id": "hero-split-product",
+   "name": "Split hero with real product surface",
+   "roles": [
+    "hero"
+   ],
+   "pageTypes": [
+    "landing",
+    "marketing",
+    "saas",
+    "tool"
+   ],
+   "keywords": [
+    "product-led",
+    "screenshot-led",
+    "dense",
+    "honest",
+    "tooling"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@magicui",
+     "item": "hero-video-dialog",
+     "command": "npx shadcn@latest add @magicui/hero-video-dialog",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "real recording in a dialog; never a fake browser chrome"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "hero-section-with-tabs",
+     "command": "npx shadcn@latest add @aceternity/hero-section-with-tabs",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "button",
+      "tabs",
+      "dialog"
+     ],
+     "command": "npx shadcn@latest add button tabs dialog"
+    }
+   ],
+   "build": [
+    "left: value proposition + CTA; right: the real UI (screenshot of the built app, or the live component)",
+    "screenshot must be a real capture of the product at 2x, with explicit width/height (no CLS)",
+    "dialog video: real recording only; fake browser/phone chrome is CRITIQUE hard fail 12",
+    "sticky-stack the media on scroll only if the page has >4 sections"
+   ],
+   "content": "Headline names the mechanism, not the category ('Turn Postgres queries into shareable charts', not 'Unlock your data'); the media shows the actual output; bullet list is 3 concrete capabilities with artefacts.",
+   "motion": "Media does not animate in as a whole; if anything moves it is the reveal of the real surface (clip-path or mask, 320ms).",
+   "a11y": [
+    "media has alt text describing what it shows",
+    "keyboard focus reaches the CTA before the media",
+    "explicit dimensions prevent CLS"
+   ],
+   "hardFails": [
+    "div-based fake browser/terminal chrome",
+    "invented product screenshots",
+    "autoplaying video with sound"
+   ],
+   "avoidWhen": [
+    "no real product surface exists yet - use hero-asymmetric-editorial"
+   ]
+  },
+  {
+   "id": "nav-floating",
+   "name": "Floating pill navbar",
+   "roles": [
+    "nav"
+   ],
+   "pageTypes": [
+    "landing",
+    "marketing",
+    "app"
+   ],
+   "keywords": [
+    "modern",
+    "kinetic",
+    "floating",
+    "product"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "floating-navbar",
+     "command": "npx shadcn@latest add @aceternity/floating-navbar",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "resizable-navbar",
+     "command": "npx shadcn@latest add @aceternity/resizable-navbar",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "shrinks on scroll - verify no CLS"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "navigation-menu",
+      "sheet",
+      "button"
+     ],
+     "command": "npx shadcn@latest add navigation-menu sheet button"
+    }
+   ],
+   "build": [
+    "max one nav archetype per site (CRITIQUE Part 1b); a second page gets a different archetype",
+    "mobile: Sheet on <768px, never a squeezed desktop row",
+    "scroll behaviour changes elevation/border only - never height without a reserved slot",
+    "active-route state is a real token, not an underline drawn with a box-shadow hack"
+   ],
+   "content": "Real route labels; the primary CTA repeats the hero's primary intent (same label); no 'Home/About/Services/Contact' filler unless those pages exist.",
+   "motion": "elevation/backdrop change on scroll (200ms inOut); menu opens <=180ms; no bounce.",
+   "a11y": [
+    "44px min tap targets on mobile",
+    "focus-visible ring on every item",
+    "aria-expanded on the trigger",
+    "skip-to-content link in the layout, not the nav"
+   ],
+   "hardFails": [
+    "transition-all on the navbar",
+    "h-screen mobile menu without scroll-lock + focus trap"
+   ],
+   "avoidWhen": [
+    "the site has <=2 pages - a nav is optional"
+   ]
+  },
+  {
+   "id": "nav-classic-sticky",
+   "name": "Classic sticky header",
+   "roles": [
+    "nav"
+   ],
+   "pageTypes": [
+    "docs",
+    "dashboard",
+    "marketing",
+    "legal"
+   ],
+   "keywords": [
+    "restrained",
+    "functional",
+    "dense",
+    "neutral"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "header-1",
+     "command": "npx shadcn@latest add @tailark/header-1",
+     "peers": [],
+     "licence": "MIT",
+     "note": "check the licence on pro items"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@smoothui",
+     "item": "header-4",
+     "command": "npx shadcn@latest add @smoothui/header-4",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "navigation-menu",
+      "sheet",
+      "button",
+      "separator"
+     ],
+     "command": "npx shadcn@latest add navigation-menu sheet button separator"
+    }
+   ],
+   "build": [
+    "sticky top, border-bottom only on scroll",
+    "container width matches the page container (DESIGN.md)",
+    "docs: nav + on-this-page TOC as a two-column shell"
+   ],
+   "content": "Labels match the real IA; a search entry point appears when the product has search.",
+   "motion": "none beyond a 120ms border/background transition - headers should not perform.",
+   "a11y": [
+    "focus order follows DOM order",
+    "contrast of the scrolled state over content"
+   ],
+   "hardFails": [
+    "sticky header that eats >15% of a 390px viewport height"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "logo-cloud-marquee",
+   "name": "Logo wall / marquee",
+   "roles": [
+    "social-proof"
+   ],
+   "pageTypes": [
+    "landing",
+    "marketing",
+    "pricing"
+   ],
+   "keywords": [
+    "trust",
+    "proof",
+    "kinetic"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@magicui",
+     "item": "marquee",
+     "command": "npx shadcn@latest add @magicui/marquee",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "pause-on-hover + reduced-motion aware"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "logo-cloud-marquee",
+     "command": "npx shadcn@latest add @aceternity/logo-cloud-marquee",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "logo-cloud-3",
+     "command": "npx shadcn@latest add @tailark/logo-cloud-3",
+     "peers": [],
+     "licence": "MIT"
+    }
+   ],
+   "build": [
+    "ONLY with real logos the user supplied - unnamed/invented logos are CRITIQUE hard fail 17",
+    "no logos available -> omit the section entirely or add an honest 'integrations' list of real specs",
+    "duplicate the logo row for the loop; aria-hidden the duplicate",
+    "grayscale + opacity tokens; full colour on hover at most"
+   ],
+   "content": "Real names only. If the user has none, replace with a factual integrations row ('Works with Postgres, MySQL, SQLite') which is honest and still proves compatibility.",
+   "motion": "constant-speed marquee (not ease-in-out); pause on hover and focus; stop entirely under reduced motion.",
+   "a11y": [
+    "the duplicate track is aria-hidden",
+    "no focusable elements inside a marquee",
+    "sufficient contrast for logo-on-substrate"
+   ],
+   "hardFails": [
+    "'Trusted by 10,000 teams' with no names",
+    "placeholder grey-blob logos",
+    "marquee that cannot be paused"
+   ],
+   "avoidWhen": [
+    "no real logos exist - use feature-comparison-table instead"
+   ]
+  },
+  {
+   "id": "testimonial-grid-attributed",
+   "name": "Attributed testimonial grid",
+   "roles": [
+    "social-proof"
+   ],
+   "pageTypes": [
+    "landing",
+    "pricing",
+    "saas"
+   ],
+   "keywords": [
+    "proof",
+    "editorial",
+    "honest"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "testimonials-masonry-grid",
+     "command": "npx shadcn@latest add @aceternity/testimonials-masonry-grid",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "testimonials-4",
+     "command": "npx shadcn@latest add @tailark/testimonials-4",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "avatar",
+      "card"
+     ],
+     "command": "npx shadcn@latest add avatar card"
+    }
+   ],
+   "build": [
+    "max ONE testimonial layout family per page (Part 1b)",
+    "masonry is only justified when cells differ in length; otherwise a 2-col grid",
+    "real avatars with a real fallback (initials token), never a generic illustration"
+   ],
+   "content": "Quote is specific and names an outcome; attribution carries name + role + company; a metric appears only if the user supplied it.",
+   "motion": "staggered reveal once per session; no re-trigger on scroll direction change.",
+   "a11y": [
+    "blockquote semantics",
+    "the avatars have alt text or are decorative with aria-hidden",
+    "no carousel autoplay without a pause control"
+   ],
+   "hardFails": [
+    "invented testimonial or metric",
+    "five-star rows with no source",
+    "carousel autoplay without pause (WCAG 2.2.2)"
+   ],
+   "avoidWhen": [
+    "no real quotes exist - omit the section"
+   ]
+  },
+  {
+   "id": "metrics-stats",
+   "name": "Metric / stat band",
+   "roles": [
+    "proof"
+   ],
+   "pageTypes": [
+    "landing",
+    "pricing",
+    "about"
+   ],
+   "keywords": [
+    "quantified",
+    "honest",
+    "dense"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@magicui",
+     "item": "number-ticker",
+     "command": "npx shadcn@latest add @magicui/number-ticker",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "stats-with-number-ticker",
+     "command": "npx shadcn@latest add @aceternity/stats-with-number-ticker",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "npm",
+     "install": "npm i @number-flow/react",
+     "import": "@number-flow/react",
+     "note": "Emil Kowalski; best-in-class digits"
+    }
+   ],
+   "build": [
+    "the final value MUST be correct in the DOM for no-JS and screen readers",
+    "tabular-nums on every figure (Vercel guidelines)",
+    "max 4 stats; each carries a unit and a date/footnote"
+   ],
+   "content": "Only user-supplied numbers. No number = no band. A number without a unit or a period is not a metric.",
+   "motion": "count up once on first viewport entry (700ms max); never loop.",
+   "a11y": [
+    "the final value is the text content, not the animated intermediate",
+    "aria-live is NOT used for decorative counting"
+   ],
+   "hardFails": [
+    "invented metrics (hard fail 17)",
+    "counting animation that hides the value when JS fails"
+   ],
+   "avoidWhen": [
+    "the user supplied no numbers - use feature-comparison-table"
+   ]
+  },
+  {
+   "id": "feature-bento",
+   "name": "Bento feature grid",
+   "roles": [
+    "features"
+   ],
+   "pageTypes": [
+    "landing",
+    "marketing",
+    "product"
+   ],
+   "keywords": [
+    "bento",
+    "dense",
+    "visual",
+    "product"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@magicui",
+     "item": "bento-grid",
+     "command": "npx shadcn@latest add @magicui/bento-grid",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@kokonutui",
+     "item": "bento-grid",
+     "command": "npx shadcn@latest add @kokonutui/bento-grid",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "bento-grid",
+     "command": "npx shadcn@latest add @aceternity/bento-grid",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "card"
+     ],
+     "command": "npx shadcn@latest add card"
+    }
+   ],
+   "build": [
+    "cell count EQUALS content count - never pad the grid to look full (Part 1b)",
+    "one dominant tile with real product visual; the rest text-only",
+    "12-col grid placement explicit per breakpoint; the 390px layout is a single column",
+    "cards must not be nested (card-in-card is CRITIQUE hard fail 3)"
+   ],
+   "content": "Each tile is one capability with a concrete artefact (a real UI crop, a real output). No icon-above-title-above-lorem triples.",
+   "motion": "reveal per tile with a 40-80ms stagger; hover = one transform axis + one shadow step, never scale+rotate+blur.",
+   "a11y": [
+    "tile headings are h3 under a section h2",
+    "hover states never resize the tile (layout shift)",
+    "contrast of any text on a tinted tile"
+   ],
+   "hardFails": [
+    "three equal columns of icon+title+lorem (hard fail 3)",
+    "card-in-card",
+    "bento padded to fill"
+   ],
+   "avoidWhen": [
+    "features are a list, not a matrix - use feature-alternating-detail"
+   ]
+  },
+  {
+   "id": "feature-alternating-detail",
+   "name": "Alternating image/text detail rows",
+   "roles": [
+    "features"
+   ],
+   "pageTypes": [
+    "landing",
+    "product",
+    "docs"
+   ],
+   "keywords": [
+    "editorial",
+    "narrative",
+    "detailed"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "features-carousel-3",
+     "command": "npx shadcn@latest add @tailark/features-carousel-3",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "feature-grid-with-illustrations-and-bento",
+     "command": "npx shadcn@latest add @aceternity/feature-grid-with-illustrations-and-bento",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    }
+   ],
+   "build": [
+    "max ONE zigzag family per page (Part 1b); alternate side only across rows, never twice in a row",
+    "each row is one claim + one artefact; the artefact is a real screenshot or a real component",
+    "the media column is `sticky` only when the section has >2 rows"
+   ],
+   "content": "Rows map to the product's real mechanics (how it works), not to marketing headings.",
+   "motion": "row media reveals with the same single entrance grammar; no parallax on text (motion sickness).",
+   "a11y": [
+    "media alt text",
+    "reading order matches visual order at 390px",
+    "no horizontal scroll at 390px"
+   ],
+   "hardFails": [
+    "two zigzag rows in a row",
+    "text moving faster than the viewport can render"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "feature-comparison-table",
+   "name": "Comparison table (replaces the 3-card row)",
+   "roles": [
+    "features",
+    "pricing"
+   ],
+   "pageTypes": [
+    "landing",
+    "pricing",
+    "product"
+   ],
+   "keywords": [
+    "honest",
+    "comparison",
+    "dense",
+    "differentiating"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "comparator-2",
+     "command": "npx shadcn@latest add @tailark/comparator-2",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "table",
+     "command": "npx shadcn@latest add @coss/table",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "table",
+      "badge"
+     ],
+     "command": "npx shadcn@latest add table badge"
+    }
+   ],
+   "build": [
+    "the honest 'what it does not do' column is a differentiator, not a weakness",
+    "row height stable; tabular-nums; no zebra + border + shadow stacking",
+    "390px -> a stacked definition list, never a horizontally scrolled table"
+   ],
+   "content": "Real feature names from the product; real values; empty cells say 'No' not a blank.",
+   "motion": "none - comparison tables should not animate (motion on a table delays reading).",
+   "a11y": [
+    "<table> semantics with th scope",
+    "caption or aria-label",
+    "focus-visible on any interactive cell"
+   ],
+   "hardFails": [
+    "a table that is really three marketing cards",
+    "invented competitor capabilities"
+   ],
+   "avoidWhen": [
+    "the product has no meaningful comparison axis"
+   ]
+  },
+  {
+   "id": "terminal-demo",
+   "name": "Terminal / code demo block",
+   "roles": [
+    "proof"
+   ],
+   "pageTypes": [
+    "landing",
+    "docs",
+    "devtool"
+   ],
+   "keywords": [
+    "terminal",
+    "devtool",
+    "honest",
+    "technical"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@magicui",
+     "item": "terminal",
+     "command": "npx shadcn@latest add @magicui/terminal",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "npm",
+     "install": "npm i shiki",
+     "import": "shiki",
+     "note": "real syntax highlighting, no hand-rolled token colours"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "tabs",
+      "button"
+     ],
+     "command": "npx shadcn@latest add tabs button"
+    }
+   ],
+   "build": [
+    "real output only - a real command that really runs and its real result",
+    "the copy button is a real clipboard write with a copied/error state",
+    "never re-draw window chrome with divs (hard fail 12) - a real code block with a real highlighter is fine"
+   ],
+   "content": "The actual CLI invocation, the actual output, the actual version string.",
+   "motion": "type-on reveal is allowed ONCE on the page, <=1.2s total, and reduced-motion collapses it to an instant fade.",
+   "a11y": [
+    "copy button is keyboard reachable with a live-region confirmation",
+    "code contrast >=4.5:1",
+    "no focus trap"
+   ],
+   "hardFails": [
+    "fake terminal with invented output",
+    "emoji in a terminal block",
+    "type-on that never completes when JS is slow"
+   ],
+   "avoidWhen": [
+    "the product has no CLI/code surface"
+   ]
+  },
+  {
+   "id": "integrations-orbit",
+   "name": "Integrations grid / orbit",
+   "roles": [
+    "integrations"
+   ],
+   "pageTypes": [
+    "landing",
+    "product"
+   ],
+   "keywords": [
+    "ecosystem",
+    "technical",
+    "kinetic"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@magicui",
+     "item": "orbiting-circles",
+     "command": "npx shadcn@latest add @magicui/orbiting-circles",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "integrations-3",
+     "command": "npx shadcn@latest add @tailark/integrations-3",
+     "peers": [],
+     "licence": "MIT"
+    }
+   ],
+   "build": [
+    "orbit is decoration: it must carry real names, never invented logos",
+    "reduced motion freezes the orbit; the names remain readable",
+    "grid fallback at 390px"
+   ],
+   "content": "Real integration names the product actually supports.",
+   "motion": "slow constant rotation (never linear on text the user must read; rotate the ring, not the labels).",
+   "a11y": [
+    "labels are real text, not images",
+    "pauses under reduced motion",
+    "no motion in the user's reading path"
+   ],
+   "hardFails": [
+    "orbit of invented logos",
+    "labels that counter-rotate and blur"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "timeline-process",
+   "name": "Process / timeline",
+   "roles": [
+    "process"
+   ],
+   "pageTypes": [
+    "landing",
+    "about",
+    "docs"
+   ],
+   "keywords": [
+    "narrative",
+    "sequential",
+    "editorial"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "timeline",
+     "command": "npx shadcn@latest add @aceternity/timeline",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "description-list-1",
+     "command": "npx shadcn@latest add @tailark/description-list-1",
+     "peers": [],
+     "licence": "MIT"
+    }
+   ],
+   "build": [
+    "steps are real, numbered, and each has an artefact",
+    "no scroll-driven horizontal pinning on mobile",
+    "the connector line is a token, not a gradient"
+   ],
+   "content": "Step = verb + artefact + outcome. No 'Step 1: Sign up' filler if the product has no signup.",
+   "motion": "reveal each step as it enters the viewport, same grammar as the rest of the page.",
+   "a11y": [
+    "ordered list semantics <ol>",
+    "step numbers are text, not only a graphic",
+    "connectors are aria-hidden"
+   ],
+   "hardFails": [
+    "horizontal scroll-jacked timeline",
+    "timeline used as decoration with no sequence"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "pricing-three-tier",
+   "name": "Three-tier pricing with switch",
+   "roles": [
+    "pricing"
+   ],
+   "pageTypes": [
+    "pricing",
+    "landing"
+   ],
+   "keywords": [
+    "honest",
+    "comparison",
+    "conversion"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "pricing-with-switch",
+     "command": "npx shadcn@latest add @aceternity/pricing-with-switch",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "uses the animated toggle; keep the Radix Tabs semantics"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "pricing-2",
+     "command": "npx shadcn@latest add @tailark/pricing-2",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "tabs",
+      "badge",
+      "tooltip",
+      "button"
+     ],
+     "command": "npx shadcn@latest add tabs badge tooltip button"
+    }
+   ],
+   "build": [
+    "the toggle is an accessible Tabs/radio group, NOT a custom div switch (hard fail 9)",
+    "card height is fixed across billing periods - never animate container height (layout shift)",
+    "prices are real DOM text (tabular-nums); the discount badge states the real terms",
+    "the recommended tier is exactly one, and the reason is stated"
+   ],
+   "content": "Real prices, real limits, real currency; 'Contact us' only when a real sales motion exists; footnote lists what is metered.",
+   "motion": "price digits swap with a 180ms cross-fade or NumberFlow; the thumb springs; no height animation.",
+   "a11y": [
+    "aria-selected/aria-label on the billing switch",
+    "screen-reader announcement of the new price",
+    "the badge is not the only carrier of meaning (colour-blind safe)"
+   ],
+   "hardFails": [
+    "layout shift when toggling",
+    "'Most popular' with no reason",
+    "invented discount",
+    "a button label that wraps"
+   ],
+   "avoidWhen": [
+    "pricing is not public - use a contact/CTA section instead"
+   ]
+  },
+  {
+   "id": "faq-accordion",
+   "name": "FAQ accordion",
+   "roles": [
+    "faq"
+   ],
+   "pageTypes": [
+    "landing",
+    "pricing",
+    "docs",
+    "support"
+   ],
+   "keywords": [
+    "answers",
+    "restrained",
+    "functional"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "faqs-1",
+     "command": "npx shadcn@latest add @tailark/faqs-1",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@motion-primitives",
+     "item": "accordion",
+     "command": "npx shadcn@latest add @motion-primitives/accordion",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "animated height done correctly"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "accordion",
+      "separator"
+     ],
+     "command": "npx shadcn@latest add accordion separator"
+    }
+   ],
+   "build": [
+    "real support questions, not invented objections",
+    "max 1 eyebrow per 3 sections - the FAQ usually needs none",
+    "answers are 2-4 sentences; long answers link to docs instead",
+    "single-open (collapsible) is the default; multi-open only when answers are scanned"
+   ],
+   "content": "Questions pulled from a real support inbox/issue tracker; each answer states a fact or a limit.",
+   "motion": "height animation on the panel only, 240ms inOut; never `transition-all` (hard fail 10).",
+   "a11y": [
+    "button carries aria-expanded + aria-controls",
+    "panel has role region + labelled heading",
+    "keyboard: Enter/Space, arrow keys optional"
+   ],
+   "hardFails": [
+    "transition-all on the accordion",
+    "answers that are marketing restated",
+    "invented FAQ to fill space"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "cta-band",
+   "name": "Closing CTA band",
+   "roles": [
+    "cta"
+   ],
+   "pageTypes": [
+    "landing",
+    "pricing",
+    "docs"
+   ],
+   "keywords": [
+    "conversion",
+    "restrained",
+    "closing"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "call-to-action-2",
+     "command": "npx shadcn@latest add @tailark/call-to-action-2",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "cta-with-dashed-grid-lines",
+     "command": "npx shadcn@latest add @aceternity/cta-with-dashed-grid-lines",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "button",
+      "input"
+     ],
+     "command": "npx shadcn@latest add button input"
+    }
+   ],
+   "build": [
+    "ONE CTA intent across the whole page - the label here repeats the hero's primary label verbatim (Part 1b)",
+    "max one centred CTA band per page",
+    "no full-bleed h-screen band; use padding rhythm, not viewport height"
+   ],
+   "content": "The strongest honest reason to act, plus the primary action. If the product is self-serve, add the real command or a real trial link.",
+   "motion": "the band is the one place a second kinetic moment is allowed - or none at all.",
+   "a11y": [
+    "the input (if any) has a real label",
+    "errors are inline and announced",
+    "no captcha-only gate on the primary path"
+   ],
+   "hardFails": [
+    "two CTAs with the same intent",
+    "'Coming soon' with no action",
+    "gradient-text headline in the band"
+   ],
+   "avoidWhen": [
+    "the page already ends on a conversion surface"
+   ]
+  },
+  {
+   "id": "footer-mega",
+   "name": "Footer with real navigation",
+   "roles": [
+    "footer"
+   ],
+   "pageTypes": [
+    "landing",
+    "marketing",
+    "docs",
+    "app"
+   ],
+   "keywords": [
+    "navigation",
+    "trust",
+    "closing"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "footer-with-grid",
+     "command": "npx shadcn@latest add @aceternity/footer-with-grid",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "footer-2",
+     "command": "npx shadcn@latest add @tailark/footer-2",
+     "peers": [],
+     "licence": "MIT"
+    }
+   ],
+   "build": [
+    "a different footer archetype per page of the same site (Part 1b)",
+    "real links only; a dead link is worse than no link",
+    "status/version/changelog entries when they exist; legal identifiers when they exist"
+   ],
+   "content": "Columns reflect the real IA; include the honest status line only if a real status page exists.",
+   "motion": "none - the footer does not perform.",
+   "a11y": [
+    "<footer> landmark",
+    "nav labels are real",
+    "external links state that (no silent new tabs)"
+   ],
+   "hardFails": [
+    "four columns of '#' links",
+    "social icons with no destination",
+    "fake copyright year logic"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "chart-panel",
+   "name": "Chart panel bound to tokens",
+   "roles": [
+    "chart",
+    "data"
+   ],
+   "pageTypes": [
+    "dashboard",
+    "admin",
+    "app"
+   ],
+   "keywords": [
+    "analytics",
+    "data",
+    "restrained"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "chart",
+     "command": "npx shadcn@latest add @tailark/chart",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@evilcharts",
+     "item": "chart-1",
+     "command": "npx shadcn@latest add @evilcharts/chart-1",
+     "peers": [],
+     "licence": "verify before shipping",
+     "note": "verify licence before shipping"
+    },
+    {
+     "kind": "npm",
+     "install": "npx shadcn@latest add chart",
+     "import": "@/components/ui/chart",
+     "note": "shadcn chart wraps Recharts and binds colours to --chart-* tokens"
+    }
+   ],
+   "build": [
+    "chart colours come from --chart-* tokens; no raw hex in the chart config",
+    "empty (no data), partial (some series missing), error (query failed) all designed",
+    "axis labels are real units; no truncated axis without a marker",
+    "hover tooltip is keyboard-reachable or an equivalent table view exists"
+   ],
+   "content": "Real series names and units; a stated time range; the honest 'data as of' line.",
+   "motion": "animate the series reveal once (<=700ms), never on every resize; no infinite shimmer on a loaded chart.",
+   "a11y": [
+    "chart has a text summary or an accessible table alternative",
+    "colour is never the only series differentiator (pattern/label too)",
+    "contrast of gridlines >=3:1"
+   ],
+   "hardFails": [
+    "rainbow palette with no semantic meaning",
+    "chart with fabricated data",
+    "animation masking an empty state"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "form-critical",
+   "name": "Forms with real validation",
+   "roles": [
+    "form"
+   ],
+   "pageTypes": [
+    "app",
+    "admin",
+    "onboarding",
+    "auth"
+   ],
+   "keywords": [
+    "functional",
+    "trust",
+    "accessible"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "p-input-1",
+     "command": "npx shadcn@latest add @coss/p-input-1",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "form",
+      "input",
+      "label",
+      "select",
+      "textarea",
+      "checkbox",
+      "radio-group",
+      "switch",
+      "button",
+      "sonner"
+     ],
+     "command": "npx shadcn@latest add form input label select textarea checkbox radio-group switch button sonner"
+    }
+   ],
+   "build": [
+    "React Hook Form + zod via the shadcn Form primitive; never a hand-rolled validation loop",
+    "labels are ALWAYS visible (placeholder-as-label is banned)",
+    "errors are inline, attached to the field, announced, and say what to do",
+    "submit stays ENABLED and shows a real pending/error state (Vercel guidelines)",
+    "never block paste; never disable right-click; autocomplete/inputmode set correctly"
+   ],
+   "content": "Real field names and real help text; microcopy states what happens next; destructive actions confirm or offer undo.",
+   "motion": "no layout shift on error (reserve the message slot); inline validation after blur, not on first keystroke.",
+   "a11y": [
+    "every control has a programmatic label",
+    "aria-invalid + aria-describedby wired on error",
+    "focus moves to the first invalid field on submit",
+    "error text contrast >=4.5:1"
+   ],
+   "hardFails": [
+    "placeholder used as a label",
+    "disabled submit as validation",
+    "silent failure with no message",
+    "toast-only errors"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "data-table",
+   "name": "Data table with real states",
+   "roles": [
+    "table",
+    "data"
+   ],
+   "pageTypes": [
+    "dashboard",
+    "admin",
+    "app"
+   ],
+   "keywords": [
+    "dense",
+    "data",
+    "product",
+    "operational"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "table",
+     "command": "npx shadcn@latest add @coss/table",
+     "peers": [],
+     "licence": "MIT",
+     "note": "largest practical app-component set"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "description-list-4",
+     "command": "npx shadcn@latest add @tailark/description-list-4",
+     "peers": [],
+     "licence": "MIT",
+     "note": "stacked fallback when the data is really a list"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "table",
+      "dropdown-menu",
+      "checkbox",
+      "pagination",
+      "badge",
+      "skeleton",
+      "sonner"
+     ],
+     "command": "npx shadcn@latest add table dropdown-menu checkbox pagination badge skeleton sonner"
+    }
+   ],
+   "build": [
+    "skeleton geometry EQUALS the final row geometry (no jump)",
+    "empty state has a real next action, not just an illustration",
+    "tabular-nums for every numeric column; right-align numerals, left-align text",
+    "column widths stable across states; long strings truncate with a tooltip",
+    "row actions are a DropdownMenu primitive, never a hand-built popover",
+    "390px: the table scrolls inside a contained container, the page never scrolls sideways"
+   ],
+   "content": "Real column names; real row values; a real 'no rows' reason; export/CSV only if it really works.",
+   "motion": "no row-entrance animation on load; row reorder uses @formkit/auto-animate (one line) if reorder exists.",
+   "a11y": [
+    "<table> semantics or role=grid with correct headers",
+    "keyboard-navigable row actions",
+    "pagination announces the new range",
+    "focus-visible on every interactive cell"
+   ],
+   "hardFails": [
+    "spinner instead of a skeleton matching the table",
+    "empty state with no action",
+    "horizontal page scroll instead of a contained table"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "states-empty-loading-error",
+   "name": "State set (loading / empty / error / partial)",
+   "roles": [
+    "states"
+   ],
+   "pageTypes": [
+    "app",
+    "dashboard",
+    "docs",
+    "landing"
+   ],
+   "keywords": [
+    "system",
+    "honest",
+    "resilience"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "p-empty-1",
+     "command": "npx shadcn@latest add @coss/p-empty-1",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "p-skeleton-1",
+     "command": "npx shadcn@latest add @coss/p-skeleton-1",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "skeleton",
+      "alert",
+      "button",
+      "sonner"
+     ],
+     "command": "npx shadcn@latest add skeleton alert button sonner"
+    }
+   ],
+   "build": [
+    "skeletons match the geometry of what replaces them (no jump)",
+    "empty states carry a next action and, when useful, teach",
+    "error states name the failure and the recovery, and keep the user's input",
+    "offline and permission-denied designed where the product can hit them"
+   ],
+   "content": "Copy tells the user what to do next; no 'Something went wrong' alone; no fake retry that cannot succeed.",
+   "motion": "skeleton shimmer is one grammar at <=1.4s; reduced motion -> static neutral block.",
+   "a11y": [
+    "live region announces loading->loaded and errors",
+    "focus is not stolen by a loading swap",
+    "error alert is role=alert or aria-live=assertive"
+   ],
+   "hardFails": [
+    "spinner-only loading",
+    "empty state with no action",
+    "layout jump between states",
+    "error that loses input"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "onboarding-stepper",
+   "name": "Onboarding stepper",
+   "roles": [
+    "flow"
+   ],
+   "pageTypes": [
+    "onboarding",
+    "app"
+   ],
+   "keywords": [
+    "guided",
+    "sequential",
+    "friendly"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "multi-step-loader",
+     "command": "npx shadcn@latest add @aceternity/multi-step-loader",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@react-bits",
+     "item": "Stepper-TS-TW",
+     "command": "npx shadcn@latest add @react-bits/Stepper-TS-TW",
+     "peers": [],
+     "licence": "MIT",
+     "note": "check the site for the exact variant"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "progress",
+      "button",
+      "form"
+     ],
+     "command": "npx shadcn@latest add progress button form"
+    }
+   ],
+   "build": [
+    "step count visible; back is always possible; state persists across reload",
+    "each step has one job and a real validation gate",
+    "never block the whole flow on an optional field"
+   ],
+   "content": "Steps use the product's real setup concepts, not generic 'Tell us about you' filler.",
+   "motion": "step transition is a 240ms directional slide or cross-fade, one grammar, reduced-motion -> fade.",
+   "a11y": [
+    "progress announces the current step",
+    "step title is a heading; only one h1 on the screen",
+    "focus moves to the new step heading on change"
+   ],
+   "hardFails": [
+    "progress indicator as the only affordance",
+    "no back path",
+    "invented steps to look thorough"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "mobile-screen-rn",
+   "name": "Mobile screen (React Native)",
+   "roles": [
+    "mobile"
+   ],
+   "pageTypes": [
+    "app",
+    "mobile"
+   ],
+   "keywords": [
+    "native",
+    "touch",
+    "thumb-friendly"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@react-native-reusables",
+     "item": "registry",
+     "command": "npx @react-native-reusables/cli@latest add button card input text avatar",
+     "peers": [
+      "react-native-reanimated"
+     ],
+     "licence": "MIT",
+     "note": "shadcn's RN port; same token names where possible. Verify the item names against the registry before installing."
+    },
+    {
+     "kind": "npm",
+     "install": "npm i react-native-reanimated",
+     "import": "react-native-reanimated",
+     "note": "UI-thread animation; never JS-thread for gestures"
+    },
+    {
+     "kind": "npm",
+     "install": "npm i @shopify/flash-list",
+     "import": "@shopify/flash-list",
+     "note": "long lists"
+    }
+   ],
+   "build": [
+    "Reanimated only for motion; animate transform/opacity",
+    "native stack + native tabs; no JS tab bars",
+    "safe areas honoured (top and bottom); 44pt minimum touch targets",
+    "expo-image for images with a real placeholder"
+   ],
+   "content": "Real screen titles and real empty states; platform-idiomatic verbs.",
+   "motion": "shared-element / layout transitions via Reanimated layout animations; no web motion libraries in the RN bundle.",
+   "a11y": [
+    "accessibilityLabel on icon-only controls",
+    "accessibilityRole on interactive elements",
+    "focus order follows visual order",
+    "dynamic type supported (no fixed font sizes that clip)"
+   ],
+   "hardFails": [
+    "web motion library in an RN bundle",
+    "TouchableOpacity over Pressable",
+    "fixed heights that clip at large dynamic type"
+   ],
+   "avoidWhen": [
+    "the surface is a website"
+   ]
+  },
+  {
+   "id": "docs-shell",
+   "name": "Docs shell (nav + on-this-page)",
+   "roles": [
+    "shell",
+    "docs"
+   ],
+   "pageTypes": [
+    "docs"
+   ],
+   "keywords": [
+    "technical",
+    "scannable",
+    "dense"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "description-list-2",
+     "command": "npx shadcn@latest add @tailark/description-list-2",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "p-table-1",
+     "command": "npx shadcn@latest add @coss/p-table-1",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "sidebar",
+      "scroll-area",
+      "breadcrumb",
+      "separator"
+     ],
+     "command": "npx shadcn@latest add sidebar scroll-area breadcrumb separator"
+    }
+   ],
+   "build": [
+    "three-column at >=1280px; collapse to nav+content at 768; content-only at 390",
+    "on-this-page is generated from real headings, with the active heading marked by IntersectionObserver",
+    "code blocks use a real highlighter with a copy button"
+   ],
+   "content": "Real API names and real examples; 'Coming soon' is banned - remove the page instead.",
+   "motion": "none on the article body; on-this-page highlight is a 120ms transition.",
+   "a11y": [
+    "skip-to-content",
+    "heading hierarchy with no level skipped",
+    "code block scrolls, page does not",
+    "anchor links are focusable and land with offset"
+   ],
+   "hardFails": [
+    "docs with placeholder API names",
+    "three-column at 390px",
+    "anchor scroll hidden behind a sticky header"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "dash-shell-sidebar",
+   "name": "App shell with collapsible sidebar",
+   "roles": [
+    "shell"
+   ],
+   "pageTypes": [
+    "dashboard",
+    "admin",
+    "app"
+   ],
+   "keywords": [
+    "dense",
+    "functional",
+    "data",
+    "restrained",
+    "operational"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@animate-ui",
+     "item": "components-radix-sidebar",
+     "command": "npx shadcn@latest add @animate-ui/components-radix-sidebar",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "animated on the Radix primitive"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "collapsible-sidebar",
+     "command": "npx shadcn@latest add @aceternity/collapsible-sidebar",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "alternative when the app is not on the Radix sidebar primitive"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "sidebar",
+      "breadcrumb",
+      "separator",
+      "sheet"
+     ],
+     "command": "npx shadcn@latest add sidebar breadcrumb separator sheet"
+    }
+   ],
+   "build": [
+    "collapsed state persists (localStorage) and is a real width token, not a transform hack",
+    "below 768px the sidebar becomes a Sheet; never a squeezed rail",
+    "NO entrance animation on the shell - a dashboard fading in delays data (EXAMPLES.md Example B)",
+    "the content region is a CSS Grid area, not flex percentage math",
+    "one sidebar archetype per site: a second surface gets a different shell",
+    "an app shell must never be used as a marketing navbar - nav-floating/nav-classic-sticky own that role"
+   ],
+   "content": "Real route labels; the breadcrumb reflects the actual hierarchy; the account menu shows the real identity shape (no invented avatars).",
+   "motion": "sidebar collapse is the only 200ms inOut transition in the shell; nothing else animates.",
+   "a11y": [
+    "<nav> landmark with aria-label",
+    "collapse toggle carries aria-expanded",
+    "skip link targets the content region",
+    "focus returns to the toggle after collapsing"
+   ],
+   "hardFails": [
+    "sidebar that overlays content on desktop",
+    "transition-all on the shell",
+    "h-screen instead of min-h-[100dvh]"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "dashboard-overview",
+   "name": "Dashboard overview (KPIs + primary chart)",
+   "roles": [
+    "overview",
+    "data"
+   ],
+   "pageTypes": [
+    "dashboard",
+    "admin",
+    "app"
+   ],
+   "keywords": [
+    "dense",
+    "decision-first",
+    "restrained"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "grouped-sidebar",
+     "command": "npx shadcn@latest add @aceternity/grouped-sidebar",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "stats-3",
+     "command": "npx shadcn@latest add @tailark/stats-3",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "card",
+      "toggle-group",
+      "select",
+      "skeleton"
+     ],
+     "command": "npx shadcn@latest add card toggle-group select skeleton"
+    }
+   ],
+   "build": [
+    "group KPIs by DECISION, not by data type (Example B); 3-5 KPIs maximum",
+    "each KPI carries a comparison (vs. previous period) and its own range control",
+    "borders are EARNED: remove 60% of card borders, use spacing + a section header instead",
+    "one primary chart per view; secondary charts live behind a tab",
+    "NO entrance animation - dashboards must not fade in (delays data)"
+   ],
+   "content": "Real metric names, real ranges, real comparison periods, and a visible 'as of' timestamp.",
+   "motion": "none on first paint; range-change re-fetch shows the skeleton that matches the chart geometry.",
+   "a11y": [
+    "KPI values are text with tabular-nums, not images",
+    "the range control is a real radio/tab group",
+    "chart has a table alternative or a summary"
+   ],
+   "hardFails": [
+    "everything-is-a-card with a border",
+    "invented KPI deltas",
+    "spinners instead of geometry-matched skeletons",
+    "fade-in on a data view"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "auth-simple",
+   "name": "Authentication screens",
+   "roles": [
+    "auth"
+   ],
+   "pageTypes": [
+    "auth",
+    "app"
+   ],
+   "keywords": [
+    "trustworthy",
+    "calm",
+    "functional",
+    "minimal"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@aceternity",
+     "item": "login-with-socials-and-email",
+     "command": "npx shadcn@latest add @aceternity/login-with-socials-and-email",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "p-otp-field-1",
+     "command": "npx shadcn@latest add @coss/p-otp-field-1",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "form",
+      "input",
+      "label",
+      "button",
+      "separator",
+      "alert"
+     ],
+     "command": "npx shadcn@latest add form input label button separator alert"
+    }
+   ],
+   "build": [
+    "one column, one job, one primary action; no marketing on an auth screen",
+    "OTP fields are a real input group with paste support across boxes",
+    "error states never reveal whether an account exists (security copy)",
+    "the page renders without JS for the form shell"
+   ],
+   "content": "Real auth method names the product supports; honest copy about what happens after submit.",
+   "motion": "none beyond focus and a 120ms button pending state; never animate the form on mount.",
+   "a11y": [
+    "autocomplete attributes (username / one-time-code / current-password)",
+    "error summary is announced",
+    "password managers can paste",
+    "focus lands on the first field"
+   ],
+   "hardFails": [
+    "auth screen with a hero and three cards",
+    "inventing SSO providers that do not exist",
+    "blocking paste in an OTP field"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "blog-changelog",
+   "name": "Blog index / changelog",
+   "roles": [
+    "content"
+   ],
+   "pageTypes": [
+    "content",
+    "marketing",
+    "docs"
+   ],
+   "keywords": [
+    "editorial",
+    "chronological",
+    "scannable"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@tailark",
+     "item": "description-list-3",
+     "command": "npx shadcn@latest add @tailark/description-list-3",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@smoothui",
+     "item": "blog-1",
+     "command": "npx shadcn@latest add @smoothui/blog-1",
+     "peers": [],
+     "licence": "MIT",
+     "note": "verify the item name against the registry"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "card",
+      "badge",
+      "separator",
+      "pagination"
+     ],
+     "command": "npx shadcn@latest add card badge separator pagination"
+    }
+   ],
+   "build": [
+    "real dates and real reading time, or neither",
+    "changelog entries are versioned and dated; no 'coming soon'",
+    "an index with no posts shows an empty state, not a fake grid",
+    "cover images have explicit dimensions and real alt text"
+   ],
+   "content": "Real titles and real excerpts from the actual content; the feed is RSS-linked when it exists.",
+   "motion": "none on the list; an optional 120ms hover elevation change on cards.",
+   "a11y": [
+    "<time datetime> on dates",
+    "list semantics <ul>/<li> or <article>",
+    "pagination is keyboard operable and announces the page"
+   ],
+   "hardFails": [
+    "invented posts to fill an index",
+    "'Coming soon' entries",
+    "cover images with no dimensions"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "error-404",
+   "name": "Error and 404 surfaces",
+   "roles": [
+    "error"
+   ],
+   "pageTypes": [
+    "app",
+    "docs",
+    "marketing"
+   ],
+   "keywords": [
+    "helpful",
+    "calm",
+    "on-brand"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@coss",
+     "item": "p-empty-1",
+     "command": "npx shadcn@latest add @coss/p-empty-1",
+     "peers": [],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "button",
+      "alert"
+     ],
+     "command": "npx shadcn@latest add button alert"
+    }
+   ],
+   "build": [
+    "the 404 offers the real paths back: search, home, the most-visited links",
+    "a 500 keeps the user's work and offers a retry that can succeed",
+    "the surface inherits the site's type and colour system - it is not a bare default page"
+   ],
+   "content": "Copy names what happened and gives the next action; no joke copy that hides the path forward.",
+   "motion": "none, or a single gentle reveal; an error page is not a showcase.",
+   "a11y": [
+    "the page keeps the site's landmarks and skip link",
+    "the status is real (404/500), not a soft 200",
+    "search input is labelled"
+   ],
+   "hardFails": [
+    "a 404 that is a dead end",
+    "bare unstyled framework error page",
+    "retry that cannot succeed"
+   ],
+   "avoidWhen": []
+  },
+  {
+   "id": "component-showcase",
+   "name": "Single-component delivery",
+   "roles": [
+    "component"
+   ],
+   "pageTypes": [
+    "component"
+   ],
+   "keywords": [
+    "scoped",
+    "craft",
+    "focused"
+   ],
+   "sources": [
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@animate-ui",
+     "item": "components-animate-tabs",
+     "command": "npx shadcn@latest add @animate-ui/components-animate-tabs",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT",
+     "note": "swap for the actual primitive needed"
+    },
+    {
+     "kind": "shadcn-registry",
+     "namespace": "@motion-primitives",
+     "item": "transition-panel",
+     "command": "npx shadcn@latest add @motion-primitives/transition-panel",
+     "peers": [
+      "motion"
+     ],
+     "licence": "MIT"
+    },
+    {
+     "kind": "shadcn-primitives",
+     "items": [
+      "button",
+      "tabs"
+     ],
+     "command": "npx shadcn@latest add button tabs"
+    }
+   ],
+   "build": [
+    "scope is ONE component: scout still runs (>=3 references), the contract is local (durations, easing, accent)",
+    "the component ships ALL 8 states: default, hover, focus-visible, active, disabled, loading, error, success",
+    "built on the accessible primitive (Radix/Base UI), never a div with onClick"
+   ],
+   "content": "Real labels for the component's real use; no lorem in a demo.",
+   "motion": "local motion contract: micro 120ms, ui 200ms, one spring for interactive thumbs; reduced-motion honoured.",
+   "a11y": [
+    "keyboard path complete (arrow keys where the primitive expects them)",
+    "focus ring visible in both themes",
+    "reduced motion verified on the component itself"
+   ],
+   "hardFails": [
+    "a component demo with three fake variants",
+    "animating container height and shifting the page",
+    "no disabled/loading states"
+   ],
+   "avoidWhen": []
+  }
+ ]
+}

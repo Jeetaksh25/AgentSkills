@@ -1,17 +1,21 @@
-# Teardown — select 10, tear down 10, synthesize 1
+# Teardown — select 10, tear down 10, synthesize 1, plan the build
 
 This is the deep-insight phase between SCOUT and DIRECTION. The old scout looked at references from
 the outside (screenshots, gallery cards); the teardown opens them up and reads their design systems
-from the inside, then condenses the evidence into a single binding project skill.
+from the inside, condenses the evidence into a single binding project skill, and then **picks the real
+blocks for this project** so the build never starts from a blank page.
 
-**Timebox:** this phase is 20–35% of the total UI task. It replaces guesswork with extracted tokens,
+**Timebox:** this phase is 25–40% of the total UI task. It replaces guesswork with extracted tokens,
 keyframes, section inventories and interaction diffs from sites that already won.
 
 ```
 1 SELECT   score candidates from verified galleries      -> .beyond-ui/references-selection.json
 2 TEARDOWN skillui ultra + playwright capture +          -> .beyond-ui/teardown/<slug>/
-           firecrawl deep crawl (optional key)              + <slug>-capture/
+           scrapling acquisition (keyless)                 + <slug>-capture/
 3 SYNTH    condense 10 teardowns into ONE project skill  -> .beyond-ui/DESIGN-SKILL.md
+4 PLAN     score the block catalog against THIS frame     -> .beyond-ui/{PLAN.json,
+                                                             SECTION-PLAN.md,BLOCK-MAP.md}
+                                                             (+ embedded as DESIGN-SKILL.md §10)
 ```
 
 ## 1. Why this exists
@@ -86,8 +90,32 @@ Per site, three independent layers run (skip flags exist for each):
 | Layer | Tool | Produces | Fallback when unavailable |
 |---|---|---|---|
 | Design system | `skillui` (pinned `skillui@1.3.4`, ultra mode) | `SKILL.md` + `references/{DESIGN,ANIMATIONS,LAYOUT,COMPONENTS,INTERACTIONS}.md` + `tokens/{colors,spacing,typography}.json` + `screens/{scroll,pages,sections,states}/` | skillui's own static HTTP mode (no screens, tokens still written) |
-| Live computed truth | `scripts/capture-site.mjs` (playwright) | `capture.json`: :root tokens, loaded fonts, all keyframes, transitions in use, computed styles, flex/grid usage, section inventory, motion-library detection, hover/focus diffs (CDP `forcePseudoState`), shots at 390/768/1440 full + scroll journey | skipped; skillui static output still present |
-| Content shape | `scripts/firecrawl.mjs deep` (optional) | `content.md` + top same-origin pages as markdown — real copy structure, section text, proof patterns | skipped silently — no key means no firecrawl, never a blocker |
+| Live computed truth | `scripts/capture-site.mjs` (playwright) | `capture.json`: :root tokens, loaded fonts, all keyframes, transitions in use, computed styles (body/h1/h2/h3/p/a/button/input/nav/header/footer/section), flex/grid usage, section inventory, motion-library detection, hover/focus diffs, shots at 390/768/1440 full + scroll journey | skipped; skillui static output still present |
+| Content shape | `scripts/scrapling.mjs deep` (keyless) | `content.md` + `pages/*.md` (top same-origin pages) + `links.json` — the real copy structure, section text, proof patterns | skipped; Playwright capture still gives structure and tokens |
+
+**Why Scrapling and not a keyed crawler.** The content layer used to depend on an API key, so on most
+machines it silently did nothing. `scripts/scrapling.mjs` resolves its engine itself — `scrapling` on
+PATH → `<python> -m scrapling.cli` → Docker (`--docker`) — and escalates each URL
+`get → fetch → stealthy-fetch` on its own, so a static page costs one HTTP request and a
+Cloudflare-walled gallery still resolves. It passes `--ai-targeted` on every call (nav/ads stripped,
+hidden prompt-injection content sanitized). No key, no account, no LLM, no quota: **the layer that was
+usually skipped now always runs.** It also replaces the old LLM-driven browser fallback, which was
+needed only because the previous crawler could not get past bot walls.
+
+Use it directly whenever you need a page as text — including during SCOUT:
+
+```bash
+node scripts/scrapling.mjs scrape <url> <out.md>          # one page, markdown
+node scripts/scrapling.mjs scrape <url> <out.md> --css ".pricing-table"   # narrow before extraction
+node scripts/scrapling.mjs map    <url> <out.json> --limit 30            # same-origin link inventory
+node scripts/scrapling.mjs deep   <url> <outDir>  --pages 3              # content.md + pages/ + links.json
+node scripts/scrapling.mjs check                                        # engine report (JSON)
+```
+
+Options: `--mode get|fetch|stealthy-fetch` (pin a tier instead of escalating), `--timeout <ms>`,
+`--python <exe>`. `--css-selector` is accepted as an alias of `--css`. Proxy support lives in
+`assets/config.json → scrapling.proxy`. Respect each target's terms: fetch what the task needs, not
+a whole site.
 
 Status per site is recorded honestly: `ultra` (screens present) / `degraded` (tokens only) / `static`
 (skillui static fallback) / `failed`. Budget 1–4 min per site with playwright; 15–40 min for 10.
@@ -101,43 +129,102 @@ One or two references may dominate the direction; ten must contribute evidence.
 
 ## 4. SYNTH — the one condensed project skill
 
-`node scripts/teardown.mjs synth` merges the teardowns into **`.beyond-ui/DESIGN-SKILL.md`** — a
-single file with nine sections:
+`node scripts/teardown.mjs synth` merges the teardowns into **`.beyond-ui/DESIGN-SKILL.md`** — a single
+file that carries REAL values, not adjectives:
 
 0. One-line read (frame + top references)
-1. Colour — accent/neutral candidates extracted from tokens (pick ONE, re-tune to brand)
-2. Type — families observed (choose ONE pairing)
-3. Spacing — base units observed (pick one and obey it)
-4. Motion — libraries detected, keyframe vocabulary, transitions in use
-5. Structure — section grammar + container patterns
-6. Interaction states — where the diffs live + the rules they imply
-7. Per-site deep-dives — which artifact came from which reference
-8. Judgement still open — what the agent MUST still decide (this section is what keeps synthesis
-   from becoming copy-paste)
-9. Hard limits — pointer back to CRITIQUE/SKILLS/A11Y-PERF: evidence of what wins is not permission
-   to reproduce a banned pattern
+1. Colour — accent/neutral candidates **ranked by how many references used them**, with owner slugs,
+   the resolved semantic roles, the dominant theme and the observed radii (pick ONE, re-tune to brand)
+2. Type — families observed with owner counts, plus the **extracted scale** (`h1: 72px/0.98 -0.03em
+   Instrument Sans`) derived from the captured computed styles
+3. Spacing, grid, radius — the base units actually observed across the references
+4. Motion — libraries detected, keyframe vocabulary with owner counts, the transitions in use with
+   their real durations/easings, and the captured hover/focus deltas
+5. Structure — the section inventory **in DOM order with owner counts**
+6. Interaction states — how many state diffs were captured and where they live
+7. Contrast — **WCAG ratios computed from the captured computed styles**, with failing pairs named
+   "do not reproduce"
+8. Per-site deep-dives — which artifact came from which reference
+9. Judgement still open — what the agent MUST still decide
+9b. Hard limits — pointer back to CRITIQUE/SKILLS/A11Y-PERF
+10. **HAND-PICKED BUILD PLAN** — the embedded `SECTION-PLAN.md` + `BLOCK-MAP.md` (see §5)
 
-**The synthesis is evidence, not a decision.** Sections 1–5 narrow the choice; section 8 names the
+**The synthesis is evidence, not a decision.** Sections 1–7 narrow the choice; section 9 names the
 decisions that remain; the DIRECTION step (scout.md contract) makes them. An award-winning reference
 that uses gradient text does not override the gradient-text ban — its *easing curve* is what you steal.
 
-## 5. What the agent does with it
+## 5. PLAN — hand-picked real blocks for THIS project
 
-- **DIRECTION** reads DESIGN-SKILL.md sections 1–5 and picks, citing the contributing site per choice.
-- **COMPOSE** maps each element to a library as before; the motion section tells it WHICH grammar
-  the references actually used (GSAP scroll scenes vs Motion stagger vs CSS-only).
-- **BUILD** treats section 5's section grammar as the starting inventory and prunes by content.
-- **CRITIQUE** checks the result against both the upstream gates AND the DESIGN-SKILL.md section 9
-  limits.
+The old synthesizer stopped at evidence, which left the agent a direction and a blank page. `synth`
+now also runs **`scripts/plan.mjs`**, deterministically:
+
+1. Resolve the **archetype** from the frame's `pageType`/`platform` against `assets/page-archetypes.json`
+   (landing, saas-marketing, pricing, dashboard, docs, onboarding, component, content, auth, error,
+   mobile-app). The archetype supplies the section ORDER.
+2. Score every entry of **`assets/block-catalog.json`** against this project: archetype role (+10),
+   page-type fit (+4), aesthetic/domain keyword overlap (+3 each), and match against the **real section
+   inventory captured from the references** (+up to 4). Constraints veto (`no WebGL` kills an orbit
+   block; a web-only block is penalised on a mobile project).
+3. Pick one block per role in archetype order (deduplicated, `features` may take a second complementary
+   family), choose the **motion grammar** from `assets/motion-catalog.json`, and emit:
+   - `.beyond-ui/PLAN.json` — machine-readable (gate G10 reads it)
+   - `.beyond-ui/SECTION-PLAN.md` — the ordered build sheet
+   - `.beyond-ui/BLOCK-MAP.md` — element → exact install → restyle → states
+   - the same two documents embedded verbatim as DESIGN-SKILL.md **§10**
+
+Each planned section carries: the **primary block and its exact command**
+(`npx shadcn@latest add @magicui/hero-video-dialog`), its alternatives, its peers, its build rules, its
+content rules, its motion instruction, its a11y duties, the hard fails specific to it, when to omit it,
+and the citation back to `block-catalog.json#<id>`. The plan also lists the **de-duplicated base
+primitives as one install**, the **peer dependencies to check before installing** (Tailwind major,
+`motion` vs `framer-motion`), and an explicit **forbidden** list.
+
+**Registry discipline is enforced by the planner, not asked for in prose.** `COMPONENTS.md` rule 1
+says one aesthetic and 2–3 registries; the planner holds the plan to it. While the picked primaries
+would span a fourth registry, the section that can move *and* whose registry is rarest is re-pointed
+at an already-in-play alternative (preferring a move that eliminates a registry outright, then the
+busiest destination). Every swap is recorded in `PLAN.json -> registryDiscipline.swaps` and printed in
+SECTION-PLAN.md, so `"we swapped @animate-ui for @aceternity because the plan was spanning four
+registries"` is auditable rather than silent. G10 fails a plan that still exceeds three.
+
+**Section count is archetype-aware.** A `docs` page genuinely has three roles and a `component`
+delivery has one; G10 demands `min(4, archetype.sequence.length)` rather than a flat four.
+
+**Why deterministic.** The same frame yields the same plan, so the choice is auditable rather than
+vibes: run it again and diff. `PLAN.json` is what G10 checks and what G12 traces the finished build
+back to.
+
+**The plan proposes; the content decides.** Deleting a planned section because the content cannot
+support it is correct and expected. Hand-writing a section that the catalog already covers is a defect
+unless scout.md records why (licence, bundle, incompatibility, genuinely bespoke). Extending the
+catalog is how this skill gets better — add a verified entry to `assets/block-catalog.json` and every
+future run can use it.
+
+## 6. What the agent does with it
+
+- **DIRECTION** reads DESIGN-SKILL.md §1–§7 and picks, citing the contributing site per choice, inside
+  the bounds §10 sets.
+- **COMPOSE** installs what BLOCK-MAP.md names: the de-duplicated primitive list, then each section's
+  **primary** block, in SECTION-PLAN order — and records the result in `state.components` /
+  `state.composedSections` so G12 can trace it.
+- **BUILD** treats SECTION-PLAN.md as the starting sheet and prunes by content: delete a section the
+  content cannot support, keep the order of the rest.
+- **CRITIQUE** checks the result against the upstream gates, the DESIGN-SKILL.md §9b limits, and the
+  per-section "hard fails to avoid" the plan printed for that section.
 - Every decision that came from a teardown cites it in `state.json -> ruleCitations`
   (source: `DESIGN-SKILL.md §n` or `teardown/<slug>`), so `verify-run.mjs` can prove usage.
 
-## 6. Quality bar
+## 7. Quality bar
 
 - 6–10 teardowns with at least one artifact layer each; a run with fewer is a partial teardown and
   the report must say so.
 - `capture.json` without keyframes means the site's motion is CSS-in-JS or cross-origin — say so
   rather than claiming "no motion".
 - The synthesized file names its contributors; an unsourced section is a defect.
+- §10 must be present with real commands. A synthesis with evidence but no plan is a run from v2 and
+  fails G11.
+- Every planned section names a primary block with a full `npx shadcn@latest add …` command; a section
+  whose "block" is a paragraph of adjectives is a defect.
 - Re-running `teardown.mjs run` is idempotent per site (skillui overwrites its own output; stale
-  rich files are replaced, not accumulated).
+  rich files are replaced, not accumulated). Re-running `synth` is idempotent too, and the planner is
+  deterministic — same frame, same plan.

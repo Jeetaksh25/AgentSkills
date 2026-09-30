@@ -1,8 +1,5 @@
 {
-  "_comment": "beyond-ui run config. Copy to <project>/.beyond-ui/config.json and edit. Resolution order for every key: process env > project .beyond-ui/config.json.",
-
-  "firecrawlApiKey": "",
-  "_firecrawlApiKey_note": "No key ships with this repo (secrets never belong in a public repo). To enable the optional firecrawl deep crawl: set the FIRECRAWL_API_KEY env var, or put firecrawlApiKey in the project's .beyond-ui/config.json (get a key at firecrawl.dev). Firecrawl is optional: with no key, beyond-ui skips it and continues with Playwright + plain HTTP.",
+  "_comment": "beyond-ui run config. Copy to <project>/.beyond-ui/config.json and edit. Resolution order for every key: process env > project .beyond-ui/config.json > this file.",
 
   "teardown": {
     "targetSites": 10,
@@ -17,6 +14,29 @@
     "scrollSteps": 7,
     "settleMs": 700,
     "gotoTimeoutMs": 60000
+  },
+
+  "scrapling": {
+    "_note": "The keyless acquisition engine. No API key, no account, no LLM, no quota — it replaces firecrawl AND browser-use. Engine resolution: `scrapling` on PATH -> <python> -m scrapling.cli -> docker pyd4vinci/scrapling (only with --docker).",
+    "python": "",
+    "_python_note": "Absolute path to the interpreter that has scrapling installed. Empty = try python/python3/py. BEYOND_UI_PYTHON env overrides this.",
+    "autoInstall": true,
+    "_autoInstall_note": "true = `pip install \"scrapling[all]>=0.4.15\"` when no engine resolves. Set false to only report.",
+    "installBrowser": true,
+    "_installBrowser_note": "true = run `scrapling install --force` so fetch/stealthy-fetch/screenshot work. `get` needs no browser.",
+    "escalation": ["get", "fetch", "stealthy-fetch"],
+    "_escalation_note": "Tier order per URL. `get` is impersonated plain HTTP; `fetch` renders JS; `stealthy-fetch` adds stealth and solves Cloudflare. Escalation costs stealth, never speed.",
+    "solveCloudflare": true,
+    "timeoutMs": 60000,
+    "pagesPerSite": 3,
+    "_pagesPerSite_note": "Same-origin pages pulled per reference as markdown (real copy structure).",
+    "proxy": "",
+    "_proxy_note": "Optional. Forwarded to scraping via --proxy / SCRAPLING proxy args. Never ship a proxy you are not licensed to use."
+  },
+
+  "plan": {
+    "maxSections": 14,
+    "_note": "Upper bound on sections the deterministic planner may select from assets/block-catalog.json."
   },
 
   "galleries": {
@@ -37,6 +57,7 @@
       { "name": "pageflows", "url": "https://pageflows.com/ios/", "kind": "flows", "signal": "recorded real-user flows; listing free, content paywalled" },
       { "name": "refero", "url": "https://refero.design/", "kind": "screens", "signal": "web + iOS screenshots; JS-rendered — Playwright capture" }
     ],
-    "jsOnly": ["thefwa.com", "dribbble.com", "behance.net", "dark.design", "refero.design", "siteinspire.com (429 — retry with backoff)"]
+    "jsOnly": ["thefwa.com", "dribbble.com", "behance.net", "dark.design", "refero.design", "siteinspire.com (429 — retry with backoff)"],
+    "_fetch_note": "Fetch every gallery through scripts/scrapling.mjs. It escalates get -> fetch -> stealthy-fetch automatically and handles the 429/JS-only cases above without a key."
   }
 }

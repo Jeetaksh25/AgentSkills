@@ -1,6 +1,6 @@
 {
   "skill": "beyond-ui",
-  "version": 2,
+  "version": 3,
   "started": "<ISO date>",
   "surface": "<landing page | dashboard | component | app | mobile app>",
   "stack": {
@@ -15,8 +15,7 @@
     "playwright": { "package": false, "chromium": false, "skill": false },
     "skillui": false,
     "opensrc": false,
-    "firecrawl": { "cli": false, "skills": false, "keySource": "env | project-config | none", "active": false },
-    "browserUse": { "installed": false, "note": "optional — LLM-driven agent for bot-walled/login-gated sites only; never used for deterministic capture" }
+    "scrapling": { "engine": "bin | module | docker | none", "version": "", "browser": false, "docker": false, "hint": null, "note": "keyless acquisition — replaces firecrawl and browser-use" }
   },
   "skills": {
     "installed": [],
@@ -42,7 +41,20 @@
     "artifact": ".beyond-ui/DESIGN-SKILL.md",
     "contributors": [],
     "sectionsFilled": [],
-    "judgementOpen": []
+    "realTokens": { "accents": [], "neutrals": [], "families": [], "bases": [], "keyframes": [], "transitions": [], "motionLibs": [] },
+    "contrastMeasured": 0,
+    "contrastFailing": [],
+    "interactionsCaptured": 0
+  },
+  "plan": {
+    "artifact": ".beyond-ui/PLAN.json",
+    "sectionPlan": ".beyond-ui/SECTION-PLAN.md",
+    "blockMap": ".beyond-ui/BLOCK-MAP.md",
+    "archetype": "landing | pricing | dashboard | docs | onboarding | component | content | auth | error | mobile-app",
+    "sections": [],
+    "motionGrammar": "",
+    "registries": [],
+    "evidenceSites": []
   },
   "direction": {
     "aesthetic": "",

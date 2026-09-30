@@ -98,7 +98,7 @@ const EXTRACT_FN = `(() => {
   // --- computed styles for canonical selectors ---
   const props = ["font-family","font-size","font-weight","line-height","letter-spacing","color","background-color",
     "border-radius","box-shadow","padding","margin","display","gap","max-width","text-transform"];
-  const sels = ["h1","h2","h3","p","a","button","input","nav","header","footer","section"];
+  const sels = ["body","h1","h2","h3","p","a","button","input","nav","header","footer","section"];
   out.styles = {};
   for (const sel of sels) {
     const el = document.querySelector(sel);

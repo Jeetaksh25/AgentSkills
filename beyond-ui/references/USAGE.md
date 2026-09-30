@@ -36,6 +36,7 @@ or with any citation missing a field.
 | Phase | Citation written |
 |---|---|
 | DIRECTION | each contract field: aesthetic, type, colour, motion grammar -> DESIGN-SKILL.md §n or teardown/<slug> |
+| PLAN | each planned section's primary block -> `block-catalog.json#<id>` (the plan emits these itself; mirror them into `ruleCitations` as you install) |
 | COMPOSE | each registry/library choice -> library map entry or skill://<name> |
 | BUILD | each state pattern, token decision, focus treatment -> the rule that demanded it |
 | CRITIQUE | every hard fail found AND fixed -> references/CRITIQUE.md rule number |
@@ -56,13 +57,30 @@ this file applies it to the run itself:
 ## The gate
 
 ```bash
-node scripts/verify-run.mjs            # runs G1–G9, stamps state.json -> enforcement, exit 1 on any fail
+node scripts/verify-run.mjs            # runs G1–G12, stamps state.json -> enforcement, exit 1 on any fail
 ```
 
 Gates: G1 state · G2 scout evidence · G3 skills installed-or-documented · G4 selection quality ·
-G5 teardown artifacts · G6 DESIGN-SKILL.md completeness · G7 citations · G8 critique scores ·
-G9 verify evidence. **Exit 1 means the run is not done** — the report must not claim completion,
-and the remedy is to do the missing work, never to relax the gate.
+G5 teardown artifacts · G6 DESIGN-SKILL.md completeness (incl. the embedded build plan) · G7 citations ·
+G8 critique scores · G9 verify evidence · **G10 plan concreteness** · **G11 plan embedded in the
+synthesis** · **G12 build traces back to the plan**. **Exit 1 means the run is not done** — the report
+must not claim completion, and the remedy is to do the missing work, never to relax the gate.
+
+## Plan citations (G10–G12)
+
+The plan is not a suggestion to be admired; it is the thing that was built. Three gates make that
+mechanical:
+
+- **G10** reads `PLAN.json` and requires an archetype, a motion grammar, and ≥4 hand-picked sections
+  that each carry build rules and a block.
+- **G11** requires those artifacts to be *inside* `DESIGN-SKILL.md` (§10) — the build sheet plus real
+  `npx shadcn@latest add @ns/item` commands — so the agent building from the synthesis cannot miss them.
+- **G12** requires the finished work to trace back: `state.components` and `state.composedSections`
+  must name the sections that were composed. A build that silently replaced the plan fails here.
+
+When a planned section's primary block was swapped for an alternative, cite the reason in
+`ruleCitations` (`source: block-catalog.json#<id>`, `appliedIn: <the file>`). When a section was
+deleted outright, note it in `state.deferred` with why.
 
 ## Reading vs claiming
 

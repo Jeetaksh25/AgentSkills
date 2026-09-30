@@ -22,8 +22,8 @@ missing (and why):           <name -> reason; raw SKILL.md URLs read instead>
 ```
 playwright:   pkg=<y/n> chromium=<y/n>   (from scripts/install-tools.mjs output)
 skillui:      <y/n>   opensrc: <y/n>
-firecrawl:    active=<y/n> key=<env|project-config|bundled|none>
-browser-use:  <y/n — optional>
+scrapling:    engine=<bin|module|docker|none> version=<x.y.z> browser=<y/n>
+              (keyless acquisition — replaces the old keyed crawler; see scripts/scrapling.mjs check)
 ```
 
 ## Direction
@@ -67,13 +67,19 @@ Hand-written elements and why (must be a short list):
 - **Reference scenes studied:** <threejsresources showcase URLs, 21st.dev three-js entries, awwwards WebGL picks>
 - **Measured:** <asset bytes · JS delta · FPS at 4× CPU throttle>
 
-## Teardown synthesis (fill from .beyond-ui/DESIGN-SKILL.md — references/TEARDOWN.md)
+## Teardown synthesis + hand-picked plan (from DESIGN-SKILL.md — references/TEARDOWN.md)
 
 - **Selected 10:** <count> teardowns complete (<ultra|degraded|static>) — see references-selection.json
-- **Accent chosen from:** DESIGN-SKILL.md §1 — evidence site: <slug>
+- **Archetype:** <landing|pricing|dashboard|docs|...> — from `.beyond-ui/PLAN.json -> archetype`
+- **Sections hand-picked:** <count> — see `.beyond-ui/SECTION-PLAN.md` (embedded as DESIGN-SKILL.md §10)
+- **Base primitives (one install):** `npx shadcn@latest add <the de-duplicated list>`
+- **Registries in play:** <2-3 namespaces from `.beyond-ui/BLOCK-MAP.md` §2>
+- **Accent chosen from:** DESIGN-SKILL.md §1 — evidence site: <slug> (ranked <n>x)
 - **Type pairing chosen from:** DESIGN-SKILL.md §2 — evidence site: <slug>
-- **Motion grammar chosen from:** DESIGN-SKILL.md §4 — evidence: keyframes/transitions observed
-- **Section grammar adopted:** DESIGN-SKILL.md §5 — sections pruned for this product's content
+- **Motion grammar chosen from:** DESIGN-SKILL.md §4 + §10 — `<grammar-id>`, evidence: <keyframes/transitions observed>
+- **Contrast measured:** DESIGN-SKILL.md §7 — <n> pairs measured, <n> failing (named "do not reproduce")
+- **Sections deleted from the plan (and why):** <section — the content cannot support it>
+- **Blocks swapped for an alternative (and why):** <primary -> alternative — licence / peer conflict / unavailable>
 
 ## Rule citations (running log — references/USAGE.md)
 

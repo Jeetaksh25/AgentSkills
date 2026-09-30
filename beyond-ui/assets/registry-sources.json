@@ -1,6 +1,6 @@
 {
-  "verified": "2026-09-19",
-  "note": "Machine-readable registry/library facts. Re-verify install commands before use; namespaces and versions change. 'verified': 'yes' means the URL or npm metadata was fetched directly at the date above.",
+  "verified": "2026-10-01",
+  "note": "Machine-readable registry/library facts. Re-verify install commands before use; namespaces and versions change. 'verified': 'yes' means the URL or npm metadata was fetched directly at the date above. Namespace commands are installed with `npx shadcn@latest add @ns/item`; the full open-source registry index lives at https://ui.shadcn.com/r/registries.json.",
   "shadcn_registries": [
     { "name": "shadcn/ui", "namespace": null, "command": "npx shadcn@latest add <component>", "url": "https://ui.shadcn.com", "peers": "tailwindcss, radix/base-ui", "verified": "yes" },
     { "name": "Magic UI", "namespace": "@magicui", "command": "npx shadcn@latest add @magicui/<component>", "url": "https://magicui.design", "peers": "motion", "verified": "yes" },

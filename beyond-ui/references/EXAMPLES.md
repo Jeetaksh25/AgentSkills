@@ -19,13 +19,22 @@ yet), `motion` absent, `recharts` present. Copy inventory: README has real mecha
 chart in 3s, self-hosted, no data leaves the VPC). Those facts become the copy.
 
 **1 Scout.** Frame: *domain* = developer data tooling; *aesthetic* = terminal-native, dense, honest,
-warm-neutral. Sources opened: Awwwards (developer-tool winners), Land-book (dev-tool category),
-Minimal Gallery, motionsites.ai (for the hero motion grammar), 21st.dev (technique level), Refero
-(real product screenshots for a similar tool), Prompt sources → templatemo AI prompt generator +
-Cruip + Tailwind UI blocks for section inventory. Library map produced: shadcn/ui (button, dialog,
-tabs, sonner, tooltip, command), Magic UI `terminal` + `marquee`, NumberFlow for the timing stat,
-shadergradient **rejected** (would be the fourth purple-gradient hero in the category), Lenis
-accepted for the long scroll, three.js **rejected** (no concept need, bundle cost).
+warm-neutral. Sources opened through `scripts/scrapling.mjs` (keyless — `get` for the listing pages,
+escalating to `fetch`/`stealthy-fetch` for the JS-only ones): Awwwards (developer-tool winners),
+Land-book (dev-tool category), Minimal Gallery, motionsites.ai (for the hero motion grammar), 21st.dev
+(technique level), Refero (real product screenshots for a similar tool), Prompt sources → templatemo
+AI prompt generator + Cruip + Tailwind UI blocks for section inventory. Library map produced:
+shadcn/ui (button, dialog, tabs, sonner, tooltip, command), Magic UI `terminal` + `marquee`,
+NumberFlow for the timing stat, shadergradient **rejected** (would be the fourth purple-gradient hero
+in the category), Lenis accepted for the long scroll, three.js **rejected** (no concept need, bundle
+cost).
+
+**1b–1d Teardown → synth → plan.** The 10 dev-tool references are torn down; DESIGN-SKILL.md reports
+that 7 of 10 use a mono face for code and a geometric sans for body, that the base unit is 4px in 8 of
+10, and that the dominant entrance is a 320ms expo-out rise with a ~60ms stagger. The planner picks
+`landing`, the `grammar-type-reveal` motion grammar, and hands back a build sheet whose hero primary is
+`@magicui/terminal` inside a split hero, with `feature-comparison-table` replacing what would have been
+a three-card row. Section order comes from the archetype; the terminal block comes from the catalog.
 
 **2 Contract.**
 - Type: `Berkeley Mono` (fallback `JetBrains Mono`) for code + display eyebrows, `Instrument Sans`
@@ -126,6 +135,8 @@ visible; reduced-motion render is instant; contrast of the selected pill ≥ 4.5
 3. The registry install fact (Tailwind version, motion peer) is checked **before** installing.
 4. Every "no library" decision is written down with a reason.
 5. Verification is a render + an interaction + a reduced-motion pass, not a code read.
+6. The plan is not a formality: it decides the section order, the block per section, and the motion
+   grammar — and G12 checks that what shipped still matches it.
 
 ---
 

@@ -155,8 +155,8 @@ if (failures.length) {
 console.log("  all upstream skills present.");
 if (checkOnly) console.log("  (--check: nothing installed by this run)");
 
-// ---------------------------------------------------------------- tool layer (beyond-ui v2 — always installed, skip-if-present)
-// playwright + chromium, skillui, opensrc, firecrawl (key-gated, optional), agent skills from GitHub.
+// ---------------------------------------------------------------- tool layer (beyond-ui v3 — always installed, skip-if-present)
+// playwright + chromium, skillui, opensrc, scrapling (keyless), agent skills from GitHub.
 if (!checkOnly) {
   console.log("\n== tool layer (capture/teardown) ==");
   try {
