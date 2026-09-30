@@ -63,18 +63,28 @@ Phases 1a–1d take 25–40% of the task budget — real work, not a formality.
 ### 0a. Bootstrap — upstream skills + tool layer, all automatic
 
 ```bash
-node scripts/bootstrap-upstream-skills.mjs            # project scope
-node scripts/bootstrap-upstream-skills.mjs --global   # user scope
+node scripts/bootstrap-upstream-skills.mjs            # project scope -> .agents/skills
+node scripts/bootstrap-upstream-skills.mjs --global   # user scope    -> ~/.agents/skills
 node scripts/bootstrap-upstream-skills.mjs --check    # report only
 ```
+
+Everything installs into **one** directory per scope — `.agents/skills` beside the project, or
+`~/.agents/skills` at user level. That is the cross-agent layout the `skills` CLI calls *universal*
+(Amp, Codex, Cursor, Gemini CLI, OpenCode, Windsurf and ~15 more read it), and it is deliberate: a
+per-harness pair of trees double-installs every skill and the two copies then drift. Set
+`BEYOND_UI_SKILLS_DIR` to redirect the single destination at a harness that reads only its own folder.
 
 What it installs, by mechanism:
 
 | Mechanism | Skills |
 |---|---|
-| `npx skills add` (CLI-native) | Vercel: `web-design-guidelines`, `react-best-practices`, `composition-patterns`, `react-view-transitions`, `react-native-skills` · Addy Osmani: `frontend-ui-engineering` · Anthropic: `frontend-design`, `skill-creator` |
-| `git clone` + copy `SKILL.md` | `impeccable`, `hallmark`, `ui-ux-pro-max`, `taste`, `bencium-design`, `accesslint`, `refactoring-ui` |
-| Clone, no `SKILL.md` found | Kept as **reference material** in `.beyond-ui/upstream/` — the script never pretends an install happened |
+| `npx skills add -a universal` (CLI-native) | Vercel: `web-design-guidelines`, `vercel-react-best-practices`, `vercel-composition-patterns`, `vercel-react-view-transitions`, `vercel-react-native-skills` · Addy Osmani: `frontend-ui-engineering` · Anthropic: `frontend-design`, `skill-creator` |
+| `git clone` + copy pinned paths | `impeccable`, `hallmark`, `ui-ux-pro-max` (+ `ui-styling`, `design-system`), `taste`, the three bencium designers, the five accesslint a11y skills, and refactoring-ui's `refactor-ui` + 10 atomic skills — **33 total** |
+
+The clone list is an explicit `relPath → destination` table, not a recursive search: several of these
+repos ship dozens of near-duplicate `SKILL.md` folders (impeccable repeats one skill across 20
+harness directories, each with different content), so the install set is pinned. A path that moves
+upstream fails loudly by name rather than silently installing the wrong copy.
 
 **Decision at this step:** if something fails to install, the agent must fetch that skill's raw
 `SKILL.md` URL and read it, then record the miss in `.beyond-ui/state.json` → `skills.missing`

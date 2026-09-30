@@ -20,6 +20,7 @@ import path from "node:path";
 import os from "node:os";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 const skillRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const projectDir = path.resolve(process.argv[2] || process.cwd());
@@ -48,14 +49,16 @@ function updateState(mutator) {
   fs.writeFileSync(statePath, JSON.stringify(state, null, 2) + "\n");
 }
 
-const skillDirs = (globalScope) => globalScope
-  ? [path.join(os.homedir(), ".claude", "skills"), path.join(os.homedir(), ".agents", "skills")]
-  : [path.join(projectDir, ".agents", "skills"), path.join(projectDir, ".claude", "skills")];
+// ONE skills directory, at both scopes: the cross-agent layout the `skills` CLI calls "universal".
+// A per-harness list here (the old `.agents` + `.claude` pair) only ever detects duplicates.
+const skillsDir = (globalScope) => globalScope
+  ? path.join(os.homedir(), ".agents", "skills")
+  : path.join(projectDir, ".agents", "skills");
 
 function skillPresent(name, globalScope = true) {
   // Check global first (user-level install), then project scope — a global install satisfies us.
   for (const scope of [true, globalScope]) {
-    for (const dir of skillDirs(scope)) if (fs.existsSync(path.join(dir, name, "SKILL.md"))) return true;
+    if (fs.existsSync(path.join(skillsDir(scope), name, "SKILL.md"))) return true;
   }
   return false;
 }
@@ -98,7 +101,6 @@ function installPlaywright() {
 
 function nodeRequire() {
   // Resolve packages from the PROJECT directory, not this skill's folder: createRequire anchored there.
-  const { createRequire } = require("node:module");
   return createRequire(path.join(projectDir, "package.json"));
 }
 
@@ -197,7 +199,8 @@ function installAgentSkills() {
   const results = {};
   for (const [repo, skill, why] of wanted) {
     if (skillPresent(skill.replace(/-\d+$/, ""))) { results[skill] = "present"; continue; }
-    try { run("npx", ["-y", "skills", "add", repo, "--skill", skill, "-g", "-y"], { timeout: 5 * 60 * 1000 }); results[skill] = "installed"; }
+    // -a universal: install only into .agents/skills, matching the rest of this skill.
+    try { run("npx", ["-y", "skills", "add", repo, "--skill", skill, "--agent", "universal", "-g", "-y"], { timeout: 5 * 60 * 1000 }); results[skill] = "installed"; }
     catch (e) { results[skill] = `failed: ${String(e.stderr || e.message).split("\n")[0]}`; }
     log(`  ${skill}: ${results[skill]}`);
   }
