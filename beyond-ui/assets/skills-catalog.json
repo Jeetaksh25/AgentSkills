@@ -1,0 +1,218 @@
+{
+  "_comment": "beyond-ui skills catalog — the ONLY source of truth for which upstream skills exist and how they install. 5 PERMANENT (fixed, star-ranked top-5 design skills; always installed, always active) + POOL (routable units; exactly 5 are selected per project by scripts/skills-router.mjs against the project profile). Never install the whole catalog: that is the 33-skill waste this replaces. starCount is evidence from the GitHub API; `starsVerified` records when.",
+  "starsVerified": "2026-10-01",
+  "selection": {
+    "_comment": "Deterministic rule: exactly 5 pool units are selected. Score = 2*|tags.surface ∩ profile.surface| + 2*|tags.stack ∩ profile.stack| + 3*|tags.concern ∩ profile.concern| + 1 if any tags match at all. Ties broken by higher starCount, then id (alphabetical). If fewer than 5 pool units match any tag, the highest-star remaining units fill the gap — the count is always exactly 5. `node scripts/skills-router.mjs verify` asserts the final totals: 5 permanent + 5 selected = 10, never 10 references and never 33 skills.",
+    "poolCount": 5,
+    "permanentCount": 5,
+    "totalActive": 10
+  },
+  "permanent": [
+    {
+      "id": "frontend-design",
+      "label": "frontend-design (Anthropic)",
+      "repo": "anthropics/skills",
+      "skill": "frontend-design",
+      "starCount": 179229,
+      "install": { "type": "cli", "repo": "anthropics/skills", "skills": ["frontend-design"] },
+      "use": "DIRECTION and CRITIQUE: AI-tell calibration clusters, two-pass plan (token plan + ASCII wireframe before code), one orchestrated moment, 'spend your boldness in one place', the Chanel rule.",
+      "phases": ["direction", "critique"],
+      "rulePatterns": ["^.*\\b(NEVER|must not|don't|Do not|not a default|banned|tell|calibrat|one orchestrated|boldness|Chanel)\\b.*$"],
+      "why": "Highest-star design skill in existence (179k) and the origin of the anti-AI-slop discipline every other skill descends from."
+    },
+    {
+      "id": "ui-ux-pro-max",
+      "label": "ui-ux-pro-max (nextlevelbuilder)",
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "starCount": 132152,
+      "install": { "type": "clone", "repo": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+        "paths": { ".claude/skills/ui-ux-pro-max": "ui-ux-pro-max", ".claude/skills/ui-styling": "ui-styling", ".claude/skills/design-system": "design-system" } },
+      "use": "SCOUT and DIRECTION: SELECT the style/palette/type-pairing/industry-pattern from its BM25-searchable database instead of inventing one; its 79 UI styles + 192 palettes + 74 font pairings + industry anti-pattern rules. Never freehand a palette when this database can answer it.",
+      "phases": ["scout", "direction", "build"],
+      "rulePatterns": ["^.*\\b(must|always|never|avoid|don't|Do not|checklist|token|shadcn|search|select)\\b.*$"],
+      "why": "Second-highest-star skill (132k); the design-intelligence database that turns 'pick a style' into a lookup instead of a guess."
+    },
+    {
+      "id": "frontend-ui-engineering",
+      "label": "frontend-ui-engineering (Addy Osmani)",
+      "repo": "addyosmani/agent-skills",
+      "skill": "frontend-ui-engineering",
+      "starCount": 100221,
+      "install": { "type": "cli", "repo": "addyosmani/agent-skills", "skills": ["frontend-ui-engineering"] },
+      "use": "BUILD and VERIFY: spacing-scale discipline (never invent a 13px), semantic tokens, real <button>/<input>, focus management in dialogs, skeletons over spinners, WCAG 2.1 AA floor, 320/768/1024/1440 testing, composition over configuration.",
+      "phases": ["build", "verify"],
+      "rulePatterns": ["^.*\\b(MUST|NEVER|always|never|avoid|don't|Do not|WCAG|focus|skeleton|semantic|token|spacing)\\b.*$"],
+      "why": "100k-star engineering craft layer — the part that keeps the beauty from breaking at runtime."
+    },
+    {
+      "id": "taste",
+      "label": "taste-skill (leonxlnx)",
+      "repo": "leonxlnx/taste-skill",
+      "starCount": 91636,
+      "install": { "type": "clone", "repo": "https://github.com/leonxlnx/taste-skill", "paths": { "skills/taste-skill": "taste" } },
+      "use": "RECON and CRITIQUE: write the one-line Design Read before code; anti-default discipline; one accent; palette rotation; layout-family repetition ban; max 1 eyebrow per 3 sections; never h-screen (min-h-[100dvh]); no placeholder-as-label; one CTA intent per label.",
+      "phases": ["recon", "direction", "critique"],
+      "rulePatterns": ["^.*\\b(NEVER|always|never|avoid|don't|Do not|banned|Design Read|eyebrow|h-screen|placeholder|accent|rotation)\\b.*$"],
+      "why": "91k-star prescriptive taste rules with concrete dials — the closest thing to a senior designer looking over your shoulder."
+    },
+    {
+      "id": "impeccable",
+      "label": "impeccable (pbakaus)",
+      "repo": "pbakaus/impeccable",
+      "starCount": 73212,
+      "install": { "type": "clone", "repo": "https://github.com/pbakaus/impeccable", "alt": "npx impeccable install",
+        "paths": { ".agent/skills/impeccable": "impeccable" } },
+      "use": "CRITIQUE and POLISH: tinted neutrals (never pure grey), no grey text on colour, no card-in-card, no bounce/elastic easing, live in-browser iteration on the RENDERED page (not in imagination), its 61 deterministic detector rules.",
+      "phases": ["critique", "polish", "verify"],
+      "rulePatterns": ["^.*\\b(NEVER|must not|don't|Do not|not|banned|detect|tinted|card-in-card|bounce|elastic|rendered)\\b.*$"],
+      "why": "73k-star polish layer with deterministic detectors — iteration happens on the rendered page, which is exactly where AI claims usually evaporate."
+    }
+  ],
+  "pool": [
+    {
+      "id": "hallmark",
+      "label": "hallmark (Nutlope)",
+      "repo": "Nutlope/hallmark",
+      "starCount": 29379,
+      "install": { "type": "clone", "repo": "https://github.com/nutlope/hallmark", "paths": { "skills/hallmark": "hallmark" } },
+      "use": "CRITIQUE: the 57-gate slop test, six-axis pre-emit self-critique stamp, structural variety across outputs (never colour swaps), honest copy (never invent a metric), locked tokens, no fake browser/phone chrome, headers roman.",
+      "phases": ["critique", "build"],
+      "tags": { "surface": ["landing", "marketing", "app", "dashboard"], "stack": ["react", "next", "vite", "astro", "svelte", "vue"], "concern": ["anti-slop", "copy", "variety", "marketing"] },
+      "rulePatterns": ["^.*\\b(never|Never|always|must|gate|slop|honest|metric|chrome|roman|variety)\\b.*$"]
+    },
+    {
+      "id": "web-design-guidelines",
+      "label": "web-design-guidelines (Vercel)",
+      "repo": "vercel-labs/agent-skills",
+      "skill": "web-design-guidelines",
+      "starCount": 31788,
+      "install": { "type": "cli", "repo": "vercel-labs/agent-skills", "skills": ["web-design-guidelines"] },
+      "use": "BUILD and VERIFY: the 100+ rule Web Interface Guidelines — never outline:none without focus-visible, never transition:all, honour prefers-reduced-motion, animate transform/opacity only, never block paste, submit stays enabled, URL reflects state, tabular-nums, text-wrap:balance, explicit image dimensions, no div onClick.",
+      "phases": ["build", "verify", "critique"],
+      "tags": { "surface": ["web", "app", "dashboard", "docs", "landing"], "stack": ["react", "next", "vite", "astro", "svelte", "vue"], "concern": ["a11y", "forms", "interaction", "quality"] },
+      "rulePatterns": ["^.*\\b(never|Never|always|must|should|focus|reduced-motion|paste|submit|URL|tabular|balance)\\b.*$"]
+    },
+    {
+      "id": "vercel-react-best-practices",
+      "label": "react-best-practices (Vercel)",
+      "repo": "vercel-labs/agent-skills",
+      "skill": "vercel-react-best-practices",
+      "starCount": 31788,
+      "install": { "type": "cli", "repo": "vercel-labs/agent-skills", "skills": ["vercel-react-best-practices"] },
+      "use": "BUILD (React only): kill waterfalls with Promise.all, bundle discipline (no barrel imports, next/dynamic), server-side auth in server actions, React.cache, re-render and JS micro-optimisation.",
+      "phases": ["build"],
+      "tags": { "surface": ["web", "app", "dashboard"], "stack": ["react", "next", "vite"], "concern": ["performance", "react"] },
+      "rulePatterns": ["^.*\\b(never|Never|always|must|avoid|waterfall|bundle|re-render|dynamic|cache)\\b.*$"]
+    },
+    {
+      "id": "vercel-composition-patterns",
+      "label": "composition-patterns (Vercel)",
+      "repo": "vercel-labs/agent-skills",
+      "skill": "vercel-composition-patterns",
+      "starCount": 31788,
+      "install": { "type": "cli", "repo": "vercel-labs/agent-skills", "skills": ["vercel-composition-patterns"] },
+      "use": "BUILD (React only): compound components over boolean-prop soup, decouple state from implementation, explicit variants over modes, children over render props, React 19 drops forwardRef.",
+      "phases": ["build"],
+      "tags": { "surface": ["app", "dashboard", "component", "web"], "stack": ["react", "next", "vite"], "concern": ["architecture", "react", "component-api"] },
+      "rulePatterns": ["^.*\\b(never|Never|always|must|avoid|compound|variant|render prop|forwardRef|boolean)\\b.*$"]
+    },
+    {
+      "id": "vercel-react-view-transitions",
+      "label": "react-view-transitions (Vercel)",
+      "repo": "vercel-labs/agent-skills",
+      "skill": "vercel-react-view-transitions",
+      "starCount": 31788,
+      "install": { "type": "cli", "repo": "vercel-labs/agent-skills", "skills": ["vercel-react-view-transitions"] },
+      "use": "MOTION (React only): View Transition API done properly — shared element > Suspense reveal > list identity > state change; every transition must communicate continuity.",
+      "phases": ["motion", "build"],
+      "tags": { "surface": ["web", "app"], "stack": ["react", "next"], "concern": ["motion", "react"] },
+      "rulePatterns": ["^.*\\b(never|Never|always|must|shared element|Suspense|continuity|transition)\\b.*$"]
+    },
+    {
+      "id": "vercel-react-native-skills",
+      "label": "react-native-skills (Vercel)",
+      "repo": "vercel-labs/agent-skills",
+      "skill": "vercel-react-native-skills",
+      "starCount": 31788,
+      "install": { "type": "cli", "repo": "vercel-labs/agent-skills", "skills": ["vercel-react-native-skills"] },
+      "use": "BUILD (React Native only): FlashList for long lists, animate only transform/opacity on the UI thread (Reanimated), native stack/tabs, expo-image, Pressable over TouchableOpacity, safe areas.",
+      "phases": ["build"],
+      "tags": { "surface": ["mobile", "mobile-app"], "stack": ["react-native", "expo"], "concern": ["mobile", "performance"] },
+      "rulePatterns": ["^.*\\b(never|Never|always|must|avoid|FlashList|Reanimated|Pressable|safe area|native)\\b.*$"]
+    },
+    {
+      "id": "accesslint",
+      "label": "accesslint a11y suite (AccessLint)",
+      "repo": "AccessLint/claude-marketplace",
+      "starCount": 0,
+      "starNote": "renamed repo (API returned Moved Permanently 2026-10-01) — treat as unstarred specialist tool, not a popularity claim",
+      "install": { "type": "clone", "repo": "https://github.com/AccessLint/claude-marketplace",
+        "paths": {
+          "plugins/accesslint/skills/accessibility-scan": "accessibility-scan",
+          "plugins/accesslint/skills/accessibility-inspect": "accessibility-inspect",
+          "plugins/accesslint/skills/accessibility-audit": "accessibility-audit",
+          "plugins/accesslint/skills/accessibility-fix": "accessibility-fix",
+          "plugins/accesslint/skills/accessibility-diff": "accessibility-diff"
+        } },
+      "use": "A11Y (specialist): audit the RENDERED DOM with @accesslint/core — locate, inspect (keyboard, names/roles/states, reflow, zoom, reduced motion), audit (WCAG-EM sampling), fix, diff. Findings carry an evidence basis (verified / confirm-with-human / human-required).",
+      "phases": ["verify", "build"],
+      "tags": { "surface": ["web", "app", "dashboard", "docs", "landing", "mobile"], "stack": ["react", "next", "vite", "astro", "svelte", "vue"], "concern": ["a11y", "compliance", "enterprise"] },
+      "rulePatterns": ["^.*\\b(must|never|always|evidence|verified|human|required|WCAG|keyboard|role|state)\\b.*$"]
+    },
+    {
+      "id": "refactor-ui",
+      "label": "refactoring-ui port (gnurio)",
+      "repo": "gnurio/refactoring-ui-plugin",
+      "starCount": 433,
+      "install": { "type": "clone", "repo": "https://github.com/gnurio/refactoring-ui-plugin",
+        "paths": {
+          "skills/meta-refactor-ui": "refactor-ui",
+          "skills/01-establish-visual-hierarchy": "establish-visual-hierarchy",
+          "skills/02-apply-typography-scale": "apply-typography-scale",
+          "skills/03-build-color-palette": "build-color-palette",
+          "skills/04-apply-consistent-spacing": "apply-consistent-spacing",
+          "skills/05-design-button-hierarchy": "design-button-hierarchy",
+          "skills/06-eliminate-visual-clutter": "eliminate-visual-clutter",
+          "skills/07-design-empty-states": "design-empty-states",
+          "skills/08-use-shadows-appropriately": "use-shadows-appropriately",
+          "skills/09-manage-color-contrast": "manage-color-contrast",
+          "skills/10-group-related-elements": "group-related-elements"
+        } },
+      "use": "DIRECTION and POLISH: the Refactoring-UI principles in composition order — hierarchy → spacing → type scale → palette → button hierarchy → clutter removal → shadows → empty states → contrast → proximity.",
+      "phases": ["direction", "critique", "build"],
+      "tags": { "surface": ["web", "app", "dashboard", "landing", "component"], "stack": ["react", "next", "vite", "astro", "svelte", "vue"], "concern": ["hierarchy", "spacing", "craft", "dense-ui"] },
+      "rulePatterns": ["^.*\\b(must|never|always|avoid|hierarchy|spacing|contrast|shadow|empty state|clutter)\\b.*$"]
+    },
+    {
+      "id": "bencium-design",
+      "label": "bencium design triad (controlled/innovative/impact)",
+      "repo": "bencium/bencium-claude-code-design-skill",
+      "starCount": 0,
+      "starNote": "renamed repo (API returned Moved Permanently 2026-10-01)",
+      "install": { "type": "clone", "repo": "https://github.com/bencium/bencium-claude-code-design-skill",
+        "paths": {
+          "bencium-controlled-ux-designer/skills/bencium-controlled-ux-designer": "bencium-controlled-ux-designer",
+          "bencium-innovative-ux-designer/skills/bencium-innovative-ux-designer": "bencium-innovative-ux-designer",
+          "bencium-impact-designer/skills/bencium-impact-designer": "bencium-impact-designer"
+        } },
+      "use": "DIRECTION: commit to ONE of three designer philosophies — controlled (enterprise, WCAG-first), innovative (campaign/concept), impact (production anti-slop) — with its explicit NEVER list (Inter/Roboto/Space Grotesk as default, generic SaaS blue, purple gradients, glassmorphism, Apple mimicry, blob backgrounds).",
+      "phases": ["direction", "critique"],
+      "tags": { "surface": ["landing", "marketing", "app", "dashboard", "web"], "stack": ["react", "next", "vite", "astro", "svelte", "vue"], "concern": ["anti-slop", "enterprise", "brand", "creative"] },
+      "rulePatterns": ["^.*\\b(never|Never|always|must|avoid|commit|direction|gradient|glass|blob|enterprise)\\b.*$"]
+    }
+  ],
+  "toolSkills": [
+    { "id": "skill-creator", "label": "skill-creator (Anthropic)", "repo": "anthropics/skills", "skill": "skill-creator", "starCount": 179229,
+      "install": { "type": "cli", "repo": "anthropics/skills", "skills": ["skill-creator"] },
+      "use": "Authoring the condensed project skill (.beyond-ui/SKILL.md). Tooling, not design taste — installed with the tool layer and NOT counted in the 10." },
+    { "id": "playwright-skill", "label": "playwright-skill (lackeyjb)", "repo": "lackeyjb/playwright-skill", "starCount": 3160,
+      "install": { "type": "cli", "repo": "lackeyjb/playwright-skill", "skills": ["playwright-skill"] },
+      "use": "Browser capture/interaction for teardown and QA. Tooling — NOT counted in the 10." },
+    { "id": "scrapling", "label": "scrapling skill (Scrapling-Plugin)", "repo": "Jeetaksh25/Scrapling-Plugin", "starCount": 0,
+      "install": { "type": "plugin", "cmd": "npx -y github:Jeetaksh25/Scrapling-Plugin --agent claude-code" },
+      "use": "Keyless acquisition (scrape/map/deep) for the scout and teardown content layer. Tooling — NOT counted in the 10." },
+    { "id": "browser-use", "label": "browser-use skill (browser-use)", "repo": "browser-use/browser-use", "starCount": 116879,
+      "install": { "type": "pip", "cmd": "python -m pip install -U browser-use", "skillPath": "https://github.com/browser-use/browser-use/tree/main/skills/browser-use" },
+      "use": "Human-like browser QA (surf the built app like a person: click, type, scroll, judge). Tooling — NOT counted in the 10." }
+  ]
+}

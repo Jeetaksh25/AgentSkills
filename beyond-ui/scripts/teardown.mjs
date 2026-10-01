@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * beyond-ui teardown orchestrator — the reference pipeline: SELECT 10 -> TEARDOWN 10 -> SYNTHESIZE 1.
+ * beyond-ui teardown orchestrator — the reference pipeline: SELECT 5 -> TEARDOWN 5 -> SYNTHESIZE 1.
  *
  *   node scripts/teardown.mjs init [projectDir]              -> writes .beyond-ui/references-selection.json
  *   node scripts/teardown.mjs run   [projectDir] [--only <i,j>] [--skip-skillui] [--skip-capture]
@@ -74,7 +74,7 @@ function init() {
       frame: { domain: "", pageType: "", aesthetic: [], platform: "web", constraints: "" },
       selected: [], rejected: [], filledBy: "<agent — fill frame + selected after scouting galleries>",
     }, null, 2) + "\n");
-    log(`created ${path.relative(projectDir, selPath)} — fill frame + selected (10 URLs) per references/TEARDOWN.md §2`);
+    log(`created ${path.relative(projectDir, selPath)} — fill frame + selected (5 URLs — exactly 5, not 10) per references/TEARDOWN.md §2`);
   } else log(`keep ${path.relative(projectDir, selPath)} (exists)`);
 }
 
@@ -138,7 +138,7 @@ async function teardownSite(site, cfg, state) {
   return result;
 }
 
-// ------------------------------------------------------------------ synthesis: 10 -> 1 condensed skill
+// ------------------------------------------------------------------ synthesis: 5 -> 1 condensed skill
 function parseSkilluiTokens(dir) {
   const out = { colors: null, spacing: null, typography: null };
   try { out.colors = JSON.parse(fs.readFileSync(path.join(dir, "tokens", "colors.json"), "utf8")); } catch { /* absent */ }
@@ -346,7 +346,7 @@ function synthesize(cfg, state) {
 
   const md = `# DESIGN-SKILL — this project's condensed design skill
 
-> Synthesized ${new Date().toISOString()} from ${contributors.length} reference teardowns (10 -> 1).
+> Synthesized ${new Date().toISOString()} from ${contributors.length} reference teardowns (5 -> 1).
 > Sources: ${sites.map((s) => slugify(s.url)).join(", ")}
 > This file is BINDING for the build. The Design Read and direction contract (scout.md) resolve conflicts
 > in their favour ONLY where they name this project's brand/content; otherwise these patterns win over invention.

@@ -3,12 +3,13 @@
 A skill that makes a coding agent produce UI a working designer would sign their name to.
 
 It is **not** a prompt that says "make it beautiful". It is a **pipeline with gates**: the agent must
-install the upstream design skills AND the capture tool layer (nothing is ever installed by hand and no
-API keys are needed), select the best 10 award-winning references for this exact project, tear each one
-down into a machine-readable design system, condense the 10 into one binding project skill, **hand-pick
-the real sections and registry blocks for this exact project out of a verified catalog**, compose from
-libraries that already solved the hard parts, then prove the result was rendered, scored, cited *and
-still matches the plan* — or the run is not done.
+route and read exactly 10 upstream skills (5 permanent star-ranked design skills + 5 chosen for this
+project) AND install the capture tool layer (nothing is ever installed by hand and no API keys are
+needed), select exactly 5 award-winning references for this exact project, tear each one
+down into a machine-readable design system, condense the 5 into one binding project skill, **hand-pick
+the real sections and registry blocks for this exact project out of a verified catalog**, **import**
+them from shadcn/ui and the animated registries instead of reinventing them, use the result like a
+human, then prove it was rendered, scored, cited *and still matches the plan* — or the run is not done.
 
 The agent's opinions are deliberately constrained at every step. That is the whole design.
 
@@ -30,20 +31,20 @@ Every rule in the skill traces back to one of these four.
 
 ```mermaid
 flowchart TD
-    A["0a BOOTSTRAP<br/>design skills + TOOL LAYER<br/>playwright, skillui, opensrc,<br/>scrapling, agent skills — all auto"] --> B["0b RECON<br/>stack, brand, design system"]
+    A["0a BOOTSTRAP<br/>design skills (5+5 routed) + TOOL LAYER<br/>playwright, skillui, opensrc,<br/>scrapling, browser-use — all auto"] --> B["0b RECON<br/>stack, brand, design system"]
     B --> C["1 SCOUT<br/>galleries + prompts + registries"]
-    C --> S1["1a SELECT<br/>score candidates from<br/>verified galleries -> best 10"]
+    C --> S1["1a SELECT<br/>score candidates from<br/>verified galleries -> EXACTLY 5"]
     S1 --> S2["1b TEARDOWN<br/>skillui ultra + playwright capture<br/>+ scrapling per site"]
-    S2 --> S3["1c SYNTH<br/>10 teardowns -> ONE<br/>.beyond-ui/DESIGN-SKILL.md"]
+    S2 --> S3["1c SYNTH<br/>5 teardowns -> ONE<br/>.beyond-ui/DESIGN-SKILL.md"]
     S3 --> S4["1d PLAN<br/>score the block catalog against<br/>THIS frame -> SECTION-PLAN.md<br/>+ BLOCK-MAP.md, embedded as §10"]
     S4 --> D["2 DIRECTION<br/>contract, inside the plan's bounds"]
-    D --> E["3 COMPOSE<br/>install what BLOCK-MAP names:<br/>primitives -> planned registries"]
+    D --> E["3 COMPOSE<br/>IMPORT what BLOCK-MAP names:<br/>shadcn primitives -> registries"]
     E --> F["4 BUILD<br/>tokens, real copy, all states"]
     F --> G["5 CRITIQUE<br/>score the RENDERED page"]
     G --> H{"gates >= 3<br/>and mean >= 4.0?"}
     H -- no --> F
-    H -- yes --> I["6 VERIFY<br/>390/768/1440 + rm + kb + console"]
-    I --> J["7 GATE<br/>verify-run.mjs G1-G12<br/>artifacts + citations + plan<br/>or not done"]
+    H -- yes --> I["6 VERIFY + QA<br/>390/768/1440 + rm + kb + console<br/>qa.mjs journey like a human"]
+    I --> J["7 GATE<br/>verify-run.mjs G1-G14<br/>artifacts + citations + plan<br/>+ import-first + QA, or not done"]
 
     style A fill:#1f2937,color:#fff
     style S1 fill:#7c2d12,color:#fff
@@ -213,7 +214,7 @@ not kill the others):
 Status is recorded honestly per site: `ultra` / `degraded` / `static` / `failed`. A site failing both
 skillui and capture is replaced by the next-best candidate.
 
-**1c SYNTH — 10 teardowns condensed into ONE, with real numbers.** `node scripts/teardown.mjs synth`
+**1c SYNTH — 5 teardowns condensed into ONE, with real numbers.** `node scripts/teardown.mjs synth`
 writes `.beyond-ui/DESIGN-SKILL.md` carrying extracted values rather than adjectives: accent/neutral
 candidates **ranked by how many references used them** (with owner slugs), the extracted type scale
 (`h1: 72px/0.98 -0.03em Instrument Sans`), base spacing units, the keyframe vocabulary with owner
@@ -382,27 +383,30 @@ wants to act now · a keyboard-only user · a screen-reader user · a maintainer
 | Token discipline | No raw hex/`px` outside tokens; dark mode verified |
 | Registry integrity | Every added registry component still compiles; unused ones removed |
 
-### 7. Gate — `scripts/verify-run.mjs` (v3: G1–G12)
+### 7. Gate — `scripts/verify-run.mjs` (v4: G1–G14)
 
-The run's final step is mechanical, not narrative. Twelve gates, all must pass, exit 1 otherwise:
+The run's final step is mechanical, not narrative. Fourteen gates, all must pass, exit 1 otherwise:
 
 | Gate | Checks |
 |---|---|
 | G1 | `state.json` present + parseable |
 | G2 | scout.md cites ≥4 URLs + has a library map |
-| G3 | upstream skills installed, or each miss carries a `readInstead` URL |
-| G4 | selection: ≥6 references, ≥3 awarded, all scored |
-| G5 | teardown: ≥6 sites with real artifacts (tokens/screens/capture/content) |
+| G3 | routed skills = **5 permanent + 5 selected** (never 33), installed or each miss carries a `readInstead` URL |
+| G3b | the condensed project skill `.beyond-ui/SKILL.md` names every routed skill |
+| G4 | selection: **exactly 5 references (not 10)**, ≥2 awarded, all scored |
+| G5 | teardown: 5 sites with real artifacts (tokens/screens/capture/content) |
 | G6 | DESIGN-SKILL.md synthesized with all 12 sections **including the embedded build plan** |
-| G7 | rule citations ≥5, each `{decision, source, appliedIn}` — the anti-"ignored the skills" gate |
+| G7 | rule citations ≥5, each `{decision, source, appliedIn}`, **plus one from every routed skill** — the anti-"ignored the skills" gate |
 | G8 | critique recorded: 12 gates, none <3, mean ≥4.0 |
 | G9 | verify evidence: 3+ real screenshots + reduced-motion + keyboard + console pass |
 | **G10** | **the plan is concrete: archetype + motion grammar + ≥4 hand-picked sections, each with build rules and a block** |
 | **G11** | **the plan is embedded in DESIGN-SKILL.md §10 (build sheet + real `@ns/item` install commands)** |
 | **G12** | **the build traces back to the plan (`state.components` / `state.composedSections`)** |
+| **G13** | **import-first: every planned block was imported from shadcn/registries, no unmarked hand-rolled controls (`scripts/import-ledger.mjs audit`)** |
+| **G14** | **QA journey: the app was exercised in a real browser — keyboard, reduced-motion, console clean (`scripts/qa.mjs journey`)** |
 
-G10–G12 are what make the difference between "the agent read a direction" and "the agent built the
-hand-picked blocks". A failing gate is remedied by **doing the missing work** — never by relaxing the
+G10–G14 are what make the difference between "the agent read a direction" and "the agent built the
+hand-picked blocks, imported them, and used the result like a human". A failing gate is remedied by **doing the missing work** — never by relaxing the
 gate or editing `state.json` by hand. Full contract: `references/USAGE.md`.
 
 ---
@@ -444,8 +448,8 @@ flowchart TD
 
     ART --> A1[".beyond-ui/scout.md<br/>references, library map,<br/>rejected, risks<br/>the design's justification"]
     ART --> A7[".beyond-ui/SECTION-PLAN.md<br/>NEW v3: the ordered build sheet<br/>+ BLOCK-MAP.md: element -><br/>exact install -> states"]
-    ART --> A6[".beyond-ui/DESIGN-SKILL.md<br/>the ONE condensed skill<br/>REAL tokens + contrast numbers<br/>+ the plan as §10"]
-    ART --> A5[".beyond-ui/teardown/<br/>10 per-site design systems<br/>tokens, keyframes, screens,<br/>interaction diffs"]
+    ART --> A6[".beyond-ui/DESIGN-SKILL.md<br/>the teardown synthesis<br/>REAL tokens + contrast numbers<br/>+ the plan as §10<br/>condensed into .beyond-ui/SKILL.md<br/>with the 10 routed skills' rules"]
+    ART --> A5[".beyond-ui/teardown/<br/>5 per-site design systems<br/>tokens, keyframes, screens,<br/>interaction diffs"]
     ART --> A2[".beyond-ui/state.json<br/>tools, selection, teardown manifest,<br/>plan, rule citations, gates, evidence"]
     ART --> A3["Screenshots<br/>390 / 768 / 1440 (+ both themes)"]
 
@@ -508,26 +512,30 @@ beyond-ui/
   SKILL.md                      # the workflow + non-negotiables (this README explains it)
   README.md                     # ← you are here
   scripts/
-    bootstrap-upstream-skills.mjs   # phase 0a — upstream skills + tool layer (.sh for POSIX)
-    install-tools.mjs               # tool layer: playwright, skillui, opensrc, scrapling, agent skills
+    bootstrap-upstream-skills.mjs   # phase 0a — routes 5+5 skills, installs exactly 10 + tool layer (.sh for POSIX)
+    skills-router.mjs               # detect / select / install / digest / prune / verify — the deterministic skill set
+    install-tools.mjs               # tool layer: playwright, skillui, opensrc, scrapling, browser-use, agent skills
     scaffold-state.mjs              # phase 0b — create .beyond-ui/{state.json,scout.md}
     teardown.mjs                    # phases 1a–1c — init / run / synth (SELECT → TEARDOWN → SYNTH → PLAN)
     capture-site.mjs               # deep capture: tokens, keyframes, states, shots at 3 viewports
     scrapling.mjs                  # keyless acquisition: scrape / map / deep (auto get→fetch→stealthy)
     plan.mjs                       # phase 1d — score the catalog -> PLAN/SECTION-PLAN/BLOCK-MAP
-    verify-run.mjs                 # phase 7 — enforcement gate G1–G12
+    import-ledger.mjs              # phase 6 — import-first ledger: plan / audit (no hand-rolled controls)
+    qa.mjs                         # phase 8 — human-like QA journey: screenshots, keyboard, rm, console
+    verify-run.mjs                 # phase 11 — enforcement gate G1–G14
   assets/
+    skills-catalog.json         # the 5 permanent star-ranked skills + the routed pool (install facts)
     state-template.json         # run state: tools, selection, teardown, synthesis, plan, citations, gates
     scout-template.md           # the scout artifact to fill in
-    config.json                 # run config template: gallery table + scrapling options
+    config.json                 # run config template: gallery table + scrapling + browser-use options
     block-catalog.json          # 28 curated sections: registry items, commands, build/content/a11y rules
     motion-catalog.json         # 5 motion grammars with concrete recipes
     page-archetypes.json        # 11 surface archetypes -> section order + rules
     registry-sources.json       # machine-readable registry + npm facts (versions, verified dates)
   references/                   # loaded on demand when the run reaches that step
     SCOUT.md          source universe + protocol + scout.md schema
-    TEARDOWN.md       select 10 / teardown 10 / synthesize 1 / plan protocol + rubric
-    USAGE.md          citation contract + the enforcement gate (G1–G12)
+    TEARDOWN.md       select 5 / teardown 5 / synthesize 1 / plan protocol + rubric
+    USAGE.md          citation contract + the enforcement gate (G1–G14)
     INSPIRATION.md    60+ galleries, award sites, motion showcases
     PROMPTS.md        55+ template/prompt sources
     COMPONENTS.md     40+ registries, namespaces, exact install commands
@@ -552,14 +560,18 @@ beyond-ui/
 
 ```bash
 # from the target project — everything self-installs, skip-if-present
-node <skill>/scripts/bootstrap-upstream-skills.mjs   # 0a: upstream design skills + TOOL LAYER
+node <skill>/scripts/bootstrap-upstream-skills.mjs   # 0a: routes 5+5 skills, installs exactly 10 + TOOL LAYER
 node <skill>/scripts/scaffold-state.mjs              # 0b: run state
 node <skill>/scripts/teardown.mjs init               # 1a: scaffold the selection file
-# … agent: frame + score galleries -> pick the best 10 -> fill references-selection.json …
-node <skill>/scripts/teardown.mjs run                # 1b+1c+1d: teardown 10 -> synth -> hand-picked plan
+# … agent: frame + score galleries -> pick EXACTLY 5 -> fill references-selection.json …
+node <skill>/scripts/teardown.mjs run                # 2+3: teardown 5 -> synth -> hand-picked plan
+node <skill>/scripts/skills-router.mjs digest        # 4: .beyond-ui/SKILL.md — the 10 skills' rules + build sheet
 node <skill>/scripts/plan.mjs                        # (optional) re-run just the planner
-# then follow SKILL.md: direction -> compose what BLOCK-MAP names -> build -> critique -> verify
-node <skill>/scripts/verify-run.mjs                   # 7: gates G1–G12 — or the run is not done
+# then follow SKILL.md: direction -> IMPORT what BLOCK-MAP names -> build -> qa journey -> critique -> verify
+node <skill>/scripts/import-ledger.mjs plan && node <skill>/scripts/import-ledger.mjs audit   # 6: import-first
+node <skill>/scripts/qa.mjs journey <url>            # 8: use it like a human (keyboard, rm, console)
+node <skill>/scripts/skills-router.mjs verify        # confirm 5+5 skills, 5 refs, every skill cited
+node <skill>/scripts/verify-run.mjs                  # 11: gates G1–G14 — or the run is not done
 ```
 
 Fetching anything by hand — galleries, a competitor's pricing page, the reference you are tearing down:
@@ -581,6 +593,8 @@ Trigger phrases that should start it: `beyond-ui`, `no AI slop`, `make it beauti
 
 **Stop condition:** `scripts/verify-run.mjs` exits 0 — rendered, screenshotted, keyboard- and
 reduced-motion-verified UI; critique gates all ≥3 with mean ≥4.0; a clean six-axis stamp; ≥5 rule
-citations; the 10-reference teardown; the synthesized DESIGN-SKILL.md **with the hand-picked §10 build
-plan embedded**; and a composed build that still traces back to that plan. Anything else is still a
-revision pass owed.
+citations plus one from every routed skill; the 5-reference teardown (exactly 5, never 10); the
+synthesized DESIGN-SKILL.md **with the hand-picked §10 build plan embedded**, condensed into
+`.beyond-ui/SKILL.md` with the 10 routed skills' rules; an import-first audit with nothing hand-rolled
+that a registry ships; a passed QA journey; and a composed build that still traces back to that plan.
+Anything else is still a revision pass owed.

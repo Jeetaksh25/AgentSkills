@@ -4,15 +4,23 @@ Beyond UI is a **composition layer**. It does not re-teach design from scratch; 
 install, read and obey the upstream design skills below, then binds them to a scout-first workflow
 over real galleries, prompt libraries, component registries and shadcn/ui.
 
+**This file is the CATALOGUE. The router decides what is active.** `assets/skills-catalog.json` +
+`scripts/skills-router.mjs` select exactly **10** skills for a project — the 5 permanent top-star
+design skills (`frontend-design`, `ui-ux-pro-max`, `frontend-ui-engineering`, `taste`, `impeccable`)
+plus **5 routed** from the pool below against the detected project profile. Installing the whole
+catalogue is the waste this replaces; a skill in the pool is installed on demand, read when routed, and
+cited when it changes a decision (G7). `node scripts/skills-router.mjs status` shows what is active.
+
 **Bootstrap is not optional and may not be skipped, "worked around", or simulated from memory.**
 If a source skill is absent, install it. If installation is impossible (no network, no `npx`), say so
 explicitly and fetch the raw `SKILL.md` URL instead. Never proceed as though a skill existed, and
 never paraphrase one from memory instead of fetching it.
 
-## Phase 0 — Bootstrap
+## Phase 0 — Bootstrap (routes 5 + 5, installs exactly 10)
 
 ```bash
-bash scripts/bootstrap-upstream-skills.sh          # from the beyond-ui skill folder (or --global)
+node scripts/bootstrap-upstream-skills.mjs            # from the beyond-ui skill folder (or --global)
+node scripts/skills-router.mjs status                  # what is routed for THIS project, and why
 ```
 
 Run it from the target project. It reports what is already present, installs what is missing, and

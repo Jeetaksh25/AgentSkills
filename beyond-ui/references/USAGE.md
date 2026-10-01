@@ -20,11 +20,11 @@ Citations are appended to `.beyond-ui/state.json -> ruleCitations` as they happe
 file where it was applied. `scripts/verify-run.mjs` G7 fails the run with fewer than 5 (configurable),
 or with any citation missing a field.
 
-**Minimum citation coverage** (a run missing any of these categories is incomplete):
+## Minimum citation coverage (a run missing any of these categories is incomplete):
 
-1. One rule from **each upstream skill that changed a decision** — hallmark, impeccable, taste,
-   Vercel web-design-guidelines at minimum. "Followed impeccable" without a named rule is the exact
-   failure this gate exists to catch.
+1. One rule from **every one of the 10 routed skills** (5 permanent + 5 selected — `state.json ->
+   skills.permanent` + `skills.selected` names them). "Followed impeccable" without a named rule is
+   the exact failure this gate exists to catch; G7 checks each `skill://<id>` individually.
 2. One per **direction choice** (type, colour, motion grammar) sourced from `DESIGN-SKILL.md §n`
    or `teardown/<slug>`.
 3. One per **hard-fail fix** in critique, naming the CRITIQUE.md rule number.
@@ -57,14 +57,19 @@ this file applies it to the run itself:
 ## The gate
 
 ```bash
-node scripts/verify-run.mjs            # runs G1–G12, stamps state.json -> enforcement, exit 1 on any fail
+node scripts/verify-run.mjs            # runs G1–G14, stamps state.json -> enforcement, exit 1 on any fail
 ```
 
-Gates: G1 state · G2 scout evidence · G3 skills installed-or-documented · G4 selection quality ·
-G5 teardown artifacts · G6 DESIGN-SKILL.md completeness (incl. the embedded build plan) · G7 citations ·
-G8 critique scores · G9 verify evidence · **G10 plan concreteness** · **G11 plan embedded in the
-synthesis** · **G12 build traces back to the plan**. **Exit 1 means the run is not done** — the report
-must not claim completion, and the remedy is to do the missing work, never to relax the gate.
+Gates: G1 state · G2 scout evidence · G3 routed skills (5 permanent + 5 selected, never 33) ·
+G3b the condensed project skill `.beyond-ui/SKILL.md` names every routed skill ·
+G4 selection quality (exactly 5 refs, not 10; 2+ awarded) · G5 teardown artifacts (5 sites) ·
+G6 DESIGN-SKILL.md completeness (incl. the embedded build plan) · G7 citations (≥5, each
+{decision, source, appliedIn}, plus one per routed skill) · G8 critique scores · G9 verify evidence ·
+G10 plan concreteness · G11 plan embedded in the synthesis · G12 build traces back to the plan ·
+G13 import-first (every planned block imported, no unmarked hand-rolled controls) ·
+G14 QA journey (the app was exercised in a real browser — keyboard, reduced-motion, console).
+**Exit 1 means the run is not done** — the report must not claim completion, and the remedy is to do
+the missing work, never to relax the gate.
 
 ## Plan citations (G10–G12)
 

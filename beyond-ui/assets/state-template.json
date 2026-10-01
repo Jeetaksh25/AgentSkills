@@ -15,10 +15,18 @@
     "playwright": { "package": false, "chromium": false, "skill": false },
     "skillui": false,
     "opensrc": false,
-    "scrapling": { "engine": "bin | module | docker | none", "version": "", "browser": false, "docker": false, "hint": null, "note": "keyless acquisition — replaces firecrawl and browser-use" }
+    "scrapling": { "engine": "bin | module | docker | none", "version": "", "browser": false, "docker": false, "hint": null, "note": "keyless acquisition: stealth, Cloudflare, sessions, spiders — replaces firecrawl" },
+    "browserUse": { "python": "", "version": "", "skill": "absent | present | installed", "hint": null, "note": "human-like QA — scripts/qa.mjs journey runs the same checks through Playwright when absent" }
   },
   "skills": {
+    "router": "assets/skills-catalog.json",
+    "permanent": ["frontend-design", "ui-ux-pro-max", "frontend-ui-engineering", "taste", "impeccable"],
+    "selected": [],
+    "total": 10,
+    "digest": ".beyond-ui/SKILL.md",
+    "digestSkills": [],
     "installed": [],
+    "installedByBeyondUi": [],
     "missing": [{ "name": "", "reason": "", "readInstead": "<raw SKILL.md URL>" }]
   },
   "selection": {
@@ -27,7 +35,7 @@
     "galleriesFetched": [{ "source": "", "url": "", "ok": false, "candidates": 0 }],
     "candidatesScored": 0,
     "selected": [{ "url": "", "title": "", "gallery": "", "award": "", "score": 0, "why": "", "mobileEvidence": false }],
-    "constraints": { "maxPerGallery": 2, "minAwarded": 3, "minMobileEvidence": 1 },
+    "constraints": { "targetRefs": 5, "maxPerGallery": 2, "minAwarded": 2, "minMobileEvidence": 1, "_note": "EXACTLY 5 references — the condensed-skill rule. G4 fails more than 5." },
     "rejected": [{ "url": "", "reason": "" }]
   },
   "teardown": {
@@ -72,8 +80,9 @@
   },
   "components": {
     "shadcn": [],
-    "registry": [{ "element": "", "namespace": "", "command": "" }],
-    "handWritten": [{ "element": "", "reason": "" }]
+    "registry": [{ "element": "", "namespace": "", "command": "", "section": "" }],
+    "composedSections": [],
+    "handWritten": [{ "element": "", "reason": "<required: licence, bundle, incompatibility, genuinely bespoke>", "file": "" }]
   },
   "three": {
     "justified": "yes | no",
@@ -101,6 +110,12 @@
     "console": "unchecked | clean | errors",
     "lighthouse": { "performance": null, "accessibility": null, "bestPractices": null, "seo": null },
     "bundleDelta": ""
+  },
+  "qa": {
+    "journeys": [],
+    "last": "",
+    "passed": false,
+    "_note": "filled by scripts/qa.mjs journey — machine-generated evidence, never self-reported"
   },
   "enforcement": {
     "verifyRun": "not-run | pass | fail",

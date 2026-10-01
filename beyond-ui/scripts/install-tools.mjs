@@ -238,6 +238,45 @@ function installScrapling(cfg) {
   return out;
 }
 
+// browser-use — human-like browser QA: surf the built app like a person (click, type, scroll,
+// judge) and record a journey report. Python package + its agent skill (fetched raw, the repo is
+// too big to clone). Tooling: NOT counted in the 10 routed design skills. Optional by design — when
+// absent, scripts/qa.mjs journey still runs the same checks through Playwright directly.
+async function installBrowserUse(cfg) {
+  const out = { python: "none", skill: "absent", hint: null };
+  const py = process.env.BEYOND_UI_PYTHON || cfg.browserUse?.python || "";
+  const candidates = py ? [py] : ["python", "python3", "py"];
+  if (cfg.browserUse?.autoInstall === false) { out.hint = "autoInstall=false — install manually: pip install -U browser-use"; return out; }
+  for (const exe of candidates) {
+    try {
+      const v = run(exe, ["-c", "import browser_use,sys;print(getattr(browser_use,'__version__','ok'))"], { stdio: "pipe", timeout: 60000 });
+      out.python = exe; out.version = v.trim().split("\n").pop(); break;
+    } catch { /* not here */ }
+  }
+  if (out.python === "none") {
+    for (const exe of candidates) {
+      try {
+        run(exe, ["-m", "pip", "install", "-U", "browser-use"], { timeout: 10 * 60 * 1000 });
+        out.python = exe; out.installed = true; break;
+      } catch { /* next candidate */ }
+    }
+  }
+  // the browser-use agent skill (raw fetch — no clone of the 100k-star monorepo)
+  const skillDir = path.join(skillsDir, "browser-use");
+  if (!fs.existsSync(path.join(skillDir, "SKILL.md"))) {
+    try {
+      const res = await fetch("https://raw.githubusercontent.com/browser-use/browser-use/main/skills/browser-use/SKILL.md", { signal: AbortSignal.timeout(30000) });
+      if (res.ok) {
+        fs.mkdirSync(skillDir, { recursive: true });
+        fs.writeFileSync(path.join(skillDir, "SKILL.md"), await res.text());
+        out.skill = "installed";
+      } else out.skill = `fetch failed: HTTP ${res.status}`;
+    } catch (e) { out.skill = `fetch failed: ${String(e.message).split("\n")[0]}`; }
+  } else out.skill = "present";
+  out.hint = out.python === "none" ? "python unavailable — qa.mjs journey falls back to Playwright" : null;
+  return out;
+}
+
 // agent skills via npx skills (vercel-labs/skills) — skip any already present
 function installAgentSkills() {
   const wanted = [
@@ -254,7 +293,7 @@ function installAgentSkills() {
   return results;
 }
 
-function main() {
+async function main() {
   log(`beyond-ui tooling installer — project: ${path.relative(projectDir, projectDir) || projectDir}`);
   const config = loadConfig();
 
@@ -263,6 +302,7 @@ function main() {
   const opensrc = installOpensrc();
   const scraplingMcp = installScraplingPlugin(config);
   const scrapling = installScrapling(config);
+  const browserUse = await installBrowserUse(config);
   const agentSkills = installAgentSkills();
 
   updateState((s) => {
@@ -270,7 +310,8 @@ function main() {
       playwright: { package: playwright.package, chromium: playwright.chromium, skill: agentSkills["playwright-skill"] === "installed" || skillPresent("playwright-skill") },
       skillui: skillui.cli,
       opensrc: opensrc.cli,
-      scrapling: { mcp: scraplingMcp.installed, engine: scrapling.engine, version: scrapling.version, browser: scrapling.browser, docker: scrapling.docker, hint: scrapling.hint, note: "keyless acquisition: stealth, Cloudflare, sessions, spiders — replaces firecrawl and browser-use. mcp=true means the agent calls mcp__scrapling__* tools; the CLI is the fallback." },
+      scrapling: { mcp: scraplingMcp.installed, engine: scrapling.engine, version: scrapling.version, browser: scrapling.browser, docker: scrapling.docker, hint: scrapling.hint, note: "keyless acquisition: stealth, Cloudflare, sessions, spiders — replaces firecrawl. mcp=true means the agent calls mcp__scrapling__* tools; the CLI is the fallback." },
+      browserUse: { python: browserUse.python, version: browserUse.version || "", skill: browserUse.skill, hint: browserUse.hint, note: "human-like QA: surf the built app like a person; scripts/qa.mjs journey runs the same checks through Playwright when browser-use is absent" },
     };
   });
 
@@ -280,6 +321,7 @@ function main() {
   log(`  opensrc: ${opensrc.cli}`);
   log(`  scrapling MCP: ${scraplingMcp.installed ? "registered (preferred path)" : `absent${scraplingMcp.hint ? ` — ${scraplingMcp.hint}` : ""}`}`);
   log(`  scrapling CLI: engine=${scrapling.engine} version=${scrapling.version || "n/a"} docker=${scrapling.docker}${scrapling.hint ? ` — ${scrapling.hint}` : ""}`);
+  log(`  browser-use: python=${browserUse.python}${browserUse.version ? ` (${browserUse.version})` : ""} skill=${browserUse.skill}${browserUse.hint ? ` — ${browserUse.hint}` : ""}`);
   const hardFail = !playwright.chromium; // chromium is the only non-optional piece
   log(hardFail
     ? "\n  ACTION REQUIRED — chromium unavailable: ultra teardown and verify are degraded. Fix the download, then re-run."
@@ -288,4 +330,4 @@ function main() {
   process.exit(hardFail ? 1 : 0);
 }
 
-main();
+main().catch((e) => { log(`install-tools FAILED: ${e.message}`); process.exit(1); });

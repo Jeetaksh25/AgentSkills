@@ -2,11 +2,26 @@
   "_comment": "beyond-ui run config. Copy to <project>/.beyond-ui/config.json and edit. Resolution order for every key: process env > project .beyond-ui/config.json > this file.",
 
   "teardown": {
-    "targetSites": 10,
+    "targetSites": 5,
+    "_targetSites_note": "FIVE references, not 10 — the condensed-skill rule. scripts/skills-router.mjs verify fails a run that selected more.",
     "screens": 5,
     "timeoutSeconds": 240,
     "skilluiVersion": "skillui@1.3.4",
     "retries": 1
+  },
+
+  "browserUse": {
+    "_note": "Human-like QA layer: surf the built app like a person (click, type, scroll, judge) and record the journey. scripts/qa.mjs journey runs the same checks through Playwright when browser-use is absent, so the QA gate is never silently skipped.",
+    "python": "",
+    "_python_note": "Absolute path to the interpreter that has browser-use installed. Empty = try python/python3/py. BEYOND_UI_PYTHON env overrides this.",
+    "autoInstall": true,
+    "_autoInstall_note": "true = `pip install -U browser-use` during the tool-layer install when absent. Set false to only report.",
+    "mcp": {
+      "server": "browser-use",
+      "_server_note": "Run `uvx browser-use --mcp` (or `python -m browser_use.mcp`) and register it as an MCP server in your agent to drive the browser directly. Optional: qa.mjs covers the same journey without it."
+    },
+    "journeys": ["hero-to-cta", "form-submit", "nav-to-detail"],
+    "_journeys_note": "Journeys scripts/qa.mjs journey walks by default; edit per project."
   },
 
   "playwright": {

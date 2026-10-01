@@ -1,4 +1,4 @@
-# Teardown — select 10, tear down 10, synthesize 1, plan the build
+# Teardown — select 5, tear down 5, synthesize 1, plan the build
 
 This is the deep-insight phase between SCOUT and DIRECTION. The old scout looked at references from
 the outside (screenshots, gallery cards); the teardown opens them up and reads their design systems
@@ -12,7 +12,7 @@ keyframes, section inventories and interaction diffs from sites that already won
 1 SELECT   score candidates from verified galleries      -> .beyond-ui/references-selection.json
 2 TEARDOWN skillui ultra + playwright capture +          -> .beyond-ui/teardown/<slug>/
            scrapling acquisition (keyless)                 + <slug>-capture/
-3 SYNTH    condense 10 teardowns into ONE project skill  -> .beyond-ui/DESIGN-SKILL.md
+3 SYNTH    condense 5 teardowns into ONE project skill   -> .beyond-ui/DESIGN-SKILL.md
 4 PLAN     score the block catalog against THIS frame     -> .beyond-ui/{PLAN.json,
                                                              SECTION-PLAN.md,BLOCK-MAP.md}
                                                              (+ embedded as DESIGN-SKILL.md §10)
@@ -28,7 +28,11 @@ Two failure modes of the old scout:
    easing curve, the spacing base, the keyframe vocabulary, the section order, or how a button
    behaves on hover. Those live in the DOM and the CSS — which is exactly what this phase extracts.
 
-## 2. SELECT — the best 10 for THIS project (rubric, not vibes)
+## 2. SELECT — the best 5 for THIS project (rubric, not vibes)
+
+**Five, not ten.** The condensed skill only works if the evidence is handpicked: 5 references
+condensed into one binding project skill. `G4` and `scripts/skills-router.mjs verify` both fail a
+selection larger than 5.
 
 Frame first (5 lines, in `references-selection.json` -> frame):
 
@@ -68,19 +72,19 @@ behance.net, dark.design, refero.design listings, siteinspire (429 — backoff).
 | Technique richness | ×1 | DEV awards, motion/WebGL evidence — only if this stack can reproduce it |
 | Platform match | ×1 | mobile evidence for mobile-app projects is mandatory |
 
-**Constraints on the final 10:** ≤ 2 from any single gallery · ≥ 3 with an explicit award signal ·
+**Constraints on the final 5:** ≤ 2 from any single gallery · ≥ 2 with an explicit award signal ·
 ≥ 1 with mobile evidence even for web projects · ≤ 2 duplicates of the same product.
 
 Write `references-selection.json` with per-site `{url, title, gallery, award, score, why}` + `rejected`
 (with reasons). Record the outcome in `state.json -> selection`. This file is the audit trail for why
-THESE 10 and not others.
+THESE 5 and not others.
 
 ## 3. TEARDOWN — run it
 
 ```bash
 node scripts/teardown.mjs init     # scaffold .beyond-ui/references-selection.json (+ teardown dir)
-# ... fill the selection (agent work: fetch galleries, score, pick 10) ...
-node scripts/teardown.mjs run      # teardown all 10 + synthesize
+# ... fill the selection (agent work: fetch galleries, score, pick 5) ...
+node scripts/teardown.mjs run      # teardown all 5 + synthesize
 node scripts/teardown.mjs run --only 3,7   # re-run just sites 3 and 7
 node scripts/teardown.mjs synth    # re-run only the synthesis
 ```
@@ -139,14 +143,14 @@ in `assets/config.json → scrapling.proxy`; MCP-vs-CLI and install toggles in
 a whole site.
 
 Status per site is recorded honestly: `ultra` (screens present) / `degraded` (tokens only) / `static`
-(skillui static fallback) / `failed`. Budget 1–4 min per site with playwright; 15–40 min for 10.
+(skillui static fallback) / `failed`. Budget 1–4 min per site with playwright; 10–25 min for the 5.
 A site that fails both skillui and capture must be re-selected — replace it with the next-best
 candidate from the selection and re-run `--only <i>`.
 
 **Plagiarism boundary (unchanged and non-negotiable):** teardown evidence is for *pattern and
 grammar* — easing curves, spacing base, section order, state behaviour, type pairing. Never lift
 identity: copy text, logos, imagery, illustration style, or a site's full visual identity wholesale.
-One or two references may dominate the direction; ten must contribute evidence.
+One or two references may dominate the direction; all five must contribute evidence.
 
 ## 4. SYNTH — the one condensed project skill
 
@@ -237,7 +241,7 @@ future run can use it.
 
 ## 7. Quality bar
 
-- 6–10 teardowns with at least one artifact layer each; a run with fewer is a partial teardown and
+- 5 teardowns with at least one artifact layer each; a run with fewer is a partial teardown and
   the report must say so.
 - `capture.json` without keyframes means the site's motion is CSS-in-JS or cross-origin — say so
   rather than claiming "no motion".
