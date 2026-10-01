@@ -17,7 +17,17 @@
   },
 
   "scrapling": {
-    "_note": "The keyless acquisition engine. No API key, no account, no LLM, no quota — it replaces firecrawl AND browser-use. Engine resolution: `scrapling` on PATH -> <python> -m scrapling.cli -> docker pyd4vinci/scrapling (only with --docker).",
+    "_note": "The keyless acquisition engine. No API key, no account, no LLM, no quota — it replaces firecrawl AND browser-use. PREFERRED path is the Scrapling-Plugin MCP server (agent calls the tools directly, no shell). CLI fallback resolution: `scrapling` on PATH -> <python> -m scrapling.cli -> docker pyd4vinci/scrapling (only with --docker).",
+    "mcp": {
+      "_note": "Scrapling-Plugin (github.com/Jeetaksh25/Scrapling-Plugin) — installs 13 MCP tools + the scrapling skill + the /scrape command into every detected agent. Run `npx -y github:Jeetaksh25/Scrapling-Plugin`.",
+      "prefer": true,
+      "_prefer_note": "true = when the MCP server is registered, the agent calls the tools (make_request -> fetch -> stealthy_fetch) and scripts/scrapling.mjs is only the fallback. false = always go through the CLI bridge.",
+      "autoInstall": true,
+      "_autoInstall_note": "true = `npx -y github:Jeetaksh25/Scrapling-Plugin` during bootstrap when the server is not already registered. Set false to only report.",
+      "server": "scrapling",
+      "_server_note": "MCP server name as it appears in the agent's MCP tool list; tools are exposed as mcp__scrapling__<tool>.",
+      "timeoutMs": 90000
+    },
     "python": "",
     "_python_note": "Absolute path to the interpreter that has scrapling installed. Empty = try python/python3/py. BEYOND_UI_PYTHON env overrides this.",
     "autoInstall": true,

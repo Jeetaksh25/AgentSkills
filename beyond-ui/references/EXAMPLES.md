@@ -19,8 +19,9 @@ yet), `motion` absent, `recharts` present. Copy inventory: README has real mecha
 chart in 3s, self-hosted, no data leaves the VPC). Those facts become the copy.
 
 **1 Scout.** Frame: *domain* = developer data tooling; *aesthetic* = terminal-native, dense, honest,
-warm-neutral. Sources opened through `scripts/scrapling.mjs` (keyless — `get` for the listing pages,
-escalating to `fetch`/`stealthy-fetch` for the JS-only ones): Awwwards (developer-tool winners),
+warm-neutral. Sources opened through the Scrapling MCP tools (keyless — `make_request` on the listing
+selector for the listing pages, escalating to `fetch`/`stealthy_fetch` for the JS-only ones): Awwwards
+(developer-tool winners),
 Land-book (dev-tool category), Minimal Gallery, motionsites.ai (for the hero motion grammar), 21st.dev
 (technique level), Refero (real product screenshots for a similar tool), Prompt sources → templatemo
 AI prompt generator + Cruip + Tailwind UI blocks for section inventory. Library map produced:

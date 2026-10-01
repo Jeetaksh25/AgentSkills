@@ -9,9 +9,12 @@
  *   1. playwright (npm library) + chromium binary   — deep capture engine (two SEPARATE checks)
  *   2. skillui (npx)                                — site -> design-system skill extraction
  *   3. opensrc (global npm)                         — read any npm package's real source
- *   4. scrapling (python)                           — keyless acquisition: stealth, Cloudflare,
- *                                                     sessions, spiders (replaces firecrawl + browser-use)
- *   5. agent skills from GitHub, via npx skills: lackeyjb/playwright-skill
+ *   4. scrapling MCP (Scrapling-Plugin, claude-code) — the PREFERRED acquisition path: 13 tools the
+ *                                                     agent calls directly, no shell
+ *   5. scrapling (python)                           — keyless acquisition engine behind that MCP
+ *                                                     server: stealth, Cloudflare, sessions, spiders
+ *                                                     (replaces firecrawl + browser-use)
+ *   6. agent skills from GitHub, via npx skills: lackeyjb/playwright-skill
  *
  * Config resolution: process env > <project>/.beyond-ui/config.json > <skill>/assets/config.json
  */
@@ -125,10 +128,54 @@ function installOpensrc() {
   return out;
 }
 
-// scrapling: the keyless acquisition engine (github.com/d4vinci/Scrapling, wired by the
-// Scrapling-Plugin). Replaces firecrawl AND browser-use: no API key, no account, no LLM, no quota.
+// Scrapling-Plugin (github.com/Jeetaksh25/Scrapling-Plugin) — registers the `scrapling` MCP server
+// (13 tools), the `scrapling` skill and the /scrape command into Claude Code. Scoped to
+// `claude-code` on purpose: OMP and the other harnesses already have it, and the installer edits
+// config files that hold unrelated agent state, so the narrowest correct target is the right one.
+// This is the PREFERRED acquisition path — the agent calls the tools directly and never shells out.
+// Scoped to user config (~/.claude.json), never project, so the run stays reproducible per machine.
+function installScraplingPlugin(cfg) {
+  const want = cfg.scrapling?.mcp || {};
+  const out = { installed: false, agent: "claude-code", hint: null };
+  if (probeMcpServer(want.server || "scrapling")) {
+    out.installed = true;
+    log(`  scrapling MCP already registered (mcp__${want.server || "scrapling"}__* tools available)`);
+    return out;
+  }
+  if (want.autoInstall === false) {
+    out.hint = "autoInstall disabled in .beyond-ui/config.json -> scrapling.mcp.autoInstall";
+    log(`  scrapling MCP ABSENT — ${out.hint}`);
+    return out;
+  }
+  log("  installing Scrapling-Plugin (npx -y github:Jeetaksh25/Scrapling-Plugin)…");
+  try {
+    run("npx", ["-y", "github:Jeetaksh25/Scrapling-Plugin", "--agent", "claude-code", "--scope", "user"], { timeout: 10 * 60 * 1000 });
+    out.installed = probeMcpServer(want.server || "scrapling");
+    if (out.installed) log("  scrapling MCP registered for claude-code (13 tools + scrapling skill + /scrape)");
+    else out.hint = "installer ran but the server is not in ~/.claude.json — run it by hand: npx -y github:Jeetaksh25/Scrapling-Plugin --agent claude-code";
+  } catch (e) { out.hint = String(e.stderr || e.message).split("\n")[0]; log(`  FAILED: Scrapling-Plugin — ${out.hint}`); }
+  return out;
+}
+
+// An MCP server is "registered" if the agent config names it. Claude Code keeps servers in
+// ~/.claude.json under mcpServers (user scope) or .mcp.json (project scope); both count.
+function probeMcpServer(name) {
+  const candidates = [path.join(projectDir, ".mcp.json"), path.join(os.homedir(), ".claude.json")];
+  for (const file of candidates) {
+    try {
+      const j = JSON.parse(fs.readFileSync(file, "utf8"));
+      const scopes = [j.mcpServers, j.projects?.[projectDir]?.mcpServers];
+      if (scopes.some((s) => s && Object.prototype.hasOwnProperty.call(s, name))) return true;
+    } catch { /* absent or malformed — keep looking */ }
+  }
+  return false;
+}
+
+// scrapling CLI: the fallback engine behind the MCP server (github.com/d4vinci/Scrapling, wired by
+// the Scrapling-Plugin). Replaces firecrawl AND browser-use: no API key, no account, no LLM, no quota.
 // Stealth + Cloudflare solving + sessions + spiders live here; playwright capture still owns the
-// DESIGN extraction (tokens, keyframes, interaction diffs).
+// DESIGN extraction (tokens, keyframes, interaction diffs). Still required: the MCP server shells out
+// to the same CLI, and scripts/scrapling.mjs is the offline path (no MCP, batch runs, CI).
 function installScrapling(cfg) {
   const out = { bin: false, module: false, docker: false, engine: "none", version: null, browser: false, hint: null };
   const want = cfg.scrapling || {};
@@ -214,6 +261,7 @@ function main() {
   const playwright = installPlaywright();
   const skillui = installSkillui(config);
   const opensrc = installOpensrc();
+  const scraplingMcp = installScraplingPlugin(config);
   const scrapling = installScrapling(config);
   const agentSkills = installAgentSkills();
 
@@ -222,7 +270,7 @@ function main() {
       playwright: { package: playwright.package, chromium: playwright.chromium, skill: agentSkills["playwright-skill"] === "installed" || skillPresent("playwright-skill") },
       skillui: skillui.cli,
       opensrc: opensrc.cli,
-      scrapling: { engine: scrapling.engine, version: scrapling.version, browser: scrapling.browser, docker: scrapling.docker, hint: scrapling.hint, note: "keyless acquisition: stealth, Cloudflare, sessions, spiders — replaces firecrawl and browser-use" },
+      scrapling: { mcp: scraplingMcp.installed, engine: scrapling.engine, version: scrapling.version, browser: scrapling.browser, docker: scrapling.docker, hint: scrapling.hint, note: "keyless acquisition: stealth, Cloudflare, sessions, spiders — replaces firecrawl and browser-use. mcp=true means the agent calls mcp__scrapling__* tools; the CLI is the fallback." },
     };
   });
 
@@ -230,12 +278,13 @@ function main() {
   log(`  playwright: pkg=${playwright.package} chromium=${playwright.chromium}`);
   log(`  skillui: ${skillui.cli} (${config.teardown.skilluiVersion})`);
   log(`  opensrc: ${opensrc.cli}`);
-  log(`  scrapling: engine=${scrapling.engine} version=${scrapling.version || "n/a"} docker=${scrapling.docker}${scrapling.hint ? ` — ${scrapling.hint}` : ""}`);
+  log(`  scrapling MCP: ${scraplingMcp.installed ? "registered (preferred path)" : `absent${scraplingMcp.hint ? ` — ${scraplingMcp.hint}` : ""}`}`);
+  log(`  scrapling CLI: engine=${scrapling.engine} version=${scrapling.version || "n/a"} docker=${scrapling.docker}${scrapling.hint ? ` — ${scrapling.hint}` : ""}`);
   const hardFail = !playwright.chromium; // chromium is the only non-optional piece
   log(hardFail
     ? "\n  ACTION REQUIRED — chromium unavailable: ultra teardown and verify are degraded. Fix the download, then re-run."
     : "\n  capture layer ready.");
-  if (scrapling.engine === "none") log("  NOTE: no scrapling engine — the content layer is skipped; tokens/keyframes/interaction capture still runs.");
+  if (scrapling.engine === "none") log("  NOTE: no scrapling engine — the content layer falls back to the MCP tools if registered, otherwise it is skipped; tokens/keyframes/interaction capture still runs.");
   process.exit(hardFail ? 1 : 0);
 }
 

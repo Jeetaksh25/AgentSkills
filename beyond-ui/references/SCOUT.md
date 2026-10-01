@@ -107,7 +107,10 @@ mid-build.
 | Motion grammars with recipes | `assets/motion-catalog.json` | 5 grammars |
 | Section order per surface | `assets/page-archetypes.json` | 11 archetypes |
 
-Scouting fetches pages through `scripts/scrapling.mjs` (keyless, auto-escalating). The three catalog
+Scouting fetches pages through the Scrapling MCP tools when they are available
+(`mcp__scrapling__make_request` → `fetch` → `stealthy_fetch`, always with a `css_selector` so you
+extract the listing rather than the page), falling back to `scripts/scrapling.mjs` — keyless either
+way, auto-escalating. The three catalog
 files above are not scouting input — they are what §5 (PLAN) selects FROM, and extending
 `assets/block-catalog.json` with a verified entry is how the skill's repertoire grows.
 

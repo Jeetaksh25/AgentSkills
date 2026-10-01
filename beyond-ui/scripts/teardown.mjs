@@ -14,7 +14,9 @@
  *   1. skillui (pinned version, ultra mode when playwright present; auto static fallback otherwise)
  *        -> <root>/<slug>/ SKILL.md references/ tokens/ screens/
  *   2. deep capture (scripts/capture-site.mjs, playwright)   -> <root>/<slug>-capture/capture.json + shots/
- *   3. scrapling acquisition (scripts/scrapling.mjs, keyless) -> <root>/<slug>-capture/content.md pages/
+ *   3. scrapling acquisition (keyless)                     -> <root>/<slug>-capture/content.md pages/
+ *        The batch fan-out runs through the scripts/scrapling.mjs CLI because it writes N files per
+ *        site unattended; interactive one-off fetches prefer the mcp__scrapling__* tools directly.
  *
  * Then SYNTHESIS merges all teardowns into ONE condensed project skill: .beyond-ui/DESIGN-SKILL.md —
  * real extracted tokens/type/spacing/motion/structure, then the HAND-PICKED plan from scripts/plan.mjs.
@@ -464,6 +466,7 @@ async function main() {
 
   log(`teardown: ${sites.length} site(s) -> ${path.relative(projectDir, teardownRoot)}`);
   log(`layers: skillui=${!hasFlag("--skip-skillui")} capture=${!hasFlag("--skip-capture") && pwReady()} scrapling=${!hasFlag("--skip-scrapling")}`);
+  log(`  (content fan-out uses the scrapling CLI; ad-hoc fetches during SCOUT prefer the mcp__scrapling__* tools when installed)`);
   const results = [];
   for (const [i, site] of sites.entries()) {
     log(`[${i + 1}/${sites.length}]`, site.url);

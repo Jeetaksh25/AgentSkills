@@ -91,30 +91,51 @@ Per site, three independent layers run (skip flags exist for each):
 |---|---|---|---|
 | Design system | `skillui` (pinned `skillui@1.3.4`, ultra mode) | `SKILL.md` + `references/{DESIGN,ANIMATIONS,LAYOUT,COMPONENTS,INTERACTIONS}.md` + `tokens/{colors,spacing,typography}.json` + `screens/{scroll,pages,sections,states}/` | skillui's own static HTTP mode (no screens, tokens still written) |
 | Live computed truth | `scripts/capture-site.mjs` (playwright) | `capture.json`: :root tokens, loaded fonts, all keyframes, transitions in use, computed styles (body/h1/h2/h3/p/a/button/input/nav/header/footer/section), flex/grid usage, section inventory, motion-library detection, hover/focus diffs, shots at 390/768/1440 full + scroll journey | skipped; skillui static output still present |
-| Content shape | `scripts/scrapling.mjs deep` (keyless) | `content.md` + `pages/*.md` (top same-origin pages) + `links.json` — the real copy structure, section text, proof patterns | skipped; Playwright capture still gives structure and tokens |
+| Content shape | Scrapling MCP tools, fanned out by `scripts/scrapling.mjs deep` (keyless) | `content.md` + `pages/*.md` (top same-origin pages) + `links.json` — the real copy structure, section text, proof patterns | the CLI bridge (`scrapling.mjs deep`) alone; then skipped, and Playwright capture still gives structure and tokens |
 
 **Why Scrapling and not a keyed crawler.** The content layer used to depend on an API key, so on most
-machines it silently did nothing. `scripts/scrapling.mjs` resolves its engine itself — `scrapling` on
-PATH → `<python> -m scrapling.cli` → Docker (`--docker`) — and escalates each URL
-`get → fetch → stealthy-fetch` on its own, so a static page costs one HTTP request and a
-Cloudflare-walled gallery still resolves. It passes `--ai-targeted` on every call (nav/ads stripped,
-hidden prompt-injection content sanitized). No key, no account, no LLM, no quota: **the layer that was
+machines it silently did nothing. No key, no account, no LLM, no quota: **the layer that was
 usually skipped now always runs.** It also replaces the old LLM-driven browser fallback, which was
 needed only because the previous crawler could not get past bot walls.
 
-Use it directly whenever you need a page as text — including during SCOUT:
+**Two routes to the same engine.** `scripts/install-tools.mjs` registers the
+[Scrapling-Plugin](https://github.com/Jeetaksh25/Scrapling-Plugin) MCP server for `claude-code`
+(`npx -y github:Jeetaksh25/Scrapling-Plugin --agent claude-code`). That server exposes 13 tools and
+is the **preferred** path — the agent calls them directly, with no shell and no intermediate file:
+
+| need | tool |
+|---|---|
+| simple page / article / API / JSON | `mcp__scrapling__make_request` |
+| JS-rendered page | `mcp__scrapling__fetch` |
+| Cloudflare / anti-bot | `mcp__scrapling__stealthy_fetch` |
+| many URLs at once | `mcp__scrapling__bulk_get` · `bulk_fetch` · `bulk_stealthy_fetch` |
+| login, cookies, pagination | `open_session` → `session_fetch` → `close_session` |
+| screenshot | `mcp__scrapling__screenshot` |
+
+Escalate `make_request → fetch → stealthy_fetch`; the browser tiers cost about the same wall-clock,
+so escalating costs stealth, not speed. Always pass a `css_selector` when you know the field — it is
+the biggest token saver and the reason these beat a generic fetch. The `scrapling` skill
+(§ selectors, MCP server, spiders) is the API reference.
+
+`scripts/scrapling.mjs` is the fallback: batch/CI runs, `deep` fan-out, and any harness with no MCP
+server. It resolves its engine itself — `scrapling` on PATH → `<python> -m scrapling.cli` → Docker
+(`--docker`) — escalates `get → fetch → stealthy-fetch` on its own, and passes `--ai-targeted` on
+every call (nav/ads stripped, hidden prompt-injection content sanitized — the MCP tools sanitize
+equally). Use it directly whenever you need a page as text, including during SCOUT:
 
 ```bash
+node scripts/scrapling.mjs check                                        # preferred path + engine (JSON)
 node scripts/scrapling.mjs scrape <url> <out.md>          # one page, markdown
 node scripts/scrapling.mjs scrape <url> <out.md> --css ".pricing-table"   # narrow before extraction
 node scripts/scrapling.mjs map    <url> <out.json> --limit 30            # same-origin link inventory
 node scripts/scrapling.mjs deep   <url> <outDir>  --pages 3              # content.md + pages/ + links.json
-node scripts/scrapling.mjs check                                        # engine report (JSON)
 ```
 
+`check` reports `"preferred": "mcp"` or `"cli"` — read it once at 0a and do not re-derive it.
 Options: `--mode get|fetch|stealthy-fetch` (pin a tier instead of escalating), `--timeout <ms>`,
-`--python <exe>`. `--css-selector` is accepted as an alias of `--css`. Proxy support lives in
-`assets/config.json → scrapling.proxy`. Respect each target's terms: fetch what the task needs, not
+`--python <exe>`, `--docker`. `--css-selector` is accepted as an alias of `--css`. Proxy support lives
+in `assets/config.json → scrapling.proxy`; MCP-vs-CLI and install toggles in
+`assets/config.json → scrapling.mcp`. Respect each target's terms: fetch what the task needs, not
 a whole site.
 
 Status per site is recorded honestly: `ultra` (screens present) / `degraded` (tokens only) / `static`

@@ -6,6 +6,12 @@
  * engine (stealth, Cloudflare, sessions, retries, spiders); Playwright capture remains the layer
  * that extracts DESIGN truth (tokens, keyframes, interaction diffs). Content shape comes from here.
  *
+ * This file is the FALLBACK path. The Scrapling-Plugin registers an MCP server exposing the same
+ * capability as 13 agent-invoked tools (make_request -> fetch -> stealthy_fetch, plus sessions and
+ * screenshot) with no shell and no intermediate file. Prefer those when `check` reports
+ * `mcp: true`; this script earns its place for batch/CI runs, `deep` fan-out, and any harness with
+ * no MCP server. Both routes sanitize hidden content, so neither can feed raw markup to the model.
+ *
  *   node scripts/scrapling.mjs check                                  -> availability report (JSON)
  *   node scripts/scrapling.mjs scrape <url> <out.md>      [--css <sel>] [--mode get|fetch|stealth]
  *   node scripts/scrapling.mjs map    <url> <out.json>    [--limit 30]  -> same-origin link inventory
@@ -46,6 +52,25 @@ function tryRun(exe, args, opts = {}) {
 function probe(exe, args, opts = {}) {
   try { return { ok: true, out: tryRun(exe, args, opts).toString().trim() }; }
   catch (e) { return { ok: false, out: String((e.stdout || "") + (e.stderr || "")).trim().split("\n")[0] || e.message }; }
+}
+
+// Is the Scrapling-Plugin MCP server registered with the agent? When it is, the agent should be
+// calling mcp__scrapling__make_request / fetch / stealthy_fetch directly and only reach for this
+// script on `deep` fan-out or when the tools are unavailable. Mirrors install-tools.mjs's probe.
+function probeMcp() {
+  const server = getOpt("--mcp-server", process.env.BEYOND_UI_MCP_SERVER || "scrapling");
+  const home = process.env.USERPROFILE || process.env.HOME || "";
+  const files = [path.resolve(".mcp.json"), path.join(home, ".claude.json")].filter(Boolean);
+  for (const file of files) {
+    try {
+      const j = JSON.parse(fs.readFileSync(file, "utf8"));
+      const scopes = [j.mcpServers, ...Object.values(j.projects || {}).map((p) => p?.mcpServers)];
+      if (scopes.some((s) => s && Object.prototype.hasOwnProperty.call(s, server))) {
+        return { registered: true, server, file };
+      }
+    } catch { /* absent or malformed — keep looking */ }
+  }
+  return { registered: false, server, file: null };
 }
 
 // ------------------------------------------------------------------ engine resolution
@@ -149,16 +174,26 @@ function main() {
   }
 
   const engine = resolveEngine();
+  const mcp = probeMcp();
   if (cmd === "check") {
-    const report = { engine: engine.kind, label: engine.label, hint: engine.hint || null,
+    const report = {
+      preferred: mcp.registered ? "mcp" : "cli",
+      mcp: mcp.registered,
+      mcpServer: mcp.registered ? `mcp__${mcp.server}__*` : null,
+      mcpHint: mcp.registered ? null : "not registered — npx -y github:Jeetaksh25/Scrapling-Plugin --agent claude-code (or use the CLI below)",
+      engine: engine.kind, label: engine.label, hint: engine.hint || null,
       version: engine.kind === "none" ? null : probe(engine.kind === "bin" ? "scrapling" : engine.kind === "module" ? engine.exe : "docker",
-        engine.kind === "module" ? ["-m", "scrapling.cli", "--version"] : engine.kind === "bin" ? ["--version"] : ["--version"]).out };
+        engine.kind === "module" ? ["-m", "scrapling.cli", "--version"] : engine.kind === "bin" ? ["--version"] : ["--version"]).out,
+    };
     console.log(JSON.stringify(report, null, 2));
-    process.exit(engine.kind === "none" ? 1 : 0);
+    process.exit(engine.kind === "none" && !mcp.registered ? 1 : 0);
   }
 
   if (engine.kind === "none") {
-    log(`scrapling: NO ENGINE — ${engine.hint || "install scrapling"} (content layer SKIPPED; Playwright capture still runs)`);
+    const via = mcp.registered
+      ? ` — but the MCP server IS registered: call mcp__${mcp.server}__make_request / fetch / stealthy_fetch instead of this script`
+      : " (content layer SKIPPED; Playwright capture still runs)";
+    log(`scrapling: NO CLI ENGINE${via}`);
     process.exit(0);
   }
 
