@@ -57,7 +57,7 @@ this file applies it to the run itself:
 ## The gate
 
 ```bash
-node scripts/verify-run.mjs            # runs G1–G14, stamps state.json -> enforcement, exit 1 on any fail
+node scripts/verify-run.mjs            # runs G1–G19, stamps state.json -> enforcement, exit 1 on any fail
 ```
 
 Gates: G1 state · G2 scout evidence · G3 routed skills (5 permanent + 5 selected, never 33) ·
@@ -67,7 +67,16 @@ G6 DESIGN-SKILL.md completeness (incl. the embedded build plan) · G7 citations 
 {decision, source, appliedIn}, plus one per routed skill) · G8 critique scores · G9 verify evidence ·
 G10 plan concreteness · G11 plan embedded in the synthesis · G12 build traces back to the plan ·
 G13 import-first (every planned block imported, no unmarked hand-rolled controls) ·
-G14 QA journey (the app was exercised in a real browser — keyboard, reduced-motion, console).
+G14 QA journey (the app was exercised in a real browser — keyboard, reduced-motion, console) ·
+G15 auto-critique (the RENDERED page was measured for the mechanical hard fails — `critique.mjs`) ·
+G16 state coverage (every async surface designs loading + empty + error — `states.mjs`) ·
+G17 craft (zero critical CRAFT.md defects in the source — `craft-check.mjs`) ·
+G18 production (crawl surface, per-page metadata, share images, headers and real 404s verified against a
+production build — `production-check.mjs`; n/a when `surface` is `component`) ·
+G19 parity (the signed-off design was frozen and every later pass left it intact — `parity.mjs`).
+
+Phase specialists (`references/PLAYBOOK.md` §2) are cited like routed skills, `skill://<name> -> <rule>`,
+and recorded in `state.skills.invoked`. CRAFT recipes are cited as `CRAFT R<n>`.
 **Exit 1 means the run is not done** — the report must not claim completion, and the remedy is to do
 the missing work, never to relax the gate.
 

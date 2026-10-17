@@ -4,6 +4,16 @@ Run this **against the built page in a browser**, not against the source. Source
 specificity fights, contrast failures over gradients, focus order, or the actual rhythm of the page.
 Screenshot the full page at 390 / 768 / 1440 first; score from the images and the live DOM.
 
+> **The mechanical half is automated.** `node scripts/critique.mjs <url>` renders the page and measures
+> Part 1's machine-checkable hard fails — gradient-text headlines, pure `#000`/`#fff`, emoji icons,
+> `transition: all`, blanket identical reveals, unlabeled controls, invisible focus, contrast (computed
+> against the real background), sub-24px targets, 320px reflow, repeated layout families, duplicate
+> CTA labels, and content hidden under `prefers-reduced-motion` — into `.beyond-ui/critique-auto.json`.
+> **G15 refuses the run while any critical finding stands**, so the measurement cannot be skipped. Your
+> job here is Part 2 (the 12 gates a machine cannot score: hierarchy, distinctiveness, restraint) and
+> Part 4 (the adversarial re-read) — the judgement, not the arithmetic. Do not hand-assert a Part 1
+> item the report already covers; fix it in the page and re-run the script.
+
 ## Part 1 — Hard fails (any one fails the critique)
 
 Inherited from hallmark's slop test, impeccable's detector rules and the Vercel web-interface
@@ -77,7 +87,9 @@ Threshold: no gate below 3, mean ≥ 4.0 for "designed", mean ≥ 4.5 for "portf
 
 For every hard fail and every gate ≤ 3, record: viewport (390/768/1440), selector or file:line,
 screenshot path, and the fix applied. An unaudited claim ("looks good now") is not evidence — the
-re-render after the fix is.
+re-render after the fix is. Part 1 findings come from `scripts/critique.mjs` output
+(`.beyond-ui/critique-auto.json`); Part 2 scores are recorded in `state.json -> critique.gates` and
+gated by G8. A gate mean with no screenshot behind it does not count.
 
 ## Part 4 — Adversarial re-read
 

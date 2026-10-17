@@ -59,7 +59,7 @@
     {
       "id": 6,
       "prompt": "make me a landing page that looks like the best developer-tool sites out there - linear, vercel, stripe quality. next.js + tailwind v4",
-      "expected_output": "A run that executes the full pipeline: tool layer self-installed with no API key (playwright+chromium, skillui, scrapling), 10 references selected from verified galleries with the weighted rubric, per-site teardowns producing tokens/keyframes/interaction/contrast evidence, ONE condensed .beyond-ui/DESIGN-SKILL.md, a hand-picked build plan embedded as §10, and a build that installs exactly what BLOCK-MAP names and cites both the synthesized skill and the upstream rules. scripts/verify-run.mjs exits 0 (G1-G12).",
+      "expected_output": "A run that executes the full pipeline: tool layer self-installed with no API key (playwright+chromium, skillui, scrapling), exactly 5 references selected from verified galleries with the weighted rubric, per-site teardowns producing tokens/keyframes/interaction/contrast evidence, ONE condensed .beyond-ui/DESIGN-SKILL.md, a hand-picked build plan embedded as §10, and a build that installs exactly what BLOCK-MAP names and cites both the synthesized skill and the upstream rules. scripts/verify-run.mjs exits 0 (G1-G19).",
       "assertions": [
         "Tool layer installed or its absence recorded: state.json tools.playwright.chromium true and tools.scrapling.engine != 'none'",
         "references-selection.json lists 10 selected with scores and >=3 award signals",
@@ -72,7 +72,7 @@
         "state.composedSections (or state.components) names the planned sections that were built",
         "state.json ruleCitations >= 5, each with decision + source + appliedIn",
         "At least one citation sources a teardown artifact that exists on disk",
-        "node scripts/verify-run.mjs exits 0 (G1-G12)"
+        "node scripts/verify-run.mjs exits 0 (G1-G19)"
       ]
     },
     {
@@ -99,6 +99,21 @@
         "No new heavy deps added where a CSS/light solution existed (perf gate)",
         "ruleCitations include at least one a11y constraint from A11Y-PERF.md",
         "verify-run.mjs exit 0"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "landing page for an AI note app",
+      "expected_output": "An unattended run that picks a lane (premium consumer product), invokes the phase specialists that are present, sources sections from shadcn + 2-3 registries, builds a choreographed marketing page (scroll-timeline sections, overhang-padded reveals, page curtain, Lenis) with a static gradient on phones, freezes the design, hardens and ships it with per-page metadata, an OG route, sitemap, robots, headers and a designed 404, and passes G1-G19 without asking the user anything except for real proof it cannot invent.",
+      "assertions": [
+        "No clarifying question about stack, theme, motion level or viewports; defaults from PLAYBOOK.md §7 recorded in state.json",
+        "state.skills.lane names exactly one lane skill with a reason; state.skills.invoked lists the phase specialists used, each cited at least once",
+        "scout.md has a ## Prompts section with 3+ template/prompt sources (URL | structure adopted | content rewritten how)",
+        "At least one scroll-timeline section built from named windows in vh (CRAFT R1) and line reveals with em overhang padding (CRAFT R2)",
+        "No WebGL on a 390px viewport; the static gradient fallback renders instead",
+        "No invented user counts, ratings or customer logos; a labelled gap where proof is missing",
+        "parity.mjs baseline taken before the harden/ship passes; parity-report.json pass === true after them",
+        "craft-check.mjs, production-check.mjs <url> and verify-run.mjs exit 0 (G17, G18, G19 pass)"
       ]
     }
   ]

@@ -42,16 +42,39 @@ const skillsDir = process.env.BEYOND_UI_SKILLS_DIR
     ? path.join(os.homedir(), ".agents", "skills")
     : path.join(projectDir, ".agents", "skills");
 
+// installs can legitimately live at either scope; the capability report checks both, so a globally
+// installed roster is not reported as missing just because the run is project-scoped
+const globalSkillsDir = process.env.BEYOND_UI_GLOBAL_SKILLS_DIR
+  ? path.resolve(process.env.BEYOND_UI_GLOBAL_SKILLS_DIR)
+  : path.join(os.homedir(), ".agents", "skills");
+const SKILLS_ROOTS = [...new Set([skillsDir, globalSkillsDir])];
+
 const run = (cmd, cmdArgs, opts = {}) =>
   execFileSync(cmd, cmdArgs, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], shell: process.platform === "win32", ...opts });
 
-function installedSkills() {
-  const found = new Set();
-  if (!fs.existsSync(skillsDir)) return found;
-  for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
-    if (entry.isDirectory() || entry.isSymbolicLink()) found.add(entry.name);
+// Candidate folder names for a unit: the catalog id, the CLI skill names, and the frontmatter
+// aliases (the `skills` CLI names folders from the skill's own frontmatter — anthropics/skills
+// ships `frontend-design` as `anthropic-frontend-design`, taste-skill as `design-taste-frontend`).
+function candidateNames(unit) {
+  const inst = unit.install || {};
+  const cliNames = inst.type === "clone" ? [] : [inst.skill, ...(inst.skills || [])].filter(Boolean);
+  return [...new Set([unit.id, ...cliNames, ...(unit.aliases || [])])];
+}
+
+// find the folder a unit actually installed into, across every root
+function findUnitFolder(unit) {
+  const roots = process.env.BEYOND_UI_SKILLS_DIR ? [skillsDir, globalSkillsDir] : [globalSkillsDir, skillsDir];
+  for (const root of roots) {
+    for (const name of candidateNames(unit)) {
+      if (fs.existsSync(path.join(root, name, "SKILL.md"))) return { root, name };
+    }
+    if (unit.install?.type === "clone") {
+      for (const d of Object.values(unit.install.paths || {})) {
+        if (fs.existsSync(path.join(root, d, "SKILL.md"))) return { root, name: d };
+      }
+    }
   }
-  return found;
+  return null;
 }
 
 // The 10 active skills + their destination folder names, derived from the catalog and the router's
@@ -64,38 +87,32 @@ function expectedSkills() {
   const chosen = active
     ? [...active.permanent, ...active.selected].map((s) => units.get(s.id)).filter(Boolean)
     : catalog.permanent;
-  const expected = [];
-  for (const u of chosen) {
-    const inst = u.install;
-    const dests = inst.type === "clone" ? Object.values(inst.paths) : (inst.skills || [inst.skill]).filter(Boolean);
-    dests.forEach((d) => expected.push([d, u.repo, u.id]));
-  }
-  return { chosen, expected };
+  return { chosen };
 }
 
 console.log(`beyond-ui bootstrap — ${checkOnly ? "CHECK ONLY" : globalScope ? "global scope" : "project scope"}`);
 console.log(`destination: ${skillsDir}${process.env.BEYOND_UI_SKILLS_DIR ? "  (BEYOND_UI_SKILLS_DIR)" : ""}`);
 
-const { chosen, expected } = expectedSkills();
-console.log(`expected skills: ${chosen.length} routed units (${expected.length} folders) — the 5 permanent + 5 selected; never the whole catalogue`);
+const { chosen } = expectedSkills();
+console.log(`expected skills: ${chosen.length} routed units — the 5 permanent + 5 selected; never the whole catalogue`);
 
 if (checkOnly) {
-  const have = installedSkills();
-  const missing = expected.filter(([name]) => !have.has(name));
-  const extra = [...have].filter((h) => !expected.some(([n]) => n === h));
-  console.log(`\n== skills present in ${skillsDir.replace(projectDir, ".")} ==`);
-  console.log(have.size ? [...have].sort().map((s) => `  ${s}`).join("\n") : "  (none found)");
+  const locate = (u) => findUnitFolder(u);
+  const missing = chosen.filter((u) => !locate(u));
+  console.log(`\n== skills present ==`);
+  for (const root of SKILLS_ROOTS) console.log(`  ${root}${fs.existsSync(root) ? "" : "  (absent)"}`);
   console.log("\n== capability report ==");
   if (missing.length) {
-    console.log(missing.map(([name, src, unit]) => `  MISSING:   ${name} (${unit} @ ${src})`).join("\n"));
+    console.log(missing.map((u) => `  MISSING:   ${u.id} @ ${u.repo} — expected one of: ${candidateNames(u).join(", ")}`).join("\n"));
     console.log(`
   ACTION REQUIRED — for each miss, run 'node scripts/skills-router.mjs install', or fetch the raw
   SKILL.md URL and read it before doing UI work, then record it in .beyond-ui/state.json ->
   skills.missing (name, reason, readInstead). Do NOT proceed as though the skill had been followed.`);
     process.exit(1);
   }
-  if (extra.length) console.log(`  note: ${extra.length} folder(s) not routed for this project (prune with 'node scripts/skills-router.mjs prune'): ${extra.join(", ")}`);
-  console.log(`  all ${expected.length} routed skill folders present (${chosen.length} units).`);
+  const found = chosen.map((u) => { const l = locate(u); return `${u.id} -> ${l.name}  (${l.root})`; });
+  console.log(found.map((s) => `  OK        ${s}`).join("\n"));
+  console.log(`  all ${chosen.length} routed units present (${catalog.selection.permanentCount} permanent + ${catalog.selection.poolCount} selected).`);
   process.exit(0);
 }
 
@@ -118,18 +135,17 @@ if (!selected) console.log("  ROUTER SELECTION FAILED — installing the 5 perma
 const ok = routerCmd("install");
 
 // ---- verification: are all 10 present? -----------------------------------------------------------
-const have = installedSkills();
-const stillMissing = expected.filter(([name]) => !have.has(name));
+const stillMissing = chosen.filter((u) => !findUnitFolder(u));
 console.log("\n== capability report ==");
 if (stillMissing.length) {
-  console.log(stillMissing.map(([name, src, unit]) => `  FAILED:    ${name} (${unit} @ ${src})`).join("\n"));
+  console.log(stillMissing.map((u) => `  FAILED:    ${u.id} @ ${u.repo} — expected one of: ${candidateNames(u).join(", ")}`).join("\n"));
   console.log(`
   ACTION REQUIRED — for each failure, fetch the upstream SKILL.md raw URL and read it before doing
   UI work, then record the miss in .beyond-ui/state.json -> skills.missing (name, reason, readInstead).
   Do NOT proceed as though the skill had been followed.`);
   process.exit(1);
 }
-console.log(`  all ${expected.length} routed skill folders present (${chosen.length} units: ${catalog.selection.permanentCount} permanent + ${catalog.selection.poolCount} selected).`);
+console.log(`  all ${chosen.length} routed units present (${catalog.selection.permanentCount} permanent + ${catalog.selection.poolCount} selected).`);
 if (!ok) process.exit(1);
 
 // ---------------------------------------------------------------- tool layer (always installed, skip-if-present)

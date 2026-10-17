@@ -41,8 +41,14 @@ const writeJson = (p, v) => { fs.mkdirSync(path.dirname(p), { recursive: true })
 const SRC_DIRS = ["app", "src", "components", "pages", "lib", "routes", "views", "ui", "widgets", "layouts"];
 const SKIP = /node_modules|\.next|\.nuxt|\.svelte-kit|dist|build|out|coverage|\.beyond-ui|\.agents|\.git|public|assets[\/\\]static/;
 const EXT = /\.(tsx|jsx|vue|svelte|ts|js)$/;
-// controls shadcn/ui ships — writing these by hand is a defect (non-negotiable #4)
-const DENY_RAW = ["button", "input", "select", "textarea", "dialog", "checkbox", "radio", "switch", "slider", "progress", "accordion", "tabs", "tooltip", "toast", "popover", "dropdown", "navigation", "sheet", "menubar", "command", "combobox"];
+// Real HTML elements whose hand-rolled use is a defect: shadcn/ui ships a primitive for each of
+// these (button, input, select, textarea, dialog=modal, progress). The match is CASE-SENSITIVE and
+// lowercase-only on purpose — `<Button>`/`<Dialog>` are the *imported* React components and the
+// whole point of the rule; flagging them (as the old case-insensitive list did) would punish exactly
+// the behaviour G13 exists to enforce. Vue/Svelte components are capitalised too, so this holds
+// across frameworks. Non-HTML names (tooltip, toast, sheet, accordion…) were removed: they have no
+// lowercase HTML form, so the old entries could only ever fire on a component name.
+const DENY_RAW = ["button", "input", "select", "textarea", "dialog", "progress"];
 const UI_DIR_HINT = /[\/\\]components[\/\\]ui[\/\\]/;
 
 function walkSource(dir, out = []) {
@@ -114,7 +120,7 @@ function audit() {
     e.status = e.files.length === 0 ? "missing" : e.importedIn.length === 0 ? "installed-unused" : "imported";
   }
 
-  // 2. raw hand-rolled controls outside components/ui
+  // 2. raw hand-rolled controls outside components/ui (lowercase HTML tags only — see DENY_RAW)
   const rawViolations = [];
   for (const [f, t] of fileText) {
     const rel = path.relative(projectDir, f).replace(/\\/g, "/");
@@ -122,7 +128,7 @@ function audit() {
     const lines = t.split("\n");
     lines.forEach((line, i) => {
       for (const tag of DENY_RAW) {
-        const m = line.match(new RegExp(`<${tag}[\\s/>]`, "i"));
+        const m = line.match(new RegExp(`<${tag}(?=[\\s/>])`)); // case-sensitive: <button, never <Button
         if (!m) continue;
         // a `beyond-ui:custom <reason>` comment on the same line or within the 3 lines above exempts it
         const context = lines.slice(Math.max(0, i - 3), i + 1).join("\n");

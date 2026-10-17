@@ -57,6 +57,66 @@ const skillsDir = process.env.BEYOND_UI_SKILLS_DIR
   ? path.resolve(process.env.BEYOND_UI_SKILLS_DIR)
   : path.join(projectDir, ".agents", "skills");
 
+// ---------------------------------------------------------------------------- skill resolution
+// The `skills` CLI installs a skill under the folder named by its own frontmatter (`name:`), which
+// does NOT always equal the catalog id (anthropics/skills ships `frontend-design` as
+// `anthropic-frontend-design`; taste-skill ships `taste` as `design-taste-frontend`; hallmark ships
+// `hallmark-ui`). Clone installs land under the destination folder in `install.paths`. And installs
+// may exist at project scope OR global scope (`~/.agents/skills`). Resolving by catalog id alone
+// silently finds nothing for half the roster — this resolver is the single source of truth for
+// "where does this unit's SKILL.md actually live", shared by install / digest / verify / prune.
+const SKILLS_ROOTS = [...new Set([
+  skillsDir,
+  process.env.BEYOND_UI_GLOBAL_SKILLS_DIR ? path.resolve(process.env.BEYOND_UI_GLOBAL_SKILLS_DIR) : null,
+  path.join(os.homedir(), ".agents", "skills"),
+].filter(Boolean))];
+
+function destFolders(unit) {
+  const inst = unit.install || {};
+  return inst.type === "clone" ? Object.values(inst.paths || {}) : (inst.skills || [inst.skill]).filter(Boolean);
+}
+
+// candidate folder names for a unit, highest-confidence first
+function candidateNames(unit) {
+  const inst = unit.install || {};
+  const cliNames = inst.type === "clone" ? [] : [inst.skill, ...(inst.skills || [])].filter(Boolean);
+  return [...new Set([unit.id, ...cliNames, ...(unit.aliases || [])])];
+}
+
+// resolve a unit to {root, dir, file, name} or null
+function locateUnit(unit) {
+  // clone installs normally live at the exact destination folder in install.paths…
+  if (unit.install?.type === "clone") {
+    for (const root of SKILLS_ROOTS) for (const d of destFolders(unit)) {
+      const file = path.join(root, d, "SKILL.md");
+      if (fs.existsSync(file)) return { root, dir: path.join(root, d), name: d, file };
+    }
+  }
+  // …but the same skill may also have arrived via the `skills` CLI or under its frontmatter name
+  // (`hallmark` -> `hallmark-ui`, `taste` -> `design-taste-frontend`), so fall through to the
+  // alias candidates for every install type
+  for (const root of SKILLS_ROOTS) {
+    for (const name of candidateNames(unit)) {
+      const file = path.join(root, name, "SKILL.md");
+      if (fs.existsSync(file)) return { root, dir: path.join(root, name), name, file };
+    }
+    // last resort at this root: match the SKILL.md frontmatter `name:` against the candidates
+    if (fs.existsSync(root)) {
+      const want = new Set(candidateNames(unit).map((s) => s.toLowerCase()));
+      for (const e of fs.readdirSync(root, { withFileTypes: true })) {
+        if (!e.isDirectory() && !e.isSymbolicLink()) continue;
+        const file = path.join(root, e.name, "SKILL.md");
+        let head = "";
+        try { head = fs.readFileSync(file, "utf8").slice(0, 2200); } catch { continue; }
+        const fm = /^\uFEFF?---\s*\n([\s\S]*?)\n---/.exec(head);
+        const nameLine = fm && /(^|\n)name:\s*"?([^"\n]+)"?/.exec(fm[1]);
+        if (nameLine && want.has(nameLine[2].trim().toLowerCase())) return { root, dir: path.join(root, e.name), name: e.name, file };
+      }
+    }
+  }
+  return null;
+}
+
 // ---------------------------------------------------------------------------- detect
 function detect() {
   const profile = {
@@ -155,32 +215,67 @@ function select() {
 }
 
 // ---------------------------------------------------------------------------- install
-function cloneInstall(entry) {
+function cloneInstall(entry, root = skillsDir) {
   const { repo, paths, alt } = entry;
-  const pending = Object.entries(paths).filter(([, dest]) => !fs.existsSync(path.join(skillsDir, dest, "SKILL.md")));
-  if (pending.length === 0) return { ok: true, installed: Object.keys(paths).length, skipped: true };
+  const present = destFolders({ install: entry }).filter((d) => fs.existsSync(path.join(root, d, "SKILL.md")));
+  const pending = Object.entries(paths).filter(([, dest]) => !fs.existsSync(path.join(root, dest, "SKILL.md")));
+  if (pending.length === 0) return { ok: true, installed: Object.keys(paths).length, skipped: true, names: present };
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "beyond-ui-"));
   try {
     run("git", ["clone", "--depth", "1", repo, path.join(tmp, "repo")]);
-    fs.mkdirSync(skillsDir, { recursive: true });
+    fs.mkdirSync(root, { recursive: true });
     for (const [rel, dest] of pending) {
       const src = path.join(tmp, "repo", rel);
       if (!fs.existsSync(path.join(src, "SKILL.md"))) return { ok: false, error: `expected skill at "${rel}" in ${repo}` };
-      fs.rmSync(path.join(skillsDir, dest), { recursive: true, force: true });
-      fs.cpSync(src, path.join(skillsDir, dest), { recursive: true });
+      fs.rmSync(path.join(root, dest), { recursive: true, force: true });
+      fs.cpSync(src, path.join(root, dest), { recursive: true });
+      present.push(dest);
     }
-    return { ok: true, installed: pending.length };
+    return { ok: true, installed: pending.length, names: present };
   } catch (e) {
     return { ok: false, error: String(e.stderr || e.message).split("\n")[0], alt };
   } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
 }
 
-function cliInstall(entry) {
+// The CLI writes the SKILL.md into a folder named by the skill's own frontmatter `name:`, which can
+// differ from the catalog id. After installing, discover the real folder(s) so state and prune stay
+// truthful instead of recording a guessed name.
+function discoverInstalled(unit, root, before) {
+  const names = [];
+  for (const name of candidateNames(unit)) {
+    if (before.has(name)) continue;
+    if (fs.existsSync(path.join(root, name, "SKILL.md"))) { names.push(name); continue; }
+  }
+  if (names.length) return names;
+  // frontmatter scan for a folder that this install just created
+  const want = new Set(candidateNames(unit).map((s) => s.toLowerCase()));
+  if (fs.existsSync(root)) {
+    for (const e of fs.readdirSync(root, { withFileTypes: true })) {
+      if (before.has(e.name)) continue;
+      const file = path.join(root, e.name, "SKILL.md");
+      let head = "";
+      try { head = fs.readFileSync(file, "utf8").slice(0, 2200); } catch { continue; }
+      const fm = /^\uFEFF?---\s*\n([\s\S]*?)\n---/.exec(head);
+      const nameLine = fm && /(^|\n)name:\s*"?([^"\n]+)"?/.exec(fm[1]);
+      if (nameLine && want.has(nameLine[2].trim().toLowerCase())) names.push(e.name);
+    }
+  }
+  return names;
+}
+
+const dirNames = (root) => new Set(fs.existsSync(root) ? fs.readdirSync(root) : []);
+
+function cliInstall(entry, root = skillsDir) {
   const skills = entry.install.skills || [entry.install.skill];
+  const before = dirNames(root);
   try {
     run("npx", ["-y", "skills", "add", entry.install.repo, "-a", "universal", ...skills.flatMap((s) => ["--skill", s]), "-y"]);
-    return { ok: true, installed: skills.length };
+    const names = discoverInstalled(entry, root, before);
+    return { ok: true, installed: skills.length, names: names.length ? names : undefined };
   } catch (e) {
+    // a partial install (one folder landed) still counts as present — verify via the resolver
+    const names = discoverInstalled(entry, root, before);
+    if (names.length) return { ok: true, installed: names.length, names, warning: String(e.stderr || e.message).split("\n")[0] };
     return { ok: false, error: String(e.stderr || e.message).split("\n")[0] };
   }
 }
@@ -190,18 +285,33 @@ function install() {
   const units = [...catalog.permanent, ...catalog.pool];
   const failures = [];
   const installedBy = [];
+  const folders = [];
   log(`install -> ${skillsDir.replace(projectDir, ".")}  (${active.permanent.length + active.selected.length} skills, nothing else)`);
   for (const ref of [...active.permanent, ...active.selected]) {
     const unit = units.find((u) => u.id === ref.id);
     if (!unit) { failures.push(`${ref.id} — not in catalog`); continue; }
+    const located = locateUnit(unit);
+    if (located) {
+      log(`  OK   ${unit.id} (already present at ${path.relative(projectDir, located.root) || "."}/${located.name})`);
+      installedBy.push(unit.id); folders.push(located.name);
+      continue;
+    }
     const inst = unit.install;
     const res = inst.type === "clone" ? cloneInstall(inst) : cliInstall(unit);
-    if (res.ok) { log(`  OK   ${unit.id}${res.skipped ? " (already present)" : ""}`); installedBy.push(unit.id); }
-    else { log(`  FAIL ${unit.id}: ${res.error}${res.alt ? ` (try: ${res.alt})` : ""}`); failures.push(`${unit.id} — ${res.error}`); }
+    if (res.ok) {
+      log(`  OK   ${unit.id}${res.skipped ? " (already present)" : ""}${res.names ? ` -> ${res.names.join(", ")}` : ""}${res.warning ? ` (warning: ${res.warning})` : ""}`);
+      installedBy.push(unit.id); folders.push(...(res.names || []));
+    } else { log(`  FAIL ${unit.id}: ${res.error}${res.alt ? ` (try: ${res.alt})` : ""}`); failures.push(`${unit.id} — ${res.error}`); }
   }
   const state = readJson(statePath);
   if (state) {
-    state.skills = { ...(state.skills || {}), installed: [...new Set([...(state.skills?.installed || []), ...installedBy])], installedByBeyondUi: [...new Set([...(state.skills?.installedByBeyondUi || []), ...installedBy])], missing: failures.map((f) => ({ name: f.split(" — ")[0], reason: f, readInstead: `https://raw.githubusercontent.com/${(units.find((u) => u.id === f.split(" — ")[0])?.repo || "")}/HEAD/SKILL.md` })) };
+    state.skills = {
+      ...(state.skills || {}),
+      installed: [...new Set([...(state.skills?.installed || []), ...installedBy])],
+      installedByBeyondUi: [...new Set([...(state.skills?.installedByBeyondUi || []), ...installedBy])],
+      folders: [...new Set([...(state.skills?.folders || []), ...folders])],
+      missing: failures.map((f) => ({ name: f.split(" — ")[0], reason: f, readInstead: `https://raw.githubusercontent.com/${(units.find((u) => u.id === f.split(" — ")[0])?.repo || "")}/HEAD/SKILL.md` })),
+    };
     writeJson(statePath, state);
   }
   if (failures.length) { log(`\n${failures.length} FAILED — fetch the raw SKILL.md and read it instead, record in state.json -> skills.missing`); process.exit(1); }
@@ -216,19 +326,35 @@ function stripFences(md) {
   return out.join("\n");
 }
 
+// drop the YAML frontmatter block so `name:`/`description:` lines never masquerade as rules
+function stripFrontmatter(md) {
+  return md.replace(/^\uFEFF?---\s*\n[\s\S]*?\n---\s*\n/, "");
+}
+
 function extractRules(unit) {
-  const inst = unit.install;
-  const dests = inst.type === "clone" ? Object.values(inst.paths) : (inst.skills || [inst.skill]);
+  const located = locateUnit(unit);
+  const files = [];
+  if (located) files.push(located.file);
+  // clone units ship multiple skill folders (ui-styling, design-system, the 10 refactor steps…):
+  // their rules matter too, so read every destination folder the unit installed
+  for (const root of SKILLS_ROOTS) for (const d of destFolders(unit)) {
+    const f = path.join(root, d, "SKILL.md");
+    if (fs.existsSync(f) && !files.includes(f)) files.push(f);
+  }
+  if (!files.length) return [];
   const patterns = (unit.rulePatterns || ["^.*\\b(must|never|always|avoid|don't|Do not)\\b.*$"]).map((p) => new RegExp(p, "i"));
   const rules = [];
-  for (const dest of dests) {
-    const file = path.join(skillsDir, dest, "SKILL.md");
-    if (!fs.existsSync(file)) continue;
-    const body = stripFences(fs.readFileSync(file, "utf8"));
+  for (const file of files) {
+    const body = stripFrontmatter(stripFences(fs.readFileSync(file, "utf8")));
     for (const raw of body.split("\n")) {
+      const isList = /^\s*([-*]|\d+[.)])\s+/.test(raw);       // list items are where skills state rules
       const line = raw.trim().replace(/^[-*]\s+/, "").replace(/^\d+[.)]\s+/, "");
       if (line.length < 25 || line.length > 220) continue;
-      if (/^#/.test(line) || /^\|/.test(line)) continue;
+      if (/^#/.test(line) || /^\|/.test(line) || /^>/.test(line)) continue;
+      if (/^(name|description|license|allowed-tools|disable-model-invocation)\s*:/i.test(line)) continue;
+      // a mid-sentence fragment (starts lowercase, or opens with a bare closer like "master).")
+      if (!isList && /^[a-z),;:]/.test(line)) continue;
+      if (/^[)\]}]/.test(line)) continue;
       if (patterns.some((re) => re.test(line))) rules.push(line);
       if (rules.length >= 14) break;
     }
@@ -327,6 +453,12 @@ function digest() {
   lines.push("- **5 references, not 10. 10 skills, not 33.** Both numbers are enforced.");
   lines.push("- **Every load-bearing decision cites its source** (`skill://<id> -> <rule>`, `DESIGN-SKILL.md §n`, or `teardown/<slug>`).");
   lines.push("- **Verify like a user.** Screenshots at 390/768/1440, keyboard pass, reduced-motion pass, console clean — then the QA journey through the real app (`node scripts/qa.mjs journey`).");
+  lines.push("- **Measure, don't assert.** `node scripts/critique.mjs <url>` renders the page and reports the mechanical hard fails (G15). `node scripts/states.mjs` proves every async surface designs loading + empty + error (G16).");
+  lines.push("- **Craft, not just components.** Scroll choreography, overhang-padded mask reveals, glass with fallbacks, shader backgrounds with static mobile fallbacks, page curtains and a crisp cursor follow `references/CRAFT.md`; `node scripts/craft-check.mjs` proves it (G17).");
+  lines.push("- **Freeze, then compare.** `node scripts/parity.mjs baseline <url>` at design sign-off; every later pass (responsive, perf, a11y, production) ends with `parity.mjs check` (G19). Mobile work on a signed-off desktop lives behind max-width queries only (`references/PARITY.md`).");
+  lines.push("- **Ship it.** `references/PRODUCTION.md` + the `production-suite-completion` skill; `node scripts/production-check.mjs <url>` against a production build (G18).");
+  lines.push("- **Phase specialists.** Invoke the skills in `references/PLAYBOOK.md` §2 at their phase when present, and cite them.");
+  lines.push("- **Gate: G1-G19** — `node scripts/verify-run.mjs`; exit 1 means the run is not done.");
   lines.push("");
   fs.mkdirSync(beyondDir, { recursive: true });
   fs.writeFileSync(digestPath, lines.join("\n"));
@@ -339,28 +471,33 @@ function digest() {
 function prune() {
   const active = readJson(activePath);
   if (!active) { log("prune: run 'select' first"); return; }
-  const keep = new Set();
   const units = [...catalog.permanent, ...catalog.pool];
+  // keep set: every folder name any active unit could live under, across every root
+  const keep = new Set();
   for (const ref of [...active.permanent, ...active.selected]) {
     const u = units.find((x) => x.id === ref.id);
     if (!u) continue;
-    if (u.install.type === "clone") Object.values(u.install.paths).forEach((d) => keep.add(d));
-    else (u.install.skills || [u.install.skill]).forEach((d) => keep.add(d));
+    destFolders(u).forEach((d) => keep.add(d));
+    candidateNames(u).forEach((n) => keep.add(n));
   }
   const state = readJson(statePath);
   const byBeyond = new Set(state?.skills?.installedByBeyondUi || []);
-  if (!fs.existsSync(skillsDir)) return;
+  const folders = new Set(state?.skills?.folders || []);
   let removed = 0;
-  for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const name = entry.name;
-    if (keep.has(name)) continue;
-    if (!byBeyond.has(name) && !(state?.skills?.installed || []).includes(name)) continue; // never touch user-installed skills
-    fs.rmSync(path.join(skillsDir, name), { recursive: true, force: true });
-    log(`  pruned ${name}`);
-    removed++;
+  for (const root of SKILLS_ROOTS) {
+    if (!fs.existsSync(root)) continue;
+    for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+      const name = entry.name;
+      if (keep.has(name)) continue;
+      // never touch a skill this run did not install
+      if (!byBeyond.has(name) && !folders.has(name) && !(state?.skills?.installed || []).includes(name)) continue;
+      fs.rmSync(path.join(root, name), { recursive: true, force: true });
+      log(`  pruned ${path.relative(root, path.join(root, name)) || name} (${root})`);
+      removed++;
+    }
   }
-  log(`prune: removed ${removed} non-active skill folder(s); ${keep.size} active kept.`);
+  log(`prune: removed ${removed} non-active skill folder(s); ${keep.size} names kept across ${SKILLS_ROOTS.length} root(s).`);
 }
 
 // ---------------------------------------------------------------------------- verify
@@ -377,9 +514,7 @@ function verify() {
     const missing = state?.skills?.missing || [];
     for (const ref of [...active.permanent, ...active.selected]) {
       const u = [...catalog.permanent, ...catalog.pool].find((x) => x.id === ref.id);
-      const inst = u?.install;
-      const dests = inst?.type === "clone" ? Object.values(inst.paths) : (inst?.skills || [inst?.skill]).filter(Boolean);
-      const present = dests.some((d) => fs.existsSync(path.join(skillsDir, d, "SKILL.md")));
+      const present = !!u && !!locateUnit(u);
       const documented = missing.some((m) => m.name === ref.id && m.readInstead && /^https?:\/\//.test(m.readInstead));
       if (!present && !documented) problems.push(`skill ${ref.id} neither installed nor URL-documented`);
     }

@@ -4,7 +4,8 @@
  * skill demands: state, scout evidence, the routed 10 skills (5 permanent + 5 selected — never 33),
  * the 5-reference selection and teardown (never 10), the synthesized project skill, rule citations
  * (including one per active skill), critique scores, verify evidence, the plan, the import-first
- * ledger, and the human-like QA journey.
+ * ledger, the human-like QA journey, the rendered-page critique, state coverage, the CRAFT.md audit,
+ * the production pass and design parity (G1-G19).
  *
  *   node scripts/verify-run.mjs [projectDir] [--min-citations N]
  *
@@ -149,6 +150,47 @@ const qaReports = qaFiles.map((f) => readJson(path.join(beyondDir, "qa", f))).fi
 const qaPassed = qaReports.some((r) => r.keyboard === "pass" && r.reducedMotion === "pass" && r.console === "clean");
 gate("G14", "QA journey: app exercised in a real browser (keyboard + reduced-motion + console clean)", qaPassed,
   `${qaReports.length} journey report(s)${qaReports.length ? ` — ${qaFiles.join(", ")}` : " — run `node scripts/qa.mjs journey <url>`"}`);
+
+// G15 auto-critique — the RENDERED page measured against CRITIQUE.md's mechanical hard fails.
+// G16 requires the state coverage in the source; when a real app has been built (G16 satisfied),
+// the rendered-page measurement must exist too — a missing report must not read as "nothing wrong".
+const autoCritique = readJson(path.join(beyondDir, "critique-auto.json"));
+const critPresent = !!autoCritique;
+const autoCritiqueOk = critPresent && autoCritique.pass === true && autoCritique.critical === 0;
+const critWarns = critPresent ? autoCritique.warn ?? 0 : 0;
+
+// G16 state coverage — every async surface must design loading/empty/error, not just the happy path.
+// This is CRITIQUE.md hard fail 13 and the single most common "broken AI UI" defect: the page looks
+// finished until the data is slow, empty or fails. Machine-checked by scanning the built source.
+const statesAudit = readJson(path.join(beyondDir, "states-audit.json"));
+const statesOk = !!statesAudit && statesAudit.pass === true;
+gate("G15", "auto-critique: rendered page measured, zero critical hard fails", autoCritiqueOk,
+  critPresent
+    ? `${autoCritique.critical} critical, ${critWarns} warn${autoCritique.critical ? ` — ${(autoCritique.findings || []).filter((f) => f.severity === "critical").slice(0, 2).map((f) => `${f.rule}: ${f.detail}`).join("; ")}` : ""}`
+    : "run `node scripts/critique.mjs <url>`");
+gate("G16", "state coverage: async surfaces design loading + empty + error", statesOk,
+  statesAudit
+    ? `${statesAudit.asyncSurfaces} async surface(s), complete=${statesAudit.complete?.length || 0}, partial=${statesAudit.partial?.length || 0}`
+    : "run `node scripts/states.mjs`");
+
+// G17 craft — the build checked against references/CRAFT.md (a11y of split text, glass fallbacks,
+// WebGL mobile gates and cleanup, cursor crispness, rAF/listener hygiene).
+const craftAudit = readJson(path.join(beyondDir, "craft-audit.json"));
+gate("G17", "craft audit: zero critical CRAFT.md defects in the source", !!craftAudit && craftAudit.pass === true,
+  craftAudit ? `${craftAudit.critical} critical, ${craftAudit.warn} warn over ${craftAudit.filesScanned} files` : "run `node scripts/craft-check.mjs`");
+
+// G18 production — the ship surface (metadata, OG, sitemap, robots, 404, headers, JSON-LD) proven
+// against a running production build. A single-component brief has no ship surface of its own.
+const componentOnly = /^\s*component\s*$/i.test(String(state?.surface || ""));
+const prodAudit = readJson(path.join(beyondDir, "production-audit.json"));
+gate("G18", "production pass: crawl surface + metadata + headers + 404 verified live", componentOnly || (!!prodAudit && prodAudit.pass === true),
+  componentOnly ? "n/a: surface is a single component" : prodAudit ? `${prodAudit.critical} critical, ${prodAudit.warn} warn, ${prodAudit.live?.routes?.length || 0} routes crawled` : "run `node scripts/production-check.mjs <url>` against a production build");
+
+// G19 parity — the signed-off design was frozen and every later pass left it intact.
+const parity = readJson(path.join(beyondDir, "parity-report.json"));
+const parityOk = !!parity && parity.pass === true && (parity.shots || []).length > 0;
+gate("G19", "parity: frozen design unchanged by later passes (baseline + check)", parityOk,
+  parity ? `${(parity.shots || []).filter((s) => !s.pass).length}/${(parity.shots || []).length} shots over ${parity.threshold ?? "-"}%, baselines: ${(parity.baselines || []).map((b) => b.reason).join(" | ")}` : "run `node scripts/parity.mjs baseline <url>` at sign-off, then `check` after every later pass");
 
 // stamp
 const failed = results.filter((r) => !r.pass);

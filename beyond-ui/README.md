@@ -1,4 +1,4 @@
-# beyond-ui — how it works (v3)
+# beyond-ui — how it works (v4)
 
 A skill that makes a coding agent produce UI a working designer would sign their name to.
 
@@ -12,6 +12,20 @@ them from shadcn/ui and the animated registries instead of reinventing them, use
 human, then prove it was rendered, scored, cited *and still matches the plan* — or the run is not done.
 
 The agent's opinions are deliberately constrained at every step. That is the whole design.
+
+### v4 — from "imports the right blocks" to "ships studio-level work unattended"
+
+v4 distils a shipped production site (a Next 16 + motion + Lenis marketing site with pinned scroll
+sections, liquid-glass nav and a full production pass) into the skill, and closes the gaps that still
+needed a human to steer:
+
+| Added | File | Gate |
+|---|---|---|
+| The decision procedure: which skill to invoke at which phase (routed + phase specialists), the one lane skill per brief, where each piece comes from, the fetch chain (agent-native → Scrapling → Firecrawl → search → browser), prompt/template sourcing, defaults when nothing is specified | `references/PLAYBOOK.md` | G7 |
+| Nine craft recipes with failure signatures: scroll-timeline sections in viewport-heights, overhang-padded mask reveals, liquid glass with Safari/Firefox fallback, jelly hover pill, shader gradients with a shared scheduler and a static mobile fallback, page-transition curtain, a crisp cursor, Lenis, studio details | `references/CRAFT.md` + `scripts/craft-check.mjs` | G17 |
+| Mobile/desktop parity and freeze-and-compare: mobile work behind max-width queries, capability gates, perf and a11y that remove cost not design | `references/PARITY.md` + `scripts/parity.mjs` | G19 |
+| The production pass: metadata helper, static OG route, sitemap, robots, manifest, JSON-LD, headers, designed 404, smoke tests, CI | `references/PRODUCTION.md` + `scripts/production-check.mjs` | G18 |
+
 
 ---
 
@@ -44,7 +58,7 @@ flowchart TD
     G --> H{"gates >= 3<br/>and mean >= 4.0?"}
     H -- no --> F
     H -- yes --> I["6 VERIFY + QA<br/>390/768/1440 + rm + kb + console<br/>qa.mjs journey like a human"]
-    I --> J["7 GATE<br/>verify-run.mjs G1-G14<br/>artifacts + citations + plan<br/>+ import-first + QA, or not done"]
+    I --> J["7 GATE<br/>verify-run.mjs G1-G19<br/>artifacts + citations + plan<br/>+ import-first + QA, or not done"]
 
     style A fill:#1f2937,color:#fff
     style S1 fill:#7c2d12,color:#fff
@@ -383,7 +397,7 @@ wants to act now · a keyboard-only user · a screen-reader user · a maintainer
 | Token discipline | No raw hex/`px` outside tokens; dark mode verified |
 | Registry integrity | Every added registry component still compiles; unused ones removed |
 
-### 7. Gate — `scripts/verify-run.mjs` (v4: G1–G14)
+### 7. Gate — `scripts/verify-run.mjs` (v4: G1–G19)
 
 The run's final step is mechanical, not narrative. Fourteen gates, all must pass, exit 1 otherwise:
 
@@ -403,10 +417,15 @@ The run's final step is mechanical, not narrative. Fourteen gates, all must pass
 | **G11** | **the plan is embedded in DESIGN-SKILL.md §10 (build sheet + real `@ns/item` install commands)** |
 | **G12** | **the build traces back to the plan (`state.components` / `state.composedSections`)** |
 | **G13** | **import-first: every planned block was imported from shadcn/registries, no unmarked hand-rolled controls (`scripts/import-ledger.mjs audit`)** |
-| **G14** | **QA journey: the app was exercised in a real browser — keyboard, reduced-motion, console clean (`scripts/qa.mjs journey`)** |
+| **G14** | **QA journey: the app was exercised in a real browser - keyboard, reduced-motion, console clean (`scripts/qa.mjs journey`)** |
+| **G15** | **auto-critique: the rendered page was MEASURED for the mechanical hard fails - gradient text, pure black/white, emoji, contrast, focus, tap targets, 320px reflow (`scripts/critique.mjs`)** |
+| **G16** | **state coverage: every async surface designs loading + empty + error, not just the happy path (`scripts/states.mjs`)** |
+| **G17** | **craft: zero critical CRAFT.md defects — split text without sr-only, aria-label on non-interactive elements, SVG glass without a probe, WebGL without a mobile gate / reduced-motion / cleanup, cursor on touch (`scripts/craft-check.mjs`)** |
+| **G18** | **production: sitemap, robots, 404, share images, canonical + unique metadata + one h1 per page, JSON-LD, security headers, verified live against a production build (`scripts/production-check.mjs`)** |
+| **G19** | **parity: the signed-off design is frozen (`parity.mjs baseline`) and every later pass is pixel-compared at 1440 and 390 (`parity.mjs check`)** |
 
-G10–G14 are what make the difference between "the agent read a direction" and "the agent built the
-hand-picked blocks, imported them, and used the result like a human". A failing gate is remedied by **doing the missing work** — never by relaxing the
+G10-G16 are what make the difference between "the agent read a direction" and "the agent built the
+hand-picked blocks, imported them, measured the result, and used it like a human". A failing gate is remedied by **doing the missing work** - never by relaxing the
 gate or editing `state.json` by hand. Full contract: `references/USAGE.md`.
 
 ---
@@ -520,9 +539,14 @@ beyond-ui/
     capture-site.mjs               # deep capture: tokens, keyframes, states, shots at 3 viewports
     scrapling.mjs                  # keyless acquisition: scrape / map / deep (auto get→fetch→stealthy)
     plan.mjs                       # phase 1d — score the catalog -> PLAN/SECTION-PLAN/BLOCK-MAP
-    import-ledger.mjs              # phase 6 — import-first ledger: plan / audit (no hand-rolled controls)
-    qa.mjs                         # phase 8 — human-like QA journey: screenshots, keyboard, rm, console
-    verify-run.mjs                 # phase 11 — enforcement gate G1–G14
+    import-ledger.mjs # phase 6 - import-first ledger: plan / audit (no hand-rolled controls)
+    qa.mjs # phase 8 - human-like QA journey: screenshots, keyboard, rm, console
+    critique.mjs # phase 9 - AUTO-CRITIQUE: measures the rendered page's hard fails
+    states.mjs # phase 10 - state coverage: loading + empty + error per async surface
+    craft-check.mjs       # phase 11 - CRAFT.md source audit (G17)
+    parity.mjs            # phase 10-12 - freeze + pixel compare (G19)
+    production-check.mjs  # phase 12 - live ship-surface check (G18)
+    verify-run.mjs # phase 13 - enforcement gate G1-G19
   assets/
     skills-catalog.json         # the 5 permanent star-ranked skills + the routed pool (install facts)
     state-template.json         # run state: tools, selection, teardown, synthesis, plan, citations, gates
@@ -535,7 +559,11 @@ beyond-ui/
   references/                   # loaded on demand when the run reaches that step
     SCOUT.md          source universe + protocol + scout.md schema
     TEARDOWN.md       select 5 / teardown 5 / synthesize 1 / plan protocol + rubric
-    USAGE.md          citation contract + the enforcement gate (G1–G14)
+    USAGE.md          citation contract + the enforcement gate (G1–G19)
+    PLAYBOOK.md       decision procedure: skills per phase, lane skill, sources, fetch chain, defaults
+    CRAFT.md          nine production-proven craft recipes
+    PARITY.md         mobile/desktop parity, freeze-and-compare
+    PRODUCTION.md     the ship pass + smoke-test template
     INSPIRATION.md    60+ galleries, award sites, motion showcases
     PROMPTS.md        55+ template/prompt sources
     COMPONENTS.md     40+ registries, namespaces, exact install commands
@@ -570,8 +598,14 @@ node <skill>/scripts/plan.mjs                        # (optional) re-run just th
 # then follow SKILL.md: direction -> IMPORT what BLOCK-MAP names -> build -> qa journey -> critique -> verify
 node <skill>/scripts/import-ledger.mjs plan && node <skill>/scripts/import-ledger.mjs audit   # 6: import-first
 node <skill>/scripts/qa.mjs journey <url>            # 8: use it like a human (keyboard, rm, console)
+node <skill>/scripts/critique.mjs <url>              # 9: MEASURE the rendered page (hard fails -> G15)
+node <skill>/scripts/states.mjs                      # 10: loading + empty + error per async surface (G16)
 node <skill>/scripts/skills-router.mjs verify        # confirm 5+5 skills, 5 refs, every skill cited
-node <skill>/scripts/verify-run.mjs                  # 11: gates G1–G14 — or the run is not done
+node <skill>/scripts/parity.mjs baseline <url>        # 10: freeze the signed-off design (G19)
+node <skill>/scripts/craft-check.mjs                 # 11: CRAFT.md defects in the source (G17)
+node <skill>/scripts/parity.mjs check <url>           # 11-12: after every later pass (G19)
+node <skill>/scripts/production-check.mjs <url>      # 12: production build, live crawl surface (G18)
+node <skill>/scripts/verify-run.mjs                  # 13: gates G1–G19 — or the run is not done
 ```
 
 Fetching anything by hand — galleries, a competitor's pricing page, the reference you are tearing down:
@@ -596,5 +630,6 @@ reduced-motion-verified UI; critique gates all ≥3 with mean ≥4.0; a clean si
 citations plus one from every routed skill; the 5-reference teardown (exactly 5, never 10); the
 synthesized DESIGN-SKILL.md **with the hand-picked §10 build plan embedded**, condensed into
 `.beyond-ui/SKILL.md` with the 10 routed skills' rules; an import-first audit with nothing hand-rolled
-that a registry ships; a passed QA journey; and a composed build that still traces back to that plan.
-Anything else is still a revision pass owed.
+that a registry ships; a passed QA journey; **a measured auto-critique with zero critical hard fails**;
+**every async surface carrying designed loading, empty and error states**; and a composed build that
+still traces back to that plan. Anything else is still a revision pass owed.
