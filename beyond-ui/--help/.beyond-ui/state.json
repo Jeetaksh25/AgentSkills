@@ -1,0 +1,315 @@
+{
+  "skill": "beyond-ui",
+  "version": 3,
+  "started": "2026-10-18T06:27:33.608Z",
+  "surface": "<landing page | dashboard | component | app | mobile app>",
+  "stack": {
+    "framework": "",
+    "frameworkVersion": "",
+    "tailwind": "v3 | v4",
+    "motionLib": "motion | framer-motion | gsap | anime | css-only | none",
+    "hasShadcn": false,
+    "rn": false
+  },
+  "tools": {
+    "playwright": {
+      "package": false,
+      "chromium": false,
+      "skill": false
+    },
+    "skillui": false,
+    "opensrc": false,
+    "scrapling": {
+      "engine": "bin | module | docker | none",
+      "version": "",
+      "browser": false,
+      "docker": false,
+      "hint": null,
+      "note": "keyless acquisition: stealth, Cloudflare, sessions, spiders — replaces firecrawl"
+    },
+    "browserUse": {
+      "python": "",
+      "version": "",
+      "skill": "absent | present | installed",
+      "hint": null,
+      "note": "human-like QA — scripts/qa.mjs journey runs the same checks through Playwright when absent"
+    }
+  },
+  "skills": {
+    "router": "assets/skills-catalog.json",
+    "permanent": [
+      "frontend-design",
+      "ui-ux-pro-max",
+      "frontend-ui-engineering",
+      "taste",
+      "impeccable"
+    ],
+    "selected": [],
+    "total": 10,
+    "digest": ".beyond-ui/SKILL.md",
+    "digestSkills": [],
+    "installed": [],
+    "installedByBeyondUi": [],
+    "missing": [
+      {
+        "name": "",
+        "reason": "",
+        "readInstead": "<raw SKILL.md URL>"
+      }
+    ],
+    "invoked": [
+      {
+        "skill": "",
+        "phase": "",
+        "why": "",
+        "_note": "phase specialists from references/PLAYBOOK.md §2, invoked only when present; cite them in ruleCitations"
+      }
+    ],
+    "lane": {
+      "skill": "",
+      "why": "",
+      "_note": "exactly one lane skill (PLAYBOOK.md §3)"
+    }
+  },
+  "selection": {
+    "artifact": ".beyond-ui/references-selection.json",
+    "frame": {
+      "domain": "",
+      "pageType": "",
+      "aesthetic": [],
+      "platform": "web | mobile-app | both",
+      "constraints": ""
+    },
+    "galleriesFetched": [
+      {
+        "source": "",
+        "url": "",
+        "ok": false,
+        "candidates": 0
+      }
+    ],
+    "candidatesScored": 0,
+    "selected": [
+      {
+        "url": "",
+        "title": "",
+        "gallery": "",
+        "award": "",
+        "score": 0,
+        "why": "",
+        "mobileEvidence": false
+      }
+    ],
+    "constraints": {
+      "targetRefs": 5,
+      "maxPerGallery": 2,
+      "minAwarded": 2,
+      "minMobileEvidence": 1,
+      "_note": "EXACTLY 5 references — the condensed-skill rule. G4 fails more than 5."
+    },
+    "rejected": [
+      {
+        "url": "",
+        "reason": ""
+      }
+    ]
+  },
+  "teardown": {
+    "root": ".beyond-ui/teardown",
+    "manifest": ".beyond-ui/teardown/manifest.json",
+    "sites": [
+      {
+        "url": "",
+        "slug": "",
+        "dir": "",
+        "status": "ultra | degraded | static | failed",
+        "tokens": false,
+        "screens": false,
+        "contentMd": false,
+        "capture": false,
+        "seconds": 0
+      }
+    ],
+    "complete": 0,
+    "target": 10
+  },
+  "synthesis": {
+    "artifact": ".beyond-ui/DESIGN-SKILL.md",
+    "contributors": [],
+    "sectionsFilled": [],
+    "realTokens": {
+      "accents": [],
+      "neutrals": [],
+      "families": [],
+      "bases": [],
+      "keyframes": [],
+      "transitions": [],
+      "motionLibs": []
+    },
+    "contrastMeasured": 0,
+    "contrastFailing": [],
+    "interactionsCaptured": 0
+  },
+  "plan": {
+    "artifact": ".beyond-ui/PLAN.json",
+    "sectionPlan": ".beyond-ui/SECTION-PLAN.md",
+    "blockMap": ".beyond-ui/BLOCK-MAP.md",
+    "archetype": "landing | pricing | dashboard | docs | onboarding | component | content | auth | error | mobile-app",
+    "sections": [],
+    "motionGrammar": "",
+    "registries": [],
+    "evidenceSites": []
+  },
+  "direction": {
+    "aesthetic": "",
+    "type": {
+      "display": "",
+      "body": "",
+      "mono": ""
+    },
+    "accent": "",
+    "motionGrammar": "",
+    "nonGoals": []
+  },
+  "scout": {
+    "artifact": ".beyond-ui/scout.md",
+    "referencesStudied": 0,
+    "promptSourcesHarvested": 0,
+    "registriesUsed": [],
+    "rejected": [
+      {
+        "candidate": "",
+        "reason": ""
+      }
+    ]
+  },
+  "components": {
+    "shadcn": [],
+    "registry": [
+      {
+        "element": "",
+        "namespace": "",
+        "command": "",
+        "section": ""
+      }
+    ],
+    "composedSections": [],
+    "handWritten": [
+      {
+        "element": "",
+        "reason": "<required: licence, bundle, incompatibility, genuinely bespoke>",
+        "file": ""
+      }
+    ]
+  },
+  "three": {
+    "justified": "yes | no",
+    "why": "",
+    "library": "three | r3f+drei | threlte | tresjs | model-viewer | babylon | spline | none",
+    "scenePattern": "hero | configurator | scroll-linked | canvas-background | inline | globe | particles | viewer+ar",
+    "assets": [
+      {
+        "file": "",
+        "bytes": 0,
+        "compression": "draco+ktx2 | none",
+        "licence": ""
+      }
+    ],
+    "poster": "",
+    "guards": {
+      "lazyLoaded": false,
+      "dprCapped": false,
+      "frameloopPausedOffscreen": false,
+      "reducedMotionFreeze": false
+    },
+    "measured": {
+      "assetBytes": 0,
+      "jsDelta": "",
+      "fpsThrottled": null
+    }
+  },
+  "ruleCitations": [
+    {
+      "decision": "",
+      "source": "<skill://name | DESIGN-SKILL.md §n | teardown/<slug>>",
+      "appliedIn": "<file>"
+    }
+  ],
+  "critique": {
+    "hardFailsFound": 0,
+    "hardFailsFixed": 0,
+    "gates": {},
+    "mean": 0,
+    "evidence": []
+  },
+  "autoCritique": {
+    "report": ".beyond-ui/critique-auto.json",
+    "critical": 0,
+    "warn": 0,
+    "pass": null,
+    "_note": "filled by scripts/critique.mjs — machine-measured hard fails on the RENDERED page (G15); the human read in references/CRITIQUE.md still scores the 12 gates"
+  },
+  "states": {
+    "report": ".beyond-ui/states-audit.json",
+    "asyncSurfaces": 0,
+    "complete": 0,
+    "partial": 0,
+    "pass": null,
+    "_note": "filled by scripts/states.mjs — every async surface must design loading + empty + error (G16)"
+  },
+  "craft": {
+    "report": ".beyond-ui/craft-audit.json",
+    "recipes": [],
+    "critical": 0,
+    "warn": 0,
+    "pass": null,
+    "_note": "filled by scripts/craft-check.mjs; recipes = CRAFT.md R-ids used (R1 scroll timeline … R9 details) (G17)"
+  },
+  "parity": {
+    "report": ".beyond-ui/parity-report.json",
+    "baselineAt": null,
+    "baselineReason": "",
+    "checks": 0,
+    "pass": null,
+    "_note": "scripts/parity.mjs baseline at design sign-off, check after every later pass (G19)"
+  },
+  "production": {
+    "report": ".beyond-ui/production-audit.json",
+    "skill": "production-suite-completion | checklist",
+    "url": "",
+    "acceptedRisks": [],
+    "pass": null,
+    "_note": "scripts/production-check.mjs <url> against a production build (G18); n/a when surface is 'component'"
+  },
+  "verify": {
+    "screenshots": [],
+    "viewports": [
+      "390",
+      "768",
+      "1440"
+    ],
+    "reducedMotion": "unchecked | pass | fail",
+    "keyboard": "unchecked | pass | fail",
+    "console": "unchecked | clean | errors",
+    "lighthouse": {
+      "performance": null,
+      "accessibility": null,
+      "bestPractices": null,
+      "seo": null
+    },
+    "bundleDelta": ""
+  },
+  "qa": {
+    "journeys": [],
+    "last": "",
+    "passed": false,
+    "_note": "filled by scripts/qa.mjs journey — machine-generated evidence, never self-reported"
+  },
+  "enforcement": {
+    "verifyRun": "not-run | pass | fail",
+    "ruleCitationCount": 0,
+    "gatesBelowThree": []
+  },
+  "deferred": [],
+  "notes": ""
+}
