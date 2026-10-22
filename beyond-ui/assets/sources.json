@@ -1,0 +1,7775 @@
+{
+  "_comment": "Ranked source catalog. rank 1 = best for an autonomous agent (quality x agent-readability x licence clarity). `search` has {q} (URL-encoded) or {slug} (hyphenated); `fetch` is the first Scrapling tier (get -> fetch -> stealth). Generated docs: references/SOURCES-CATALOG.md (node scripts/sources.mjs docs). Validate with: node scripts/sources.mjs check.",
+  "version": 5,
+  "verified": "2026-10-22",
+  "platforms": [
+    "web",
+    "mobile",
+    "desktop"
+  ],
+  "categories": {
+    "references": {
+      "title": "Design references and ideas",
+      "purpose": "Find the anchor reference (85% of the design) and 4 supporting references. Fetched automatically in phase 1.",
+      "pick": 8,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "awwwards",
+          "name": "Awwwards",
+          "url": "https://www.awwwards.com/websites/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "award",
+            "motion",
+            "landing",
+            "portfolio",
+            "agency",
+            "ecommerce",
+            "saas"
+          ],
+          "fetch": "stealth",
+          "note": "Site of the Day / Developer winners; often bot-walled: if fetch fails, web-search site:awwwards.com <category> and fetch the winners directly",
+          "search": "https://www.awwwards.com/websites/?text={q}"
+        },
+        {
+          "rank": 2,
+          "id": "dribbble",
+          "name": "Dribbble",
+          "url": "https://dribbble.com/shots/popular",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "shots",
+            "mobile-app",
+            "dashboard",
+            "landing",
+            "brand",
+            "illustration"
+          ],
+          "fetch": "stealth",
+          "note": "Concept shots: take composition and styling, verify each idea is buildable",
+          "search": "https://dribbble.com/search/{slug}"
+        },
+        {
+          "rank": 3,
+          "id": "mobbin",
+          "name": "Mobbin",
+          "url": "https://mobbin.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "mobile-app",
+            "flows",
+            "real-product",
+            "saas",
+            "onboarding"
+          ],
+          "fetch": "fetch",
+          "note": "Real shipped app screens and flows; public previews only (login wall)"
+        },
+        {
+          "rank": 4,
+          "id": "land-book",
+          "name": "Land-book",
+          "url": "https://land-book.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "saas",
+            "portfolio",
+            "ecommerce"
+          ],
+          "fetch": "fetch",
+          "note": "Landing pages filterable by industry, style and colour"
+        },
+        {
+          "rank": 5,
+          "id": "refero",
+          "name": "Refero",
+          "url": "https://refero.design",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "real-product",
+            "flows",
+            "saas",
+            "dashboard"
+          ],
+          "fetch": "fetch",
+          "note": "Searchable real product UI by pattern and screen type"
+        },
+        {
+          "rank": 6,
+          "id": "siteinspire",
+          "name": "Siteinspire",
+          "url": "https://www.siteinspire.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "editorial",
+            "portfolio",
+            "agency",
+            "minimal"
+          ],
+          "fetch": "fetch",
+          "note": "Editorial and studio sites by style, type and subject"
+        },
+        {
+          "rank": 7,
+          "id": "lapa-ninja",
+          "name": "Lapa Ninja",
+          "url": "https://www.lapa.ninja",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "saas",
+            "ai",
+            "startup"
+          ],
+          "fetch": "fetch",
+          "note": "Landing pages by category, incl. AI and SaaS"
+        },
+        {
+          "rank": 8,
+          "id": "saaspo",
+          "name": "SaaSpo",
+          "url": "https://saaspo.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "saas",
+            "landing",
+            "pricing",
+            "ai"
+          ],
+          "fetch": "fetch",
+          "note": "SaaS marketing pages by page type and industry"
+        },
+        {
+          "rank": 9,
+          "id": "css-design-awards",
+          "name": "CSS Design Awards",
+          "url": "https://www.cssdesignawards.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "award",
+            "motion",
+            "portfolio",
+            "agency"
+          ],
+          "fetch": "fetch",
+          "note": "WOTD with UI/UX/innovation scores"
+        },
+        {
+          "rank": 10,
+          "id": "the-fwa",
+          "name": "The FWA",
+          "url": "https://thefwa.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "award",
+            "motion",
+            "3d",
+            "experimental"
+          ],
+          "fetch": "fetch",
+          "note": "Experimental and immersive award winners"
+        },
+        {
+          "rank": 11,
+          "id": "behance",
+          "name": "Behance",
+          "url": "https://www.behance.net/galleries/ui-ux",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "case-study",
+            "brand",
+            "mobile-app",
+            "dashboard"
+          ],
+          "fetch": "stealth",
+          "note": "Full case studies: system, screens, rationale",
+          "search": "https://www.behance.net/search/projects?search={q}"
+        },
+        {
+          "rank": 12,
+          "id": "motion-sites",
+          "name": "Motion Sites",
+          "url": "https://motionsites.ai",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "motion",
+            "landing",
+            "templates",
+            "ai"
+          ],
+          "fetch": "fetch",
+          "note": "Motion-heavy sites with prompt-style specs"
+        },
+        {
+          "rank": 13,
+          "id": "minimal-gallery",
+          "name": "Minimal Gallery",
+          "url": "https://minimal.gallery",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "minimal",
+            "editorial",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Restrained, type-led sites"
+        },
+        {
+          "rank": 14,
+          "id": "one-page-love",
+          "name": "One Page Love",
+          "url": "https://onepagelove.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "portfolio",
+            "startup"
+          ],
+          "fetch": "get",
+          "note": "Single-page sites and templates",
+          "search": "https://onepagelove.com/?s={q}"
+        },
+        {
+          "rank": 15,
+          "id": "codrops",
+          "name": "Codrops",
+          "url": "https://tympanus.net/codrops/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "motion",
+            "3d",
+            "webgl",
+            "interaction",
+            "experimental"
+          ],
+          "fetch": "get",
+          "note": "Technique articles with live demos and source",
+          "search": "https://tympanus.net/codrops/?s={q}"
+        },
+        {
+          "rank": 16,
+          "id": "httpster",
+          "name": "Httpster",
+          "url": "https://httpster.net",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "editorial",
+            "portfolio",
+            "agency"
+          ],
+          "fetch": "get",
+          "note": "Totally rocking websites, editorial picks"
+        },
+        {
+          "rank": 17,
+          "id": "hoverstat-es",
+          "name": "Hoverstat.es",
+          "url": "https://www.hoverstat.es",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "motion",
+            "interaction",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Interaction-forward sites"
+        },
+        {
+          "rank": 18,
+          "id": "landingfolio",
+          "name": "Landingfolio",
+          "url": "https://www.landingfolio.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "saas",
+            "sections"
+          ],
+          "fetch": "fetch",
+          "note": "Landing pages and section-by-section examples"
+        },
+        {
+          "rank": 19,
+          "id": "saas-landing-page",
+          "name": "SaaS Landing Page",
+          "url": "https://saaslandingpage.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "saas",
+            "landing",
+            "pricing"
+          ],
+          "fetch": "get",
+          "note": "SaaS landing pages by section"
+        },
+        {
+          "rank": 20,
+          "id": "screenlane",
+          "name": "Screenlane",
+          "url": "https://screenlane.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "mobile-app",
+            "flows",
+            "web-app"
+          ],
+          "fetch": "fetch",
+          "note": "App and web UI screens by pattern"
+        },
+        {
+          "rank": 21,
+          "id": "page-flows",
+          "name": "Page Flows",
+          "url": "https://pageflows.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "flows",
+            "onboarding",
+            "mobile-app",
+            "saas"
+          ],
+          "fetch": "fetch",
+          "note": "Recorded user flows from real products"
+        },
+        {
+          "rank": 22,
+          "id": "nicelydone",
+          "name": "Nicelydone",
+          "url": "https://nicelydone.club",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "saas",
+            "real-product",
+            "flows",
+            "dashboard"
+          ],
+          "fetch": "fetch",
+          "note": "SaaS product screens and flows"
+        },
+        {
+          "rank": 23,
+          "id": "muzli",
+          "name": "Muzli",
+          "url": "https://muz.li",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "trends",
+            "mobile-app",
+            "dashboard",
+            "brand"
+          ],
+          "fetch": "fetch",
+          "note": "Daily curated design inspiration"
+        },
+        {
+          "rank": 24,
+          "id": "framer-gallery",
+          "name": "Framer Gallery",
+          "url": "https://www.framer.com/gallery",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "portfolio",
+            "motion",
+            "startup"
+          ],
+          "fetch": "fetch",
+          "note": "Sites built in Framer, motion-rich"
+        },
+        {
+          "rank": 25,
+          "id": "made-in-webflow",
+          "name": "Made in Webflow",
+          "url": "https://webflow.com/made-in-webflow",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "portfolio",
+            "agency",
+            "ecommerce"
+          ],
+          "fetch": "fetch",
+          "note": "Cloneable Webflow showcase sites"
+        },
+        {
+          "rank": 26,
+          "id": "recent-design",
+          "name": "Recent.design",
+          "url": "https://recent.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "trends",
+            "landing",
+            "saas",
+            "motion",
+            "ai"
+          ],
+          "fetch": "get",
+          "note": "Recently launched notable sites (absorbed Godly)"
+        },
+        {
+          "rank": 27,
+          "id": "curated-design",
+          "name": "Curated.design",
+          "url": "https://www.curated.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "saas",
+            "portfolio"
+          ],
+          "fetch": "fetch",
+          "note": "Curated web design gallery"
+        },
+        {
+          "rank": 28,
+          "id": "dark-mode-design",
+          "name": "Dark Mode Design",
+          "url": "https://www.darkmodedesign.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "dark",
+            "landing",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Dark-theme sites only"
+        },
+        {
+          "rank": 29,
+          "id": "admire-the-web",
+          "name": "Admire The Web",
+          "url": "https://www.admiretheweb.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Daily curated sites"
+        },
+        {
+          "rank": 30,
+          "id": "bestfolios",
+          "name": "Bestfolios",
+          "url": "https://www.bestfolios.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "portfolio",
+            "case-study"
+          ],
+          "fetch": "fetch",
+          "note": "Designer portfolios and case studies"
+        },
+        {
+          "rank": 31,
+          "id": "collect-ui",
+          "name": "Collect UI",
+          "url": "https://collectui.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "components",
+            "mobile-app",
+            "daily-ui"
+          ],
+          "fetch": "fetch",
+          "note": "UI shots grouped by component type"
+        },
+        {
+          "rank": 32,
+          "id": "web-design-inspiration",
+          "name": "Web Design Inspiration",
+          "url": "https://www.webdesign-inspiration.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "ecommerce",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Large categorised gallery"
+        },
+        {
+          "rank": 33,
+          "id": "css-nectar",
+          "name": "CSS Nectar",
+          "url": "https://cssnectar.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "CSS gallery"
+        },
+        {
+          "rank": 34,
+          "id": "css-winner",
+          "name": "CSS Winner",
+          "url": "https://www.csswinner.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "award",
+            "landing"
+          ],
+          "fetch": "get",
+          "note": "Daily CSS awards"
+        },
+        {
+          "rank": 35,
+          "id": "best-website-gallery",
+          "name": "Best Website Gallery",
+          "url": "https://bestwebsite.gallery",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Full-page screenshots of good sites"
+        },
+        {
+          "rank": 36,
+          "id": "maxibestof",
+          "name": "Maxibestof",
+          "url": "https://maxibestof.one",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "editorial",
+            "portfolio",
+            "agency"
+          ],
+          "fetch": "get",
+          "note": "Curated sites with tags"
+        },
+        {
+          "rank": 37,
+          "id": "siiimple",
+          "name": "Siiimple",
+          "url": "https://siiimple.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "minimal",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Minimal sites"
+        },
+        {
+          "rank": 38,
+          "id": "shopify-theme-store",
+          "name": "Shopify Theme Store",
+          "url": "https://themes.shopify.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "ecommerce",
+            "dtc",
+            "templates"
+          ],
+          "fetch": "fetch",
+          "note": "Best-selling commerce themes and their demo stores"
+        },
+        {
+          "rank": 39,
+          "id": "ecomm-design",
+          "name": "Ecomm.design",
+          "url": "https://ecomm.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "ecommerce",
+            "dtc"
+          ],
+          "fetch": "fetch",
+          "note": "E-commerce sites by platform and category"
+        },
+        {
+          "rank": 40,
+          "id": "typewolf-site-of-the-day",
+          "name": "Typewolf Site of the Day",
+          "url": "https://www.typewolf.com/site-of-the-day",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "typography",
+            "editorial"
+          ],
+          "fetch": "get",
+          "note": "Type-led sites with fonts named"
+        },
+        {
+          "rank": 41,
+          "id": "fonts-in-use",
+          "name": "Fonts In Use",
+          "url": "https://fontsinuse.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "typography",
+            "brand",
+            "editorial"
+          ],
+          "fetch": "get",
+          "note": "Real-world typography with font credits",
+          "search": "https://fontsinuse.com/search?terms={q}"
+        },
+        {
+          "rank": 42,
+          "id": "savee",
+          "name": "Savee",
+          "url": "https://savee.it",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "moodboard",
+            "brand",
+            "editorial"
+          ],
+          "fetch": "stealth",
+          "note": "Designer moodboards"
+        },
+        {
+          "rank": 43,
+          "id": "cosmos",
+          "name": "Cosmos",
+          "url": "https://www.cosmos.so",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "moodboard",
+            "brand"
+          ],
+          "fetch": "stealth",
+          "note": "Visual moodboards"
+        },
+        {
+          "rank": 44,
+          "id": "are-na",
+          "name": "Are.na",
+          "url": "https://www.are.na",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "moodboard",
+            "editorial",
+            "research"
+          ],
+          "fetch": "fetch",
+          "note": "Research and moodboard channels",
+          "search": "https://www.are.na/search/{slug}"
+        },
+        {
+          "rank": 45,
+          "id": "pinterest",
+          "name": "Pinterest",
+          "url": "https://www.pinterest.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "moodboard",
+            "mobile-app",
+            "dashboard"
+          ],
+          "fetch": "stealth",
+          "note": "Broad visual search; verify originals",
+          "search": "https://www.pinterest.com/search/pins/?q={q}"
+        },
+        {
+          "rank": 46,
+          "id": "designspiration",
+          "name": "Designspiration",
+          "url": "https://www.designspiration.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "moodboard",
+            "colour",
+            "brand"
+          ],
+          "fetch": "fetch",
+          "note": "Search by colour and subject"
+        },
+        {
+          "rank": 47,
+          "id": "screensdesign",
+          "name": "Screensdesign",
+          "url": "https://screensdesign.com",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "mobile-app",
+            "flows",
+            "onboarding",
+            "paywall"
+          ],
+          "fetch": "fetch",
+          "note": "Mobile app screens, flows and videos"
+        },
+        {
+          "rank": 48,
+          "id": "uiland",
+          "name": "Uiland",
+          "url": "https://uiland.design",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "mobile-app",
+            "fintech",
+            "flows"
+          ],
+          "fetch": "fetch",
+          "note": "Mobile app screens incl. fintech"
+        },
+        {
+          "rank": 49,
+          "id": "scrnshts",
+          "name": "Scrnshts",
+          "url": "https://scrnshts.club",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "app-store",
+            "mobile-app"
+          ],
+          "fetch": "get",
+          "note": "App Store screenshot designs"
+        },
+        {
+          "rank": 50,
+          "id": "saasframe",
+          "name": "SaaSFrame",
+          "url": "https://www.saasframe.io",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "saas",
+            "flows",
+            "dashboard",
+            "emails"
+          ],
+          "fetch": "fetch",
+          "note": "SaaS screens, flows and emails"
+        },
+        {
+          "rank": 51,
+          "id": "saas-interface",
+          "name": "SaaS Interface",
+          "url": "https://saasinterface.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "saas",
+            "dashboard",
+            "real-product"
+          ],
+          "fetch": "fetch",
+          "note": "SaaS app interfaces by page type"
+        },
+        {
+          "rank": 52,
+          "id": "supahero",
+          "name": "Supahero",
+          "url": "https://www.supahero.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "hero",
+            "sections",
+            "landing"
+          ],
+          "fetch": "get",
+          "note": "Hero sections only"
+        },
+        {
+          "rank": 53,
+          "id": "footer-design",
+          "name": "Footer.design",
+          "url": "https://www.footer.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "footer",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Footers only"
+        },
+        {
+          "rank": 54,
+          "id": "navbar-gallery",
+          "name": "Navbar Gallery",
+          "url": "https://www.navbar.gallery",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "navigation",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Navigation bars only"
+        },
+        {
+          "rank": 55,
+          "id": "cta-gallery",
+          "name": "CTA Gallery",
+          "url": "https://www.cta.gallery",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "cta",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Calls to action only"
+        },
+        {
+          "rank": 56,
+          "id": "component-gallery",
+          "name": "Component Gallery",
+          "url": "https://component.gallery",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "components",
+            "design-systems"
+          ],
+          "fetch": "get",
+          "note": "Components across 90+ design systems"
+        },
+        {
+          "rank": 57,
+          "id": "checklist-design",
+          "name": "Checklist Design",
+          "url": "https://www.checklist.design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "checklist",
+            "pages",
+            "components"
+          ],
+          "fetch": "get",
+          "note": "What each page/component must contain"
+        },
+        {
+          "rank": 58,
+          "id": "brutalist-websites",
+          "name": "Brutalist Websites",
+          "url": "https://brutalistwebsites.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "brutalist",
+            "experimental"
+          ],
+          "fetch": "get",
+          "note": "Raw, brutalist sites"
+        },
+        {
+          "rank": 59,
+          "id": "figma-community",
+          "name": "Figma Community",
+          "url": "https://www.figma.com/community",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ui-kit",
+            "mobile-app",
+            "dashboard",
+            "templates"
+          ],
+          "fetch": "stealth",
+          "note": "Open files: kits, apps, sites",
+          "search": "https://www.figma.com/community/search?resource_type=mixed&sort_by=relevancy&query={q}"
+        },
+        {
+          "rank": 60,
+          "id": "webby-awards-winners",
+          "name": "Webby Awards Winners",
+          "url": "https://winners.webbyawards.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "award",
+            "apps",
+            "mobile-app"
+          ],
+          "fetch": "fetch",
+          "note": "Web and app award winners"
+        },
+        {
+          "rank": 61,
+          "id": "apple-design-awards",
+          "name": "Apple Design Awards",
+          "url": "https://developer.apple.com/design/awards/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "award",
+            "ios",
+            "mobile-app"
+          ],
+          "fetch": "get",
+          "note": "Best-in-class native iOS/macOS apps"
+        },
+        {
+          "rank": 62,
+          "id": "sitesee",
+          "name": "SiteSee",
+          "url": "https://sitesee.co",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "landing",
+            "portfolio"
+          ],
+          "fetch": "get",
+          "note": "Curated sites"
+        },
+        {
+          "rank": 63,
+          "id": "lookup-land-book-mobile",
+          "name": "Lookup: Land-book mobile",
+          "url": "https://land-book.com/?category=mobile",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "mobile-app",
+            "landing"
+          ],
+          "fetch": "fetch",
+          "note": "App landing pages"
+        }
+      ]
+    },
+    "animated": {
+      "title": "Animated components (import, never rebuild)",
+      "purpose": "Motion and effect pieces to install or copy. Prefer registry installs (npx shadcn add @ns/item) over copy-paste.",
+      "pick": 6,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "magic-ui",
+          "name": "Magic UI",
+          "url": "https://magicui.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "shadcn-registry",
+            "landing",
+            "text-effect",
+            "marquee",
+            "bento"
+          ],
+          "fetch": "get",
+          "note": "npx shadcn@latest add @magicui/<item>",
+          "index": "https://magicui.design/llms.txt"
+        },
+        {
+          "rank": 2,
+          "id": "aceternity-ui",
+          "name": "Aceternity UI",
+          "url": "https://ui.aceternity.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "shadcn-registry",
+            "hero",
+            "3d-card",
+            "spotlight",
+            "beams"
+          ],
+          "fetch": "get",
+          "note": "npx shadcn@latest add @aceternity/<item>",
+          "index": "https://ui.aceternity.com/llms.txt"
+        },
+        {
+          "rank": 3,
+          "id": "react-bits",
+          "name": "React Bits",
+          "url": "https://reactbits.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "text-effect",
+            "background",
+            "cursor"
+          ],
+          "fetch": "fetch",
+          "note": "Copy or jsrepo/shadcn install; TS+Tailwind variants",
+          "index": "https://reactbits.dev/llms.txt"
+        },
+        {
+          "rank": 4,
+          "id": "animate-ui",
+          "name": "Animate UI",
+          "url": "https://animate-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "shadcn-registry",
+            "motion",
+            "primitives"
+          ],
+          "fetch": "get",
+          "note": "Animated shadcn-style primitives; npx shadcn add @animate-ui/<item>",
+          "index": "https://animate-ui.com/llms.txt"
+        },
+        {
+          "rank": 5,
+          "id": "motion-primitives",
+          "name": "Motion Primitives",
+          "url": "https://motion-primitives.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion",
+            "text-effect"
+          ],
+          "fetch": "get",
+          "note": "Motion-based primitives; shadcn registry install"
+        },
+        {
+          "rank": 6,
+          "id": "21st-dev",
+          "name": "21st.dev",
+          "url": "https://21st.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "shadcn-registry",
+            "community",
+            "ai"
+          ],
+          "fetch": "fetch",
+          "note": "Community components; append .md to a component URL for agent-readable source",
+          "index": "https://21st.dev/llms.txt"
+        },
+        {
+          "rank": 7,
+          "id": "skiper-ui",
+          "name": "Skiper UI",
+          "url": "https://skiper-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion",
+            "landing"
+          ],
+          "fetch": "fetch",
+          "note": "Award-site style animated sections"
+        },
+        {
+          "rank": 8,
+          "id": "cult-ui",
+          "name": "Cult UI",
+          "url": "https://www.cult-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "shadcn-registry",
+            "ai"
+          ],
+          "fetch": "get",
+          "note": "Animated shadcn components and AI blocks"
+        },
+        {
+          "rank": 9,
+          "id": "kokonut-ui",
+          "name": "Kokonut UI",
+          "url": "https://kokonutui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "shadcn-registry",
+            "ai"
+          ],
+          "fetch": "get",
+          "note": "Animated components incl. AI inputs"
+        },
+        {
+          "rank": 10,
+          "id": "eldora-ui",
+          "name": "Eldora UI",
+          "url": "https://www.eldoraui.site",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Animated components and templates"
+        },
+        {
+          "rank": 11,
+          "id": "animata",
+          "name": "Animata",
+          "url": "https://animata.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Hand-crafted interaction animations"
+        },
+        {
+          "rank": 12,
+          "id": "hover-dev",
+          "name": "Hover.dev",
+          "url": "https://www.hover.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Animated components (some paid)"
+        },
+        {
+          "rank": 13,
+          "id": "smoothui",
+          "name": "SmoothUI",
+          "url": "https://smoothui.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion",
+            "shadcn-registry"
+          ],
+          "fetch": "get",
+          "note": "Smooth micro-interaction components"
+        },
+        {
+          "rank": 14,
+          "id": "fancy-components",
+          "name": "Fancy Components",
+          "url": "https://www.fancycomponents.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "motion",
+            "text-effect",
+            "physics"
+          ],
+          "fetch": "get",
+          "note": "Playful text and physics effects"
+        },
+        {
+          "rank": 15,
+          "id": "ui-layouts",
+          "name": "UI Layouts",
+          "url": "https://www.ui-layouts.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion",
+            "layout"
+          ],
+          "fetch": "get",
+          "note": "Animated layouts and effects"
+        },
+        {
+          "rank": 16,
+          "id": "syntax-ui",
+          "name": "Syntax UI",
+          "url": "https://syntaxui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Animated components and effects"
+        },
+        {
+          "rank": 17,
+          "id": "cuicui",
+          "name": "Cuicui",
+          "url": "https://cuicui.day",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Component variants with motion"
+        },
+        {
+          "rank": 18,
+          "id": "lukacho-ui",
+          "name": "Lukacho UI",
+          "url": "https://ui.lukacho.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Animated components"
+        },
+        {
+          "rank": 19,
+          "id": "prompt-kit",
+          "name": "prompt-kit",
+          "url": "https://www.prompt-kit.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "shadcn-registry",
+            "ai",
+            "chat"
+          ],
+          "fetch": "get",
+          "note": "AI chat interface components"
+        },
+        {
+          "rank": 20,
+          "id": "assistant-ui",
+          "name": "assistant-ui",
+          "url": "https://www.assistant-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "ai",
+            "chat"
+          ],
+          "fetch": "get",
+          "note": "Production AI chat UI primitives"
+        },
+        {
+          "rank": 21,
+          "id": "shadcn-expansions",
+          "name": "Shadcn Expansions",
+          "url": "https://shadcnui-expansions.typeart.cc",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "shadcn",
+            "inputs"
+          ],
+          "fetch": "get",
+          "note": "Extra shadcn components"
+        },
+        {
+          "rank": 22,
+          "id": "magic-ui-pro",
+          "name": "Magic UI Pro",
+          "url": "https://pro.magicui.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "templates",
+            "landing"
+          ],
+          "fetch": "get",
+          "note": "Paid animated templates"
+        },
+        {
+          "rank": 23,
+          "id": "motion-examples",
+          "name": "Motion examples",
+          "url": "https://examples.motion.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "vue",
+            "js",
+            "motion"
+          ],
+          "fetch": "fetch",
+          "note": "Official Motion examples with source"
+        },
+        {
+          "rank": 24,
+          "id": "gsap-on-codepen",
+          "name": "GSAP on CodePen",
+          "url": "https://codepen.io/GreenSock",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "gsap",
+            "scroll",
+            "svg",
+            "text"
+          ],
+          "fetch": "stealth",
+          "note": "Official GSAP demos"
+        },
+        {
+          "rank": 25,
+          "id": "codrops-playground",
+          "name": "Codrops Playground",
+          "url": "https://tympanus.net/codrops/category/playground/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "webgl",
+            "3d",
+            "motion",
+            "experimental"
+          ],
+          "fetch": "get",
+          "note": "Effect demos with source"
+        },
+        {
+          "rank": 26,
+          "id": "uiverse",
+          "name": "Uiverse",
+          "url": "https://uiverse.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "tailwind",
+            "buttons",
+            "loaders",
+            "cards"
+          ],
+          "fetch": "fetch",
+          "note": "Open-source CSS/Tailwind elements for any framework"
+        },
+        {
+          "rank": 27,
+          "id": "inspira-ui-vue",
+          "name": "Inspira UI (Vue)",
+          "url": "https://inspira-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "nuxt",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Vue/Nuxt ports of Aceternity/Magic-style components"
+        },
+        {
+          "rank": 28,
+          "id": "vue-bits",
+          "name": "Vue Bits",
+          "url": "https://vue-bits.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "motion",
+            "text-effect"
+          ],
+          "fetch": "get",
+          "note": "Vue port of React Bits"
+        },
+        {
+          "rank": 29,
+          "id": "lottiefiles",
+          "name": "LottieFiles",
+          "url": "https://lottiefiles.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "lottie",
+            "react-native",
+            "flutter",
+            "ios",
+            "android",
+            "web"
+          ],
+          "fetch": "fetch",
+          "note": "Lottie/dotLottie animations for every platform",
+          "search": "https://lottiefiles.com/search?q={q}&category=animations"
+        },
+        {
+          "rank": 30,
+          "id": "rive-community",
+          "name": "Rive Community",
+          "url": "https://rive.app/community/",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "rive",
+            "interactive",
+            "react-native",
+            "flutter",
+            "ios",
+            "android",
+            "web"
+          ],
+          "fetch": "fetch",
+          "note": "Interactive state-machine animations, all runtimes"
+        },
+        {
+          "rank": 31,
+          "id": "unicorn-studio",
+          "name": "Unicorn Studio",
+          "url": "https://www.unicorn.studio",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "webgl",
+            "shader",
+            "hero",
+            "no-code"
+          ],
+          "fetch": "fetch",
+          "note": "WebGL scenes exported as embeds"
+        },
+        {
+          "rank": 32,
+          "id": "spline-community",
+          "name": "Spline Community",
+          "url": "https://community.spline.design",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "3d",
+            "interactive",
+            "hero"
+          ],
+          "fetch": "fetch",
+          "note": "Interactive 3D scenes"
+        },
+        {
+          "rank": 33,
+          "id": "paper-shaders",
+          "name": "Paper Shaders",
+          "url": "https://shaders.paper.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "shader",
+            "background",
+            "react"
+          ],
+          "fetch": "get",
+          "note": "Zero-dependency shader backgrounds"
+        },
+        {
+          "rank": 34,
+          "id": "shadergradient",
+          "name": "ShaderGradient",
+          "url": "https://www.shadergradient.co",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "shader",
+            "gradient",
+            "background",
+            "react"
+          ],
+          "fetch": "fetch",
+          "note": "Animated mesh gradients"
+        },
+        {
+          "rank": 35,
+          "id": "vanta-js",
+          "name": "Vanta.js",
+          "url": "https://www.vantajs.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "webgl",
+            "background"
+          ],
+          "fetch": "get",
+          "note": "Animated 3D backgrounds"
+        },
+        {
+          "rank": 36,
+          "id": "tsparticles",
+          "name": "tsParticles",
+          "url": "https://particles.js.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "particles",
+            "background"
+          ],
+          "fetch": "get",
+          "note": "Particles, confetti, fireworks"
+        },
+        {
+          "rank": 37,
+          "id": "animista",
+          "name": "Animista",
+          "url": "https://animista.net",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "keyframes"
+          ],
+          "fetch": "get",
+          "note": "CSS keyframe generator"
+        },
+        {
+          "rank": 38,
+          "id": "animate-css",
+          "name": "Animate.css",
+          "url": "https://animate.style",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "keyframes"
+          ],
+          "fetch": "get",
+          "note": "Drop-in CSS animations"
+        },
+        {
+          "rank": 39,
+          "id": "css-loaders",
+          "name": "CSS Loaders",
+          "url": "https://css-loaders.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "loaders"
+          ],
+          "fetch": "get",
+          "note": "Single-element CSS loaders"
+        },
+        {
+          "rank": 40,
+          "id": "hover-css",
+          "name": "Hover.css",
+          "url": "https://ianlunn.github.io/Hover/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "hover"
+          ],
+          "fetch": "get",
+          "note": "CSS hover effects"
+        },
+        {
+          "rank": 41,
+          "id": "lordicon",
+          "name": "Lordicon",
+          "url": "https://lordicon.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "animated-icons",
+            "lottie"
+          ],
+          "fetch": "fetch",
+          "note": "Animated icons (Lottie)"
+        },
+        {
+          "rank": 42,
+          "id": "useanimations",
+          "name": "useAnimations",
+          "url": "https://useanimations.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "animated-icons",
+            "lottie",
+            "react"
+          ],
+          "fetch": "get",
+          "note": "Micro-animated icons"
+        },
+        {
+          "rank": 43,
+          "id": "animate-react-native",
+          "name": "Animate React Native",
+          "url": "https://www.animatereactnative.com",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "reanimated",
+            "expo"
+          ],
+          "fetch": "fetch",
+          "note": "Reanimated components and recipes"
+        },
+        {
+          "rank": 44,
+          "id": "reactiive",
+          "name": "Reactiive",
+          "url": "https://reactiive.io",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "reanimated",
+            "skia"
+          ],
+          "fetch": "fetch",
+          "note": "React Native animation tutorials with source"
+        },
+        {
+          "rank": 45,
+          "id": "moti",
+          "name": "Moti",
+          "url": "https://moti.fyi",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "expo",
+            "reanimated",
+            "web"
+          ],
+          "fetch": "get",
+          "note": "Declarative animations for RN + web"
+        },
+        {
+          "rank": 46,
+          "id": "reanimated-docs",
+          "name": "Reanimated docs",
+          "url": "https://docs.swmansion.com/react-native-reanimated/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "reanimated"
+          ],
+          "fetch": "get",
+          "note": "Layout animations, shared values, examples"
+        },
+        {
+          "rank": 47,
+          "id": "react-native-skia",
+          "name": "React Native Skia",
+          "url": "https://shopify.github.io/react-native-skia/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "skia",
+            "shader",
+            "graphics"
+          ],
+          "fetch": "get",
+          "note": "Skia drawing and shaders in RN"
+        },
+        {
+          "rank": 48,
+          "id": "flutter-gems-animation",
+          "name": "Flutter Gems: Animation",
+          "url": "https://fluttergems.dev/animation-transition/",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter",
+            "animation"
+          ],
+          "fetch": "get",
+          "note": "Ranked Flutter animation packages"
+        },
+        {
+          "rank": 49,
+          "id": "flutter-animate",
+          "name": "flutter_animate",
+          "url": "https://pub.dev/packages/flutter_animate",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter",
+            "animation"
+          ],
+          "fetch": "get",
+          "note": "Chainable Flutter effects"
+        },
+        {
+          "rank": 50,
+          "id": "flutter-awesome",
+          "name": "Flutter Awesome",
+          "url": "https://flutterawesome.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter",
+            "ui",
+            "animation"
+          ],
+          "fetch": "get",
+          "note": "Flutter UI and animation examples"
+        },
+        {
+          "rank": 51,
+          "id": "pow-swiftui",
+          "name": "Pow (SwiftUI)",
+          "url": "https://github.com/EmergeTools/Pow",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "swiftui",
+            "ios",
+            "transitions"
+          ],
+          "fetch": "get",
+          "note": "SwiftUI transitions and change effects"
+        },
+        {
+          "rank": 52,
+          "id": "compose-animation-docs",
+          "name": "Compose animation docs",
+          "url": "https://developer.android.com/develop/ui/compose/animation/introduction",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "jetpack-compose",
+            "android"
+          ],
+          "fetch": "get",
+          "note": "Official Compose animation APIs"
+        },
+        {
+          "rank": 53,
+          "id": "number-flow",
+          "name": "Number Flow",
+          "url": "https://number-flow.barvian.me",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "numbers",
+            "react",
+            "vue",
+            "svelte"
+          ],
+          "fetch": "get",
+          "note": "Animated number transitions"
+        },
+        {
+          "rank": 54,
+          "id": "three-js-examples",
+          "name": "Three.js examples",
+          "url": "https://threejs.org/examples/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "3d",
+            "webgl"
+          ],
+          "fetch": "get",
+          "note": "Official Three.js examples"
+        },
+        {
+          "rank": 55,
+          "id": "react-three-fiber-examples",
+          "name": "React Three Fiber examples",
+          "url": "https://r3f.docs.pmnd.rs/getting-started/examples",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "3d",
+            "react"
+          ],
+          "fetch": "get",
+          "note": "R3F examples with sandboxes"
+        },
+        {
+          "rank": 56,
+          "id": "drei",
+          "name": "Drei",
+          "url": "https://drei.docs.pmnd.rs",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "3d",
+            "react"
+          ],
+          "fetch": "get",
+          "note": "R3F helpers and abstractions"
+        },
+        {
+          "rank": 57,
+          "id": "codepen-search",
+          "name": "CodePen search",
+          "url": "https://codepen.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "js",
+            "experimental"
+          ],
+          "fetch": "stealth",
+          "note": "Pens by technique; check licence before reuse",
+          "search": "https://codepen.io/search/pens?q={q}"
+        }
+      ]
+    },
+    "components": {
+      "title": "Ready-made components, UI kits and blocks",
+      "purpose": "Base controls and full sections per framework. The base kit is chosen by platform (see references/PLATFORMS.md).",
+      "pick": 6,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "shadcn-ui",
+          "name": "shadcn/ui",
+          "url": "https://ui.shadcn.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "base",
+            "shadcn-registry"
+          ],
+          "fetch": "get",
+          "note": "The default base for React web; npx shadcn@latest add <item>",
+          "index": "https://ui.shadcn.com/llms.txt"
+        },
+        {
+          "rank": 2,
+          "id": "shadcn-ui-blocks",
+          "name": "shadcn/ui Blocks",
+          "url": "https://ui.shadcn.com/blocks",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "sections",
+            "dashboard",
+            "auth"
+          ],
+          "fetch": "get",
+          "note": "Official blocks: dashboards, sidebars, auth, charts"
+        },
+        {
+          "rank": 3,
+          "id": "radix-primitives",
+          "name": "Radix Primitives",
+          "url": "https://www.radix-ui.com/primitives",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "headless",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Accessible headless primitives"
+        },
+        {
+          "rank": 4,
+          "id": "base-ui",
+          "name": "Base UI",
+          "url": "https://base-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "headless",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Headless components from the MUI/Radix team"
+        },
+        {
+          "rank": 5,
+          "id": "react-aria",
+          "name": "React Aria",
+          "url": "https://react-spectrum.adobe.com/react-aria/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "headless",
+            "a11y",
+            "i18n"
+          ],
+          "fetch": "get",
+          "note": "Adobe's accessible hooks/components"
+        },
+        {
+          "rank": 6,
+          "id": "ark-ui",
+          "name": "Ark UI",
+          "url": "https://ark-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "vue",
+            "solid",
+            "svelte",
+            "headless"
+          ],
+          "fetch": "get",
+          "note": "Headless components for four frameworks"
+        },
+        {
+          "rank": 7,
+          "id": "headless-ui",
+          "name": "Headless UI",
+          "url": "https://headlessui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "vue",
+            "headless",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Tailwind Labs headless components"
+        },
+        {
+          "rank": 8,
+          "id": "origin-ui",
+          "name": "Origin UI",
+          "url": "https://originui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "shadcn"
+          ],
+          "fetch": "get",
+          "note": "Large shadcn-compatible component set"
+        },
+        {
+          "rank": 9,
+          "id": "shadcnblocks",
+          "name": "Shadcnblocks",
+          "url": "https://www.shadcnblocks.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "sections",
+            "landing"
+          ],
+          "fetch": "get",
+          "note": "Hundreds of landing sections for shadcn"
+        },
+        {
+          "rank": 10,
+          "id": "tailwind-plus",
+          "name": "Tailwind Plus",
+          "url": "https://tailwindcss.com/plus",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "vue",
+            "html",
+            "tailwind",
+            "sections",
+            "templates"
+          ],
+          "fetch": "get",
+          "note": "Official Tailwind sections and templates (licensed)"
+        },
+        {
+          "rank": 11,
+          "id": "heroui",
+          "name": "HeroUI",
+          "url": "https://www.heroui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "React UI library with built-in motion"
+        },
+        {
+          "rank": 12,
+          "id": "mantine",
+          "name": "Mantine",
+          "url": "https://mantine.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "dashboard",
+            "forms"
+          ],
+          "fetch": "get",
+          "note": "Full React component suite and hooks"
+        },
+        {
+          "rank": 13,
+          "id": "park-ui",
+          "name": "Park UI",
+          "url": "https://park-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "vue",
+            "solid",
+            "panda"
+          ],
+          "fetch": "get",
+          "note": "Styled Ark UI components"
+        },
+        {
+          "rank": 14,
+          "id": "tremor",
+          "name": "Tremor",
+          "url": "https://www.tremor.so",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "dashboard",
+            "charts"
+          ],
+          "fetch": "get",
+          "note": "Dashboard and chart components"
+        },
+        {
+          "rank": 15,
+          "id": "kibo-ui",
+          "name": "Kibo UI",
+          "url": "https://www.kibo-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "shadcn-registry",
+            "advanced"
+          ],
+          "fetch": "get",
+          "note": "Advanced shadcn components (kanban, gantt, editor)"
+        },
+        {
+          "rank": 16,
+          "id": "shadcn-studio",
+          "name": "Shadcn Studio",
+          "url": "https://shadcnstudio.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "shadcn",
+            "blocks",
+            "themes"
+          ],
+          "fetch": "get",
+          "note": "Blocks and theme generator for shadcn"
+        },
+        {
+          "rank": 17,
+          "id": "tweakcn",
+          "name": "tweakcn",
+          "url": "https://tweakcn.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "shadcn",
+            "themes",
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "Visual theme editor for shadcn tokens"
+        },
+        {
+          "rank": 18,
+          "id": "blocks-so",
+          "name": "Blocks.so",
+          "url": "https://blocks.so",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "shadcn",
+            "sections",
+            "dashboard"
+          ],
+          "fetch": "get",
+          "note": "Clean shadcn blocks"
+        },
+        {
+          "rank": 19,
+          "id": "flowbite",
+          "name": "Flowbite",
+          "url": "https://flowbite.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "html",
+            "react",
+            "vue",
+            "svelte",
+            "angular",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Tailwind components for many frameworks"
+        },
+        {
+          "rank": 20,
+          "id": "daisyui",
+          "name": "daisyUI",
+          "url": "https://daisyui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tailwind",
+            "themes",
+            "any-framework"
+          ],
+          "fetch": "get",
+          "note": "Tailwind plugin with themes"
+        },
+        {
+          "rank": 21,
+          "id": "preline",
+          "name": "Preline",
+          "url": "https://preline.co",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tailwind",
+            "html",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Tailwind components and sections"
+        },
+        {
+          "rank": 22,
+          "id": "hyperui",
+          "name": "HyperUI",
+          "url": "https://www.hyperui.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tailwind",
+            "html",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Free Tailwind sections"
+        },
+        {
+          "rank": 23,
+          "id": "meraki-ui",
+          "name": "Meraki UI",
+          "url": "https://merakiui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tailwind",
+            "html",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Tailwind components with RTL"
+        },
+        {
+          "rank": 24,
+          "id": "tailblocks",
+          "name": "Tailblocks",
+          "url": "https://tailblocks.cc",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tailwind",
+            "html",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Ready Tailwind blocks"
+        },
+        {
+          "rank": 25,
+          "id": "float-ui",
+          "name": "Float UI",
+          "url": "https://floatui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "sections"
+          ],
+          "fetch": "get",
+          "note": "Tailwind components and templates"
+        },
+        {
+          "rank": 26,
+          "id": "untitled-ui-react",
+          "name": "Untitled UI React",
+          "url": "https://www.untitledui.com/react",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "tailwind",
+            "design-system"
+          ],
+          "fetch": "fetch",
+          "note": "Large React+Tailwind design system"
+        },
+        {
+          "rank": 27,
+          "id": "chakra-ui",
+          "name": "Chakra UI",
+          "url": "https://chakra-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "themeable"
+          ],
+          "fetch": "get",
+          "note": "Themeable React components"
+        },
+        {
+          "rank": 28,
+          "id": "mui",
+          "name": "MUI",
+          "url": "https://mui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "material",
+            "dashboard"
+          ],
+          "fetch": "get",
+          "note": "Material components for React"
+        },
+        {
+          "rank": 29,
+          "id": "ant-design",
+          "name": "Ant Design",
+          "url": "https://ant.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "enterprise",
+            "dashboard"
+          ],
+          "fetch": "get",
+          "note": "Enterprise React components"
+        },
+        {
+          "rank": 30,
+          "id": "shadcn-vue",
+          "name": "shadcn-vue",
+          "url": "https://www.shadcn-vue.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "nuxt",
+            "tailwind",
+            "base"
+          ],
+          "fetch": "get",
+          "note": "shadcn for Vue/Nuxt"
+        },
+        {
+          "rank": 31,
+          "id": "nuxt-ui",
+          "name": "Nuxt UI",
+          "url": "https://ui.nuxt.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "nuxt",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Official Nuxt component library"
+        },
+        {
+          "rank": 32,
+          "id": "reka-ui",
+          "name": "Reka UI",
+          "url": "https://reka-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "headless",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Headless Vue primitives (Radix Vue)"
+        },
+        {
+          "rank": 33,
+          "id": "primevue",
+          "name": "PrimeVue",
+          "url": "https://primevue.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "enterprise"
+          ],
+          "fetch": "get",
+          "note": "Vue component suite"
+        },
+        {
+          "rank": 34,
+          "id": "primereact",
+          "name": "PrimeReact",
+          "url": "https://primereact.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "enterprise"
+          ],
+          "fetch": "get",
+          "note": "React component suite"
+        },
+        {
+          "rank": 35,
+          "id": "vuetify",
+          "name": "Vuetify",
+          "url": "https://vuetifyjs.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "material"
+          ],
+          "fetch": "get",
+          "note": "Material components for Vue"
+        },
+        {
+          "rank": 36,
+          "id": "quasar",
+          "name": "Quasar",
+          "url": "https://quasar.dev",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "vue",
+            "mobile",
+            "desktop",
+            "capacitor",
+            "electron"
+          ],
+          "fetch": "get",
+          "note": "Vue framework targeting web, mobile and desktop"
+        },
+        {
+          "rank": 37,
+          "id": "shadcn-svelte",
+          "name": "shadcn-svelte",
+          "url": "https://www.shadcn-svelte.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svelte",
+            "sveltekit",
+            "tailwind",
+            "base"
+          ],
+          "fetch": "get",
+          "note": "shadcn for Svelte"
+        },
+        {
+          "rank": 38,
+          "id": "bits-ui",
+          "name": "Bits UI",
+          "url": "https://bits-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svelte",
+            "headless"
+          ],
+          "fetch": "get",
+          "note": "Headless Svelte components"
+        },
+        {
+          "rank": 39,
+          "id": "melt-ui",
+          "name": "Melt UI",
+          "url": "https://melt-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svelte",
+            "headless"
+          ],
+          "fetch": "get",
+          "note": "Svelte builders for accessible components"
+        },
+        {
+          "rank": 40,
+          "id": "skeleton",
+          "name": "Skeleton",
+          "url": "https://www.skeleton.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svelte",
+            "react",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Adaptive design system for Svelte/React"
+        },
+        {
+          "rank": 41,
+          "id": "spartan",
+          "name": "Spartan",
+          "url": "https://www.spartan.ng",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "angular",
+            "tailwind",
+            "base"
+          ],
+          "fetch": "get",
+          "note": "shadcn-style components for Angular"
+        },
+        {
+          "rank": 42,
+          "id": "angular-material",
+          "name": "Angular Material",
+          "url": "https://material.angular.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "angular",
+            "material"
+          ],
+          "fetch": "get",
+          "note": "Official Angular components"
+        },
+        {
+          "rank": 43,
+          "id": "primeng",
+          "name": "PrimeNG",
+          "url": "https://primeng.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "angular",
+            "enterprise"
+          ],
+          "fetch": "get",
+          "note": "Angular component suite"
+        },
+        {
+          "rank": 44,
+          "id": "kobalte",
+          "name": "Kobalte",
+          "url": "https://kobalte.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "solid",
+            "headless"
+          ],
+          "fetch": "get",
+          "note": "Headless SolidJS components"
+        },
+        {
+          "rank": 45,
+          "id": "solid-ui",
+          "name": "Solid UI",
+          "url": "https://www.solid-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "solid",
+            "tailwind",
+            "base"
+          ],
+          "fetch": "get",
+          "note": "shadcn port for SolidJS"
+        },
+        {
+          "rank": 46,
+          "id": "qwik-ui",
+          "name": "Qwik UI",
+          "url": "https://qwikui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "qwik",
+            "headless"
+          ],
+          "fetch": "get",
+          "note": "Qwik components"
+        },
+        {
+          "rank": 47,
+          "id": "react-native-reusables",
+          "name": "React Native Reusables",
+          "url": "https://reactnativereusables.com",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "expo",
+            "nativewind",
+            "base"
+          ],
+          "fetch": "get",
+          "note": "shadcn/ui for React Native (NativeWind)"
+        },
+        {
+          "rank": 48,
+          "id": "nativewind",
+          "name": "NativeWind",
+          "url": "https://www.nativewind.dev",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "expo",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Tailwind for React Native"
+        },
+        {
+          "rank": 49,
+          "id": "gluestack-ui",
+          "name": "gluestack-ui",
+          "url": "https://gluestack.io",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "expo",
+            "web",
+            "nativewind"
+          ],
+          "fetch": "get",
+          "note": "Universal RN + web components"
+        },
+        {
+          "rank": 50,
+          "id": "tamagui",
+          "name": "Tamagui",
+          "url": "https://tamagui.dev",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "expo",
+            "web",
+            "compiler"
+          ],
+          "fetch": "get",
+          "note": "Universal styled components with an optimizing compiler"
+        },
+        {
+          "rank": 51,
+          "id": "react-native-paper",
+          "name": "React Native Paper",
+          "url": "https://callstack.github.io/react-native-paper/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "material"
+          ],
+          "fetch": "get",
+          "note": "Material Design for RN"
+        },
+        {
+          "rank": 52,
+          "id": "react-native-elements",
+          "name": "React Native Elements",
+          "url": "https://reactnativeelements.com",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native"
+          ],
+          "fetch": "get",
+          "note": "Cross-platform RN toolkit"
+        },
+        {
+          "rank": 53,
+          "id": "ui-kitten",
+          "name": "UI Kitten",
+          "url": "https://akveo.github.io/react-native-ui-kitten/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "eva"
+          ],
+          "fetch": "get",
+          "note": "Themeable RN components"
+        },
+        {
+          "rank": 54,
+          "id": "expo-ui",
+          "name": "Expo UI",
+          "url": "https://docs.expo.dev/versions/latest/sdk/ui/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "expo",
+            "swiftui",
+            "jetpack-compose",
+            "native"
+          ],
+          "fetch": "get",
+          "note": "Native SwiftUI/Compose views from Expo"
+        },
+        {
+          "rank": 55,
+          "id": "unistyles",
+          "name": "Unistyles",
+          "url": "https://www.unistyl.es",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "styling",
+            "themes"
+          ],
+          "fetch": "get",
+          "note": "Fast themeable RN styling"
+        },
+        {
+          "rank": 56,
+          "id": "ionic-framework",
+          "name": "Ionic Framework",
+          "url": "https://ionicframework.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "capacitor",
+            "ionic",
+            "react",
+            "vue",
+            "angular"
+          ],
+          "fetch": "get",
+          "note": "Mobile components for Capacitor apps"
+        },
+        {
+          "rank": 57,
+          "id": "konsta-ui",
+          "name": "Konsta UI",
+          "url": "https://konstaui.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "capacitor",
+            "tailwind",
+            "ios",
+            "material"
+          ],
+          "fetch": "get",
+          "note": "Pixel-perfect iOS/Material components in Tailwind"
+        },
+        {
+          "rank": 58,
+          "id": "framework7",
+          "name": "Framework7",
+          "url": "https://framework7.io",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "capacitor",
+            "cordova",
+            "ios",
+            "material"
+          ],
+          "fetch": "get",
+          "note": "Full-featured mobile UI for hybrid apps"
+        },
+        {
+          "rank": 59,
+          "id": "shadcn-ui-flutter",
+          "name": "shadcn_ui (Flutter)",
+          "url": "https://pub.dev/packages/shadcn_ui",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter",
+            "base"
+          ],
+          "fetch": "get",
+          "note": "shadcn design for Flutter"
+        },
+        {
+          "rank": 60,
+          "id": "forui",
+          "name": "Forui",
+          "url": "https://forui.dev",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter",
+            "minimal"
+          ],
+          "fetch": "get",
+          "note": "Minimalistic Flutter UI library"
+        },
+        {
+          "rank": 61,
+          "id": "getwidget",
+          "name": "GetWidget",
+          "url": "https://www.getwidget.dev",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter"
+          ],
+          "fetch": "get",
+          "note": "Flutter UI components"
+        },
+        {
+          "rank": 62,
+          "id": "fluent-ui-react",
+          "name": "Fluent UI React",
+          "url": "https://react.fluentui.dev",
+          "platforms": [
+            "web",
+            "desktop"
+          ],
+          "tags": [
+            "react",
+            "fluent",
+            "windows",
+            "desktop"
+          ],
+          "fetch": "get",
+          "note": "Microsoft Fluent 2 for React (Electron/Tauri on Windows)"
+        },
+        {
+          "rank": 63,
+          "id": "blueprint",
+          "name": "Blueprint",
+          "url": "https://blueprintjs.com",
+          "platforms": [
+            "web",
+            "desktop"
+          ],
+          "tags": [
+            "react",
+            "desktop",
+            "dense",
+            "data"
+          ],
+          "fetch": "get",
+          "note": "Dense desktop-style data UIs"
+        },
+        {
+          "rank": 64,
+          "id": "carbon-react",
+          "name": "Carbon React",
+          "url": "https://react.carbondesignsystem.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "enterprise",
+            "data"
+          ],
+          "fetch": "get",
+          "note": "IBM Carbon components"
+        },
+        {
+          "rank": 65,
+          "id": "avalonia-ui",
+          "name": "Avalonia UI",
+          "url": "https://avaloniaui.net",
+          "platforms": [
+            "desktop"
+          ],
+          "tags": [
+            "dotnet",
+            "desktop",
+            "cross-platform"
+          ],
+          "fetch": "get",
+          "note": ".NET cross-platform desktop UI"
+        },
+        {
+          "rank": 66,
+          "id": "material-3-for-compose",
+          "name": "Material 3 for Compose",
+          "url": "https://developer.android.com/develop/ui/compose/designsystems/material3",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "jetpack-compose",
+            "android",
+            "material"
+          ],
+          "fetch": "get",
+          "note": "Material 3 components for Compose"
+        }
+      ]
+    },
+    "rules": {
+      "title": "Design rules and philosophies",
+      "purpose": "The rule sets that constrain decisions; cite them. Local skills (impeccable, refactoring-ui, taste) encode many of these.",
+      "pick": 6,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "refactoring-ui",
+          "name": "Refactoring UI",
+          "url": "https://www.refactoringui.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "hierarchy",
+            "spacing",
+            "colour",
+            "typography"
+          ],
+          "fetch": "get",
+          "note": "Tactical visual design rules (also the refactoring-ui-* skills)"
+        },
+        {
+          "rank": 2,
+          "id": "laws-of-ux",
+          "name": "Laws of UX",
+          "url": "https://lawsofux.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "psychology",
+            "ux"
+          ],
+          "fetch": "get",
+          "note": "Fitts, Hick, Jakob, Miller and more, with examples"
+        },
+        {
+          "rank": 3,
+          "id": "vercel-web-interface-guidelines",
+          "name": "Vercel Web Interface Guidelines",
+          "url": "https://vercel.com/design/guidelines",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "interaction",
+            "a11y",
+            "forms",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Concrete interface rules (also web-design-guidelines skill)"
+        },
+        {
+          "rank": 4,
+          "id": "apple-human-interface-guidelines",
+          "name": "Apple Human Interface Guidelines",
+          "url": "https://developer.apple.com/design/human-interface-guidelines",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "ios",
+            "macos",
+            "native",
+            "platform"
+          ],
+          "fetch": "get",
+          "note": "Required reading for iOS/macOS/visionOS"
+        },
+        {
+          "rank": 5,
+          "id": "material-design-3",
+          "name": "Material Design 3",
+          "url": "https://m3.material.io",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "android",
+            "material",
+            "motion",
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "Android and Material systems, incl. motion"
+        },
+        {
+          "rank": 6,
+          "id": "nielsen-norman-group",
+          "name": "Nielsen Norman Group",
+          "url": "https://www.nngroup.com/articles/",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "usability",
+            "research",
+            "ux"
+          ],
+          "fetch": "get",
+          "note": "Research-backed usability articles"
+        },
+        {
+          "rank": 7,
+          "id": "fluent-2",
+          "name": "Fluent 2",
+          "url": "https://fluent2.microsoft.design",
+          "platforms": [
+            "desktop"
+          ],
+          "tags": [
+            "windows",
+            "desktop",
+            "platform"
+          ],
+          "fetch": "get",
+          "note": "Microsoft's design language for Windows/desktop"
+        },
+        {
+          "rank": 8,
+          "id": "invisible-details-of-interaction-design",
+          "name": "Invisible Details of Interaction Design",
+          "url": "https://rauno.me/craft/interaction-design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "interaction",
+            "craft",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "Why great interactions feel right (Rauno Freiberg)"
+        },
+        {
+          "rank": 9,
+          "id": "animations-dev",
+          "name": "animations.dev",
+          "url": "https://animations.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "motion",
+            "craft"
+          ],
+          "fetch": "get",
+          "note": "Emil Kowalski on purposeful UI animation"
+        },
+        {
+          "rank": 10,
+          "id": "josh-w-comeau",
+          "name": "Josh W. Comeau",
+          "url": "https://www.joshwcomeau.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "motion",
+            "craft"
+          ],
+          "fetch": "get",
+          "note": "Deep CSS and animation craft"
+        },
+        {
+          "rank": 11,
+          "id": "practical-typography",
+          "name": "Practical Typography",
+          "url": "https://practicaltypography.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "typography"
+          ],
+          "fetch": "get",
+          "note": "Butterick's typography rules"
+        },
+        {
+          "rank": 12,
+          "id": "utopia",
+          "name": "Utopia",
+          "url": "https://utopia.fyi",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "fluid-type",
+            "spacing",
+            "responsive"
+          ],
+          "fetch": "get",
+          "note": "Fluid type and space scales"
+        },
+        {
+          "rank": 13,
+          "id": "every-layout",
+          "name": "Every Layout",
+          "url": "https://every-layout.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "layout",
+            "css",
+            "responsive"
+          ],
+          "fetch": "get",
+          "note": "Algorithmic layout primitives"
+        },
+        {
+          "rank": 14,
+          "id": "wcag-2-2-quick-reference",
+          "name": "WCAG 2.2 Quick Reference",
+          "url": "https://www.w3.org/WAI/WCAG22/quickref/",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "The accessibility floor"
+        },
+        {
+          "rank": 15,
+          "id": "inclusive-components",
+          "name": "Inclusive Components",
+          "url": "https://inclusive-components.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "a11y",
+            "components"
+          ],
+          "fetch": "get",
+          "note": "Accessible component patterns"
+        },
+        {
+          "rank": 16,
+          "id": "the-a11y-project",
+          "name": "The A11Y Project",
+          "url": "https://www.a11yproject.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "a11y",
+            "checklist"
+          ],
+          "fetch": "get",
+          "note": "Accessibility checklist and patterns"
+        },
+        {
+          "rank": 17,
+          "id": "web-dev-learn",
+          "name": "web.dev Learn",
+          "url": "https://web.dev/learn",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "performance",
+            "css",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Google's courses on CSS, design, performance"
+        },
+        {
+          "rank": 18,
+          "id": "smashing-magazine",
+          "name": "Smashing Magazine",
+          "url": "https://www.smashingmagazine.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ux",
+            "css",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Long-form design and front-end craft"
+        },
+        {
+          "rank": 19,
+          "id": "interaction-design-foundation",
+          "name": "Interaction Design Foundation",
+          "url": "https://www.interaction-design.org/literature",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ux",
+            "gestalt",
+            "principles"
+          ],
+          "fetch": "get",
+          "note": "Encyclopedia of UX principles"
+        },
+        {
+          "rank": 20,
+          "id": "baymard-institute",
+          "name": "Baymard Institute",
+          "url": "https://baymard.com/blog",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "ecommerce",
+            "checkout",
+            "ux"
+          ],
+          "fetch": "get",
+          "note": "E-commerce UX research"
+        },
+        {
+          "rank": 21,
+          "id": "growth-design",
+          "name": "Growth.design",
+          "url": "https://growth.design/case-studies",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "onboarding",
+            "psychology",
+            "product"
+          ],
+          "fetch": "get",
+          "note": "Product psychology case studies"
+        },
+        {
+          "rank": 22,
+          "id": "ui-patterns",
+          "name": "UI Patterns",
+          "url": "https://ui-patterns.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "patterns",
+            "ux"
+          ],
+          "fetch": "get",
+          "note": "Design pattern library"
+        },
+        {
+          "rank": 23,
+          "id": "gov-uk-design-system",
+          "name": "GOV.UK Design System",
+          "url": "https://design-system.service.gov.uk",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "forms",
+            "a11y",
+            "content"
+          ],
+          "fetch": "get",
+          "note": "Rigorous forms and content patterns"
+        },
+        {
+          "rank": 24,
+          "id": "carbon-design-system",
+          "name": "Carbon Design System",
+          "url": "https://carbondesignsystem.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "enterprise",
+            "data",
+            "motion"
+          ],
+          "fetch": "get",
+          "note": "IBM system incl. motion guidance"
+        },
+        {
+          "rank": 25,
+          "id": "shopify-polaris",
+          "name": "Shopify Polaris",
+          "url": "https://polaris-react.shopify.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "admin",
+            "commerce",
+            "content"
+          ],
+          "fetch": "get",
+          "note": "Admin UI and content guidelines"
+        },
+        {
+          "rank": 26,
+          "id": "atlassian-design",
+          "name": "Atlassian Design",
+          "url": "https://atlassian.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "product",
+            "content",
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "Product design foundations"
+        },
+        {
+          "rank": 27,
+          "id": "github-primer",
+          "name": "GitHub Primer",
+          "url": "https://primer.style",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "product",
+            "dense",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Dense product UI system"
+        },
+        {
+          "rank": 28,
+          "id": "adobe-spectrum",
+          "name": "Adobe Spectrum",
+          "url": "https://spectrum.adobe.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "tokens",
+            "a11y",
+            "platform"
+          ],
+          "fetch": "get",
+          "note": "Cross-platform design system"
+        },
+        {
+          "rank": 29,
+          "id": "salesforce-lightning",
+          "name": "Salesforce Lightning",
+          "url": "https://www.lightningdesignsystem.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "enterprise",
+            "data"
+          ],
+          "fetch": "get",
+          "note": "Enterprise UI guidelines"
+        },
+        {
+          "rank": 30,
+          "id": "material-motion",
+          "name": "Material Motion",
+          "url": "https://m3.material.io/styles/motion/overview",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "motion",
+            "easing"
+          ],
+          "fetch": "get",
+          "note": "Motion principles, easing and duration tokens"
+        },
+        {
+          "rank": 31,
+          "id": "design-systems-repo",
+          "name": "Design Systems Repo",
+          "url": "https://designsystemsrepo.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "design-systems"
+          ],
+          "fetch": "get",
+          "note": "Index of public design systems"
+        },
+        {
+          "rank": 32,
+          "id": "designsystems-com",
+          "name": "designsystems.com",
+          "url": "https://www.designsystems.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "design-systems",
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "Figma's design systems guides"
+        },
+        {
+          "rank": 33,
+          "id": "deceptive-design",
+          "name": "Deceptive Design",
+          "url": "https://www.deceptive.design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ethics",
+            "dark-patterns"
+          ],
+          "fetch": "get",
+          "note": "Patterns never to ship"
+        },
+        {
+          "rank": 34,
+          "id": "humane-by-design",
+          "name": "Humane by Design",
+          "url": "https://humanebydesign.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ethics",
+            "wellbeing"
+          ],
+          "fetch": "get",
+          "note": "Principles for humane products"
+        },
+        {
+          "rank": 35,
+          "id": "calm-technology",
+          "name": "Calm Technology",
+          "url": "https://calmtech.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ethics",
+            "notifications"
+          ],
+          "fetch": "get",
+          "note": "Principles for calm, peripheral technology"
+        },
+        {
+          "rank": 36,
+          "id": "good-design-dieter-rams",
+          "name": "Good Design (Dieter Rams)",
+          "url": "https://www.vitsoe.com/us/about/good-design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "philosophy",
+            "restraint"
+          ],
+          "fetch": "get",
+          "note": "Ten principles of good design"
+        },
+        {
+          "rank": 37,
+          "id": "ux-collective",
+          "name": "UX Collective",
+          "url": "https://uxdesign.cc",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ux",
+            "trends"
+          ],
+          "fetch": "stealth",
+          "note": "Design essays and case studies"
+        },
+        {
+          "rank": 38,
+          "id": "practical-ui",
+          "name": "Practical UI",
+          "url": "https://www.practical-ui.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "ui",
+            "rules",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Logical, accessible UI rules"
+        },
+        {
+          "rank": 39,
+          "id": "typewolf-guides",
+          "name": "Typewolf Guides",
+          "url": "https://www.typewolf.com/guides",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "typography",
+            "pairing"
+          ],
+          "fetch": "get",
+          "note": "Font pairing and type guides"
+        },
+        {
+          "rank": 40,
+          "id": "learn-ui-design-blog",
+          "name": "Learn UI Design blog",
+          "url": "https://www.learnui.design/blog/",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "typography",
+            "ui"
+          ],
+          "fetch": "get",
+          "note": "Practical UI design articles"
+        },
+        {
+          "rank": 41,
+          "id": "accessible-palette",
+          "name": "Accessible Palette",
+          "url": "https://accessiblepalette.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Contrast-safe colour systems"
+        },
+        {
+          "rank": 42,
+          "id": "leonardo",
+          "name": "Leonardo",
+          "url": "https://leonardocolor.io",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "a11y",
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "Contrast-ratio based colour generation"
+        },
+        {
+          "rank": 43,
+          "id": "linear-method",
+          "name": "Linear Method",
+          "url": "https://linear.app/method",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "product",
+            "philosophy"
+          ],
+          "fetch": "get",
+          "note": "How Linear builds product"
+        },
+        {
+          "rank": 44,
+          "id": "design-principles",
+          "name": "Design Principles",
+          "url": "https://principles.design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "philosophy",
+            "principles"
+          ],
+          "fetch": "get",
+          "note": "Collection of design principles"
+        },
+        {
+          "rank": 45,
+          "id": "lukew",
+          "name": "LukeW",
+          "url": "https://www.lukew.com/ff/",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "mobile",
+            "forms",
+            "ux"
+          ],
+          "fetch": "get",
+          "note": "Mobile and form design essays"
+        },
+        {
+          "rank": 46,
+          "id": "windows-app-design",
+          "name": "Windows app design",
+          "url": "https://learn.microsoft.com/en-us/windows/apps/design/",
+          "platforms": [
+            "desktop"
+          ],
+          "tags": [
+            "windows",
+            "desktop"
+          ],
+          "fetch": "get",
+          "note": "Windows app design guidance"
+        },
+        {
+          "rank": 47,
+          "id": "sara-soueidan",
+          "name": "Sara Soueidan",
+          "url": "https://www.sarasoueidan.com/blog/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "a11y",
+            "svg",
+            "css"
+          ],
+          "fetch": "get",
+          "note": "Accessibility and SVG craft"
+        },
+        {
+          "rank": 48,
+          "id": "adrian-roselli",
+          "name": "Adrian Roselli",
+          "url": "https://adrianroselli.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "a11y"
+          ],
+          "fetch": "get",
+          "note": "Accessibility deep dives"
+        },
+        {
+          "rank": 49,
+          "id": "atomic-design",
+          "name": "Atomic Design",
+          "url": "https://atomicdesign.bradfrost.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "design-systems",
+            "components"
+          ],
+          "fetch": "get",
+          "note": "Component system methodology"
+        },
+        {
+          "rank": 50,
+          "id": "design-tokens-community-group",
+          "name": "Design Tokens Community Group",
+          "url": "https://www.designtokens.org",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "Token format standard"
+        },
+        {
+          "rank": 51,
+          "id": "open-props",
+          "name": "Open Props",
+          "url": "https://open-props.style",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tokens",
+            "css"
+          ],
+          "fetch": "get",
+          "note": "Sub-atomic CSS design tokens"
+        },
+        {
+          "rank": 52,
+          "id": "radix-colors-scale",
+          "name": "Radix Colors scale",
+          "url": "https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "How a 12-step colour scale maps to UI roles"
+        },
+        {
+          "rank": 53,
+          "id": "checklist-design",
+          "name": "Checklist Design",
+          "url": "https://www.checklist.design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "checklist",
+            "pages"
+          ],
+          "fetch": "get",
+          "note": "Page and component checklists"
+        }
+      ]
+    },
+    "typography": {
+      "title": "Fonts and typography (no AI-slop defaults)",
+      "purpose": "Choose one display + one text face. Prefer free-for-commercial sources; record the licence.",
+      "pick": 6,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "fontshare",
+          "name": "Fontshare",
+          "url": "https://www.fontshare.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free-commercial",
+            "display",
+            "grotesk",
+            "serif"
+          ],
+          "fetch": "get",
+          "note": "Indian Type Foundry; free for commercial use (Satoshi, Clash, General Sans, Zodiak, Erode)"
+        },
+        {
+          "rank": 2,
+          "id": "google-fonts",
+          "name": "Google Fonts",
+          "url": "https://fonts.google.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free-commercial",
+            "variable"
+          ],
+          "fetch": "fetch",
+          "note": "OFL fonts; avoid reflex picks (Inter, Roboto, Poppins, Montserrat)",
+          "search": "https://fonts.google.com/?query={q}"
+        },
+        {
+          "rank": 3,
+          "id": "pangram-pangram",
+          "name": "Pangram Pangram",
+          "url": "https://pangrampangram.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "trial",
+            "display",
+            "grotesk",
+            "serif"
+          ],
+          "fetch": "fetch",
+          "note": "Neue Montreal, Editorial New, Mori; free trial, paid commercial"
+        },
+        {
+          "rank": 4,
+          "id": "uncut",
+          "name": "Uncut",
+          "url": "https://uncut.wtf",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free",
+            "display",
+            "experimental"
+          ],
+          "fetch": "get",
+          "note": "Curated free/open typefaces"
+        },
+        {
+          "rank": 5,
+          "id": "velvetyne",
+          "name": "Velvetyne",
+          "url": "https://velvetyne.fr",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "open",
+            "display",
+            "experimental"
+          ],
+          "fetch": "get",
+          "note": "Libre experimental display faces"
+        },
+        {
+          "rank": 6,
+          "id": "collletttivo",
+          "name": "Collletttivo",
+          "url": "https://www.collletttivo.it",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "open",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Open-source Italian collective"
+        },
+        {
+          "rank": 7,
+          "id": "open-foundry",
+          "name": "Open Foundry",
+          "url": "https://open-foundry.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "open",
+            "editorial"
+          ],
+          "fetch": "get",
+          "note": "Curated open-source fonts"
+        },
+        {
+          "rank": 8,
+          "id": "fontsource",
+          "name": "Fontsource",
+          "url": "https://fontsource.org",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "npm",
+            "self-host"
+          ],
+          "fetch": "get",
+          "note": "Self-host any open font via npm",
+          "search": "https://fontsource.org/?query={q}"
+        },
+        {
+          "rank": 9,
+          "id": "bunny-fonts",
+          "name": "Bunny Fonts",
+          "url": "https://fonts.bunny.net",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "privacy",
+            "cdn"
+          ],
+          "fetch": "get",
+          "note": "GDPR-friendly Google Fonts mirror"
+        },
+        {
+          "rank": 10,
+          "id": "adobe-fonts",
+          "name": "Adobe Fonts",
+          "url": "https://fonts.adobe.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "subscription"
+          ],
+          "fetch": "fetch",
+          "note": "Licensed with Creative Cloud"
+        },
+        {
+          "rank": 11,
+          "id": "font-squirrel",
+          "name": "Font Squirrel",
+          "url": "https://www.fontsquirrel.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free-commercial"
+          ],
+          "fetch": "get",
+          "note": "Free commercial-use fonts and webfont generator"
+        },
+        {
+          "rank": 12,
+          "id": "typewolf",
+          "name": "Typewolf",
+          "url": "https://www.typewolf.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "pairing",
+            "trends"
+          ],
+          "fetch": "get",
+          "note": "What's trending in type; pairings"
+        },
+        {
+          "rank": 13,
+          "id": "fonts-in-use",
+          "name": "Fonts In Use",
+          "url": "https://fontsinuse.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "real-world",
+            "pairing"
+          ],
+          "fetch": "get",
+          "note": "Fonts identified in real work"
+        },
+        {
+          "rank": 14,
+          "id": "freefaces",
+          "name": "Freefaces",
+          "url": "https://www.freefaces.gallery",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Curated free display faces"
+        },
+        {
+          "rank": 15,
+          "id": "beautiful-web-type",
+          "name": "Beautiful Web Type",
+          "url": "https://beautifulwebtype.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "google-fonts",
+            "pairing"
+          ],
+          "fetch": "get",
+          "note": "Best of Google Fonts with specimens"
+        },
+        {
+          "rank": 16,
+          "id": "fontpair",
+          "name": "Fontpair",
+          "url": "https://www.fontpair.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "pairing",
+            "google-fonts"
+          ],
+          "fetch": "get",
+          "note": "Google Fonts pairings"
+        },
+        {
+          "rank": 17,
+          "id": "fontjoy",
+          "name": "Fontjoy",
+          "url": "https://fontjoy.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "pairing",
+            "generator"
+          ],
+          "fetch": "get",
+          "note": "Generated pairings"
+        },
+        {
+          "rank": 18,
+          "id": "typescale",
+          "name": "Typescale",
+          "url": "https://typescale.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "scale",
+            "tool"
+          ],
+          "fetch": "get",
+          "note": "Type scale calculator"
+        },
+        {
+          "rank": 19,
+          "id": "type-scale",
+          "name": "Type Scale",
+          "url": "https://type-scale.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "scale",
+            "tool"
+          ],
+          "fetch": "get",
+          "note": "Visual type scale preview"
+        },
+        {
+          "rank": 20,
+          "id": "utopia-type-calculator",
+          "name": "Utopia type calculator",
+          "url": "https://utopia.fyi/type/calculator",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "fluid",
+            "clamp",
+            "tool"
+          ],
+          "fetch": "get",
+          "note": "Fluid clamp() type scales"
+        },
+        {
+          "rank": 21,
+          "id": "variable-fonts",
+          "name": "Variable Fonts",
+          "url": "https://v-fonts.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "variable"
+          ],
+          "fetch": "get",
+          "note": "Variable font catalogue"
+        },
+        {
+          "rank": 22,
+          "id": "wakamai-fondue",
+          "name": "Wakamai Fondue",
+          "url": "https://wakamaifondue.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "tool",
+            "features"
+          ],
+          "fetch": "get",
+          "note": "Inspect a font's features and axes"
+        },
+        {
+          "rank": 23,
+          "id": "font-style-matcher",
+          "name": "Font Style Matcher",
+          "url": "https://meowni.ca/font-style-matcher/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tool",
+            "fallback",
+            "cls"
+          ],
+          "fetch": "get",
+          "note": "Match fallback metrics to avoid layout shift"
+        },
+        {
+          "rank": 24,
+          "id": "klim-type-foundry",
+          "name": "Klim Type Foundry",
+          "url": "https://klim.co.nz",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "serif",
+            "grotesk"
+          ],
+          "fetch": "get",
+          "note": "Premium (Söhne, Tiempos, Signifier)"
+        },
+        {
+          "rank": 25,
+          "id": "grilli-type",
+          "name": "Grilli Type",
+          "url": "https://www.grillitype.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "grotesk"
+          ],
+          "fetch": "get",
+          "note": "Premium (GT America, GT Walsheim)"
+        },
+        {
+          "rank": 26,
+          "id": "dinamo",
+          "name": "Dinamo",
+          "url": "https://abcdinamo.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "grotesk",
+            "experimental"
+          ],
+          "fetch": "get",
+          "note": "Premium (ABC Diatype, Favorit)"
+        },
+        {
+          "rank": 27,
+          "id": "commercial-type",
+          "name": "Commercial Type",
+          "url": "https://commercialtype.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "editorial"
+          ],
+          "fetch": "get",
+          "note": "Premium editorial faces"
+        },
+        {
+          "rank": 28,
+          "id": "displaay",
+          "name": "Displaay",
+          "url": "https://displaay.net",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Contemporary display faces"
+        },
+        {
+          "rank": 29,
+          "id": "sharp-type",
+          "name": "Sharp Type",
+          "url": "https://sharptype.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Contemporary display/grotesk"
+        },
+        {
+          "rank": 30,
+          "id": "production-type",
+          "name": "Production Type",
+          "url": "https://productiontype.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "ui"
+          ],
+          "fetch": "get",
+          "note": "Grotesk and UI faces"
+        },
+        {
+          "rank": 31,
+          "id": "colophon",
+          "name": "Colophon",
+          "url": "https://www.colophon-foundry.org",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "grotesk"
+          ],
+          "fetch": "get",
+          "note": "Premium grotesks"
+        },
+        {
+          "rank": 32,
+          "id": "lineto",
+          "name": "Lineto",
+          "url": "https://lineto.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "swiss"
+          ],
+          "fetch": "get",
+          "note": "Swiss premium faces"
+        },
+        {
+          "rank": 33,
+          "id": "fontfabric",
+          "name": "Fontfabric",
+          "url": "https://www.fontfabric.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "free-some"
+          ],
+          "fetch": "get",
+          "note": "Mixed free and paid faces"
+        },
+        {
+          "rank": 34,
+          "id": "atipo-foundry",
+          "name": "Atipo Foundry",
+          "url": "https://www.atipofoundry.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "pay-what-you-want",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Pay-what-you-want faces"
+        },
+        {
+          "rank": 35,
+          "id": "typotheque",
+          "name": "Typotheque",
+          "url": "https://www.typotheque.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "multiscript"
+          ],
+          "fetch": "get",
+          "note": "Multi-script premium faces"
+        },
+        {
+          "rank": 36,
+          "id": "future-fonts",
+          "name": "Future Fonts",
+          "url": "https://www.futurefonts.xyz",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "in-progress",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Fonts in progress at early prices"
+        },
+        {
+          "rank": 37,
+          "id": "tunera",
+          "name": "Tunera",
+          "url": "https://www.tunera.xyz",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "open",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Free open-source fonts"
+        },
+        {
+          "rank": 38,
+          "id": "use-modify",
+          "name": "Use & Modify",
+          "url": "https://usemodify.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "open",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Curated open-source fonts"
+        },
+        {
+          "rank": 39,
+          "id": "league-of-moveable-type",
+          "name": "League of Moveable Type",
+          "url": "https://www.theleagueofmoveabletype.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "open"
+          ],
+          "fetch": "get",
+          "note": "Open-source type foundry"
+        },
+        {
+          "rank": 40,
+          "id": "lost-type",
+          "name": "Lost Type",
+          "url": "https://www.losttype.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "pay-what-you-want",
+            "display"
+          ],
+          "fetch": "get",
+          "note": "Pay-what-you-want display faces"
+        },
+        {
+          "rank": 41,
+          "id": "indian-type-foundry",
+          "name": "Indian Type Foundry",
+          "url": "https://www.indiantypefoundry.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "multiscript"
+          ],
+          "fetch": "get",
+          "note": "Latin + Indic scripts"
+        },
+        {
+          "rank": 42,
+          "id": "fontstand",
+          "name": "Fontstand",
+          "url": "https://fontstand.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "rental",
+            "trial"
+          ],
+          "fetch": "get",
+          "note": "Rent premium fonts monthly"
+        },
+        {
+          "rank": 43,
+          "id": "myfonts",
+          "name": "MyFonts",
+          "url": "https://www.myfonts.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "marketplace"
+          ],
+          "fetch": "fetch",
+          "note": "Largest font marketplace"
+        },
+        {
+          "rank": 44,
+          "id": "geist",
+          "name": "Geist",
+          "url": "https://vercel.com/font",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free-commercial",
+            "ui",
+            "mono"
+          ],
+          "fetch": "get",
+          "note": "Vercel's sans and mono (OFL)"
+        },
+        {
+          "rank": 45,
+          "id": "mona-sans",
+          "name": "Mona Sans",
+          "url": "https://github.com/github/mona-sans",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free-commercial",
+            "variable"
+          ],
+          "fetch": "get",
+          "note": "GitHub's variable sans (OFL)"
+        },
+        {
+          "rank": 46,
+          "id": "atkinson-hyperlegible",
+          "name": "Atkinson Hyperlegible",
+          "url": "https://www.brailleinstitute.org/freefont/",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free",
+            "a11y",
+            "legibility"
+          ],
+          "fetch": "get",
+          "note": "Legibility-first face"
+        },
+        {
+          "rank": 47,
+          "id": "205tf",
+          "name": "205TF",
+          "url": "https://www.205.tf",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "french"
+          ],
+          "fetch": "get",
+          "note": "French type foundry"
+        },
+        {
+          "rank": 48,
+          "id": "bold-monday",
+          "name": "Bold Monday",
+          "url": "https://www.boldmonday.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium"
+          ],
+          "fetch": "get",
+          "note": "Dutch type foundry"
+        },
+        {
+          "rank": 49,
+          "id": "swiss-typefaces",
+          "name": "Swiss Typefaces",
+          "url": "https://www.swisstypefaces.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium",
+            "swiss"
+          ],
+          "fetch": "get",
+          "note": "Premium Swiss faces"
+        },
+        {
+          "rank": 50,
+          "id": "fontesk",
+          "name": "Fontesk",
+          "url": "https://fontesk.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "free",
+            "curated"
+          ],
+          "fetch": "get",
+          "note": "Curated free fonts with licences"
+        },
+        {
+          "rank": 51,
+          "id": "type-specimens",
+          "name": "Type Specimens",
+          "url": "https://typespecimens.xyz",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "specimens",
+            "inspiration"
+          ],
+          "fetch": "get",
+          "note": "Type specimen sites"
+        },
+        {
+          "rank": 52,
+          "id": "typographica",
+          "name": "Typographica",
+          "url": "https://typographica.org",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "reviews"
+          ],
+          "fetch": "get",
+          "note": "Typeface reviews"
+        },
+        {
+          "rank": 53,
+          "id": "typography-com",
+          "name": "Typography.com",
+          "url": "https://www.typography.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "premium"
+          ],
+          "fetch": "get",
+          "note": "Hoefler&Co"
+        }
+      ],
+      "pairings": [
+        {
+          "display": "Clash Display",
+          "text": "Satoshi",
+          "source": "Fontshare",
+          "licence": "free commercial",
+          "mood": "bold startup, product launch"
+        },
+        {
+          "display": "Zodiak",
+          "text": "General Sans",
+          "source": "Fontshare",
+          "licence": "free commercial",
+          "mood": "editorial premium"
+        },
+        {
+          "display": "Cabinet Grotesk",
+          "text": "Switzer",
+          "source": "Fontshare",
+          "licence": "free commercial",
+          "mood": "confident SaaS"
+        },
+        {
+          "display": "Erode",
+          "text": "Supreme",
+          "source": "Fontshare",
+          "licence": "free commercial",
+          "mood": "warm consumer"
+        },
+        {
+          "display": "Gambetta",
+          "text": "Satoshi",
+          "source": "Fontshare",
+          "licence": "free commercial",
+          "mood": "literary, notes, writing"
+        },
+        {
+          "display": "Instrument Serif",
+          "text": "Instrument Sans",
+          "source": "Google Fonts",
+          "licence": "OFL",
+          "mood": "calm editorial product"
+        },
+        {
+          "display": "Fraunces",
+          "text": "Hanken Grotesk",
+          "source": "Google Fonts",
+          "licence": "OFL",
+          "mood": "soft, friendly, craft"
+        },
+        {
+          "display": "Bricolage Grotesque",
+          "text": "Onest",
+          "source": "Google Fonts",
+          "licence": "OFL",
+          "mood": "playful modern"
+        },
+        {
+          "display": "Newsreader",
+          "text": "Schibsted Grotesk",
+          "source": "Google Fonts",
+          "licence": "OFL",
+          "mood": "news, knowledge, research"
+        },
+        {
+          "display": "Syne",
+          "text": "Familjen Grotesk",
+          "source": "Google Fonts",
+          "licence": "OFL",
+          "mood": "agency, art, culture"
+        },
+        {
+          "display": "Unbounded",
+          "text": "Geologica",
+          "source": "Google Fonts",
+          "licence": "OFL",
+          "mood": "web3, gaming, loud"
+        },
+        {
+          "display": "Young Serif",
+          "text": "Figtree",
+          "source": "Google Fonts",
+          "licence": "OFL",
+          "mood": "approachable lifestyle"
+        },
+        {
+          "display": "Geist",
+          "text": "Geist",
+          "mono": "Geist Mono",
+          "source": "Vercel",
+          "licence": "OFL",
+          "mood": "developer tool, precise"
+        },
+        {
+          "display": "Mona Sans (wide)",
+          "text": "Mona Sans",
+          "mono": "JetBrains Mono",
+          "source": "GitHub/JetBrains",
+          "licence": "OFL",
+          "mood": "dev platform"
+        },
+        {
+          "display": "PP Editorial New",
+          "text": "PP Neue Montreal",
+          "source": "Pangram Pangram",
+          "licence": "paid commercial",
+          "mood": "luxury, fashion, studio"
+        },
+        {
+          "display": "Neue Machina",
+          "text": "Neue Montreal",
+          "source": "Pangram Pangram",
+          "licence": "paid commercial",
+          "mood": "tech, futuristic"
+        }
+      ],
+      "banned": [
+        "Inter as display by reflex",
+        "Roboto",
+        "Poppins",
+        "Montserrat",
+        "Open Sans",
+        "Lato",
+        "Space Grotesk as default",
+        "Playfair Display + Poppins",
+        "Arial/Helvetica default stack"
+      ]
+    },
+    "motion": {
+      "title": "Animation, motion and smooth-scroll libraries",
+      "purpose": "Pick ONE primary engine per platform (references/PLATFORMS.md) plus Lenis for smooth scroll on the web.",
+      "pick": 5,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "gsap",
+          "name": "GSAP",
+          "url": "https://gsap.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "timeline",
+            "scrolltrigger",
+            "splittext",
+            "svg",
+            "flip",
+            "free"
+          ],
+          "fetch": "get",
+          "note": "npm i gsap — all plugins free (ScrollTrigger, SplitText, Flip, MorphSVG)",
+          "index": "https://gsap.com/llms.txt"
+        },
+        {
+          "rank": 2,
+          "id": "motion",
+          "name": "Motion",
+          "url": "https://motion.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "vue",
+            "js",
+            "layout",
+            "gestures"
+          ],
+          "fetch": "get",
+          "note": "npm i motion — default React engine (import from motion/react)",
+          "index": "https://motion.dev/llms.txt"
+        },
+        {
+          "rank": 3,
+          "id": "lenis",
+          "name": "Lenis",
+          "url": "https://lenis.darkroom.engineering",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "smooth-scroll"
+          ],
+          "fetch": "get",
+          "note": "npm i lenis — the smooth-scroll default; import lenis/dist/lenis.css",
+          "index": "https://lenis.darkroom.engineering/llms.txt"
+        },
+        {
+          "rank": 4,
+          "id": "anime-js",
+          "name": "Anime.js",
+          "url": "https://animejs.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "timeline",
+            "svg",
+            "stagger",
+            "draggable"
+          ],
+          "fetch": "get",
+          "note": "npm i animejs — v4 API"
+        },
+        {
+          "rank": 5,
+          "id": "theatre-js",
+          "name": "Theatre.js",
+          "url": "https://www.theatrejs.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "timeline-editor",
+            "3d"
+          ],
+          "fetch": "get",
+          "note": "Visual timeline editor for choreography"
+        },
+        {
+          "rank": 6,
+          "id": "dotlottie-web",
+          "name": "dotLottie web",
+          "url": "https://github.com/LottieFiles/dotlottie-web",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "lottie"
+          ],
+          "fetch": "get",
+          "note": "Lottie player for the web"
+        },
+        {
+          "rank": 7,
+          "id": "rive",
+          "name": "Rive",
+          "url": "https://rive.app",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "interactive",
+            "state-machine"
+          ],
+          "fetch": "get",
+          "note": "Interactive animations, runtimes for every platform"
+        },
+        {
+          "rank": 8,
+          "id": "three-js",
+          "name": "Three.js",
+          "url": "https://threejs.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "3d",
+            "webgl",
+            "webgpu"
+          ],
+          "fetch": "get",
+          "note": "The 3D engine"
+        },
+        {
+          "rank": 9,
+          "id": "react-three-fiber",
+          "name": "React Three Fiber",
+          "url": "https://r3f.docs.pmnd.rs",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "3d",
+            "react"
+          ],
+          "fetch": "get",
+          "note": "React renderer for Three.js"
+        },
+        {
+          "rank": 10,
+          "id": "ogl",
+          "name": "OGL",
+          "url": "https://github.com/oframe/ogl",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "webgl",
+            "minimal"
+          ],
+          "fetch": "get",
+          "note": "Minimal WebGL library"
+        },
+        {
+          "rank": 11,
+          "id": "pixijs",
+          "name": "PixiJS",
+          "url": "https://pixijs.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "2d",
+            "webgl"
+          ],
+          "fetch": "get",
+          "note": "Fast 2D WebGL renderer"
+        },
+        {
+          "rank": 12,
+          "id": "react-spring",
+          "name": "React Spring",
+          "url": "https://www.react-spring.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "react",
+            "physics"
+          ],
+          "fetch": "get",
+          "note": "Spring-physics animation"
+        },
+        {
+          "rank": 13,
+          "id": "autoanimate",
+          "name": "AutoAnimate",
+          "url": "https://auto-animate.formkit.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "list",
+            "zero-config"
+          ],
+          "fetch": "get",
+          "note": "One-line list/layout animations"
+        },
+        {
+          "rank": 14,
+          "id": "barba-js",
+          "name": "Barba.js",
+          "url": "https://barba.js.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "page-transitions"
+          ],
+          "fetch": "get",
+          "note": "Page transitions for multi-page sites"
+        },
+        {
+          "rank": 15,
+          "id": "swup",
+          "name": "Swup",
+          "url": "https://swup.js.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "page-transitions"
+          ],
+          "fetch": "get",
+          "note": "Page transitions with plugins"
+        },
+        {
+          "rank": 16,
+          "id": "locomotive-scroll",
+          "name": "Locomotive Scroll",
+          "url": "https://scroll.locomotive.ca",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "smooth-scroll",
+            "parallax"
+          ],
+          "fetch": "get",
+          "note": "v5 built on Lenis; parallax helpers"
+        },
+        {
+          "rank": 17,
+          "id": "splitting-js",
+          "name": "Splitting.js",
+          "url": "https://splitting.js.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "text-split"
+          ],
+          "fetch": "get",
+          "note": "Split text into chars/words/lines"
+        },
+        {
+          "rank": 18,
+          "id": "splittype",
+          "name": "SplitType",
+          "url": "https://github.com/lukePeavey/SplitType",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "text-split"
+          ],
+          "fetch": "get",
+          "note": "Text splitting for animation"
+        },
+        {
+          "rank": 19,
+          "id": "typed-js",
+          "name": "Typed.js",
+          "url": "https://mattboldt.com/demos/typed-js/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "typewriter"
+          ],
+          "fetch": "get",
+          "note": "Typewriter effect"
+        },
+        {
+          "rank": 20,
+          "id": "vivus",
+          "name": "Vivus",
+          "url": "https://maxwellito.github.io/vivus/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svg-draw"
+          ],
+          "fetch": "get",
+          "note": "SVG line drawing"
+        },
+        {
+          "rank": 21,
+          "id": "rough-notation",
+          "name": "Rough Notation",
+          "url": "https://roughnotation.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "annotation"
+          ],
+          "fetch": "get",
+          "note": "Hand-drawn annotations"
+        },
+        {
+          "rank": 22,
+          "id": "matter-js",
+          "name": "Matter.js",
+          "url": "https://brm.io/matter-js/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "physics"
+          ],
+          "fetch": "get",
+          "note": "2D physics"
+        },
+        {
+          "rank": 23,
+          "id": "tsparticles",
+          "name": "tsParticles",
+          "url": "https://particles.js.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "particles"
+          ],
+          "fetch": "get",
+          "note": "Particles and confetti"
+        },
+        {
+          "rank": 24,
+          "id": "atropos",
+          "name": "Atropos",
+          "url": "https://atroposjs.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tilt",
+            "parallax"
+          ],
+          "fetch": "get",
+          "note": "3D parallax hover"
+        },
+        {
+          "rank": 25,
+          "id": "vanilla-tilt",
+          "name": "vanilla-tilt",
+          "url": "https://micku7zu.github.io/vanilla-tilt.js/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "tilt"
+          ],
+          "fetch": "get",
+          "note": "Tilt on hover"
+        },
+        {
+          "rank": 26,
+          "id": "swiper",
+          "name": "Swiper",
+          "url": "https://swiperjs.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "carousel",
+            "touch"
+          ],
+          "fetch": "get",
+          "note": "Touch slider"
+        },
+        {
+          "rank": 27,
+          "id": "embla-carousel",
+          "name": "Embla Carousel",
+          "url": "https://www.embla-carousel.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "carousel"
+          ],
+          "fetch": "get",
+          "note": "Lightweight carousel (used by shadcn)"
+        },
+        {
+          "rank": 28,
+          "id": "keen-slider",
+          "name": "Keen Slider",
+          "url": "https://keen-slider.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "carousel"
+          ],
+          "fetch": "get",
+          "note": "Touch slider"
+        },
+        {
+          "rank": 29,
+          "id": "number-flow",
+          "name": "Number Flow",
+          "url": "https://number-flow.barvian.me",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "numbers"
+          ],
+          "fetch": "get",
+          "note": "Number transitions"
+        },
+        {
+          "rank": 30,
+          "id": "use-gesture",
+          "name": "use-gesture",
+          "url": "https://use-gesture.netlify.app",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "gestures",
+            "react"
+          ],
+          "fetch": "get",
+          "note": "Drag, pinch, wheel gestures"
+        },
+        {
+          "rank": 31,
+          "id": "view-transitions-api",
+          "name": "View Transitions API",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "page-transitions",
+            "native"
+          ],
+          "fetch": "get",
+          "note": "Native page/state transitions"
+        },
+        {
+          "rank": 32,
+          "id": "scroll-driven-animations",
+          "name": "Scroll-driven animations",
+          "url": "https://scroll-driven-animations.style",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "scroll"
+          ],
+          "fetch": "get",
+          "note": "CSS scroll-timeline demos"
+        },
+        {
+          "rank": 33,
+          "id": "web-animations-api",
+          "name": "Web Animations API",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "native"
+          ],
+          "fetch": "get",
+          "note": "Native animation API"
+        },
+        {
+          "rank": 34,
+          "id": "aos",
+          "name": "AOS",
+          "url": "https://michalsnik.github.io/aos/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "scroll-reveal",
+            "legacy"
+          ],
+          "fetch": "get",
+          "note": "Simple scroll reveals (use sparingly)"
+        },
+        {
+          "rank": 35,
+          "id": "scrollreveal",
+          "name": "ScrollReveal",
+          "url": "https://scrollrevealjs.org",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "scroll-reveal"
+          ],
+          "fetch": "get",
+          "note": "Scroll reveals"
+        },
+        {
+          "rank": 36,
+          "id": "mo-js",
+          "name": "mo.js",
+          "url": "https://mojs.github.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "bursts",
+            "motion-graphics"
+          ],
+          "fetch": "get",
+          "note": "Motion graphics toolbelt"
+        },
+        {
+          "rank": 37,
+          "id": "spline",
+          "name": "Spline",
+          "url": "https://spline.design",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "3d",
+            "runtime"
+          ],
+          "fetch": "fetch",
+          "note": "3D design with web/RN runtimes"
+        },
+        {
+          "rank": 38,
+          "id": "unicorn-studio",
+          "name": "Unicorn Studio",
+          "url": "https://www.unicorn.studio",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "webgl",
+            "no-code"
+          ],
+          "fetch": "fetch",
+          "note": "WebGL effects editor"
+        },
+        {
+          "rank": 39,
+          "id": "paper-shaders",
+          "name": "Paper Shaders",
+          "url": "https://shaders.paper.design",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "shader"
+          ],
+          "fetch": "get",
+          "note": "Shader backgrounds"
+        },
+        {
+          "rank": 40,
+          "id": "vanta",
+          "name": "Vanta",
+          "url": "https://www.vantajs.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "webgl",
+            "background"
+          ],
+          "fetch": "get",
+          "note": "3D backgrounds"
+        },
+        {
+          "rank": 41,
+          "id": "zdog",
+          "name": "Zdog",
+          "url": "https://zzz.dog",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "pseudo-3d"
+          ],
+          "fetch": "get",
+          "note": "Flat pseudo-3D engine"
+        },
+        {
+          "rank": 42,
+          "id": "jitter",
+          "name": "Jitter",
+          "url": "https://jitter.video",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "motion-spec",
+            "design-tool"
+          ],
+          "fetch": "fetch",
+          "note": "Motion design tool for specs"
+        },
+        {
+          "rank": 43,
+          "id": "reanimated",
+          "name": "Reanimated",
+          "url": "https://docs.swmansion.com/react-native-reanimated/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "ui-thread"
+          ],
+          "fetch": "get",
+          "note": "The RN animation engine"
+        },
+        {
+          "rank": 44,
+          "id": "gesture-handler",
+          "name": "Gesture Handler",
+          "url": "https://docs.swmansion.com/react-native-gesture-handler/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "gestures"
+          ],
+          "fetch": "get",
+          "note": "Native gestures for RN"
+        },
+        {
+          "rank": 45,
+          "id": "moti",
+          "name": "Moti",
+          "url": "https://moti.fyi",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "declarative"
+          ],
+          "fetch": "get",
+          "note": "Declarative Reanimated"
+        },
+        {
+          "rank": 46,
+          "id": "react-native-skia",
+          "name": "React Native Skia",
+          "url": "https://shopify.github.io/react-native-skia/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "shader"
+          ],
+          "fetch": "get",
+          "note": "GPU drawing and shaders"
+        },
+        {
+          "rank": 47,
+          "id": "lottie-react-native",
+          "name": "Lottie React Native",
+          "url": "https://github.com/lottie-react-native/lottie-react-native",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "lottie"
+          ],
+          "fetch": "get",
+          "note": "Lottie for RN"
+        },
+        {
+          "rank": 48,
+          "id": "rive-react-native",
+          "name": "Rive React Native",
+          "url": "https://github.com/rive-app/rive-react-native",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "react-native",
+            "rive"
+          ],
+          "fetch": "get",
+          "note": "Rive for RN"
+        },
+        {
+          "rank": 49,
+          "id": "flutter-animate",
+          "name": "flutter_animate",
+          "url": "https://pub.dev/packages/flutter_animate",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter"
+          ],
+          "fetch": "get",
+          "note": "Flutter animation effects"
+        },
+        {
+          "rank": 50,
+          "id": "flutter-animations",
+          "name": "Flutter animations",
+          "url": "https://pub.dev/packages/animations",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter",
+            "material-motion"
+          ],
+          "fetch": "get",
+          "note": "Material motion transitions"
+        },
+        {
+          "rank": 51,
+          "id": "rive-flutter",
+          "name": "Rive Flutter",
+          "url": "https://pub.dev/packages/rive",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "flutter",
+            "rive"
+          ],
+          "fetch": "get",
+          "note": "Rive for Flutter"
+        },
+        {
+          "rank": 52,
+          "id": "swiftui-animations",
+          "name": "SwiftUI animations",
+          "url": "https://developer.apple.com/documentation/swiftui/animations",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "swiftui",
+            "ios",
+            "macos"
+          ],
+          "fetch": "get",
+          "note": "Springs, matchedGeometryEffect, phase animators"
+        },
+        {
+          "rank": 53,
+          "id": "lottie-ios",
+          "name": "Lottie iOS",
+          "url": "https://github.com/airbnb/lottie-ios",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "ios",
+            "lottie"
+          ],
+          "fetch": "get",
+          "note": "Lottie for iOS"
+        },
+        {
+          "rank": 54,
+          "id": "compose-animation",
+          "name": "Compose animation",
+          "url": "https://developer.android.com/develop/ui/compose/animation/introduction",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "jetpack-compose"
+          ],
+          "fetch": "get",
+          "note": "Compose animation APIs"
+        },
+        {
+          "rank": 55,
+          "id": "lottie-android",
+          "name": "Lottie Android",
+          "url": "https://github.com/airbnb/lottie-android",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "android",
+            "lottie"
+          ],
+          "fetch": "get",
+          "note": "Lottie for Android/Compose"
+        },
+        {
+          "rank": 56,
+          "id": "motion-for-vue",
+          "name": "Motion for Vue",
+          "url": "https://motion.dev/docs/vue",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "vue",
+            "nuxt"
+          ],
+          "fetch": "get",
+          "note": "Motion's Vue API"
+        },
+        {
+          "rank": 57,
+          "id": "svelte-transitions",
+          "name": "Svelte transitions",
+          "url": "https://svelte.dev/docs/svelte/transition",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svelte"
+          ],
+          "fetch": "get",
+          "note": "Built-in Svelte transitions"
+        },
+        {
+          "rank": 58,
+          "id": "angular-animations",
+          "name": "Angular animations",
+          "url": "https://angular.dev/guide/animations",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "angular"
+          ],
+          "fetch": "get",
+          "note": "Angular animation system"
+        },
+        {
+          "rank": 59,
+          "id": "ionic-animations",
+          "name": "Ionic Animations",
+          "url": "https://ionicframework.com/docs/utilities/animations",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "capacitor",
+            "ionic"
+          ],
+          "fetch": "get",
+          "note": "Web Animations wrapper for Ionic/Capacitor"
+        },
+        {
+          "rank": 60,
+          "id": "animate-css",
+          "name": "Animate.css",
+          "url": "https://animate.style",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css"
+          ],
+          "fetch": "get",
+          "note": "CSS keyframe library"
+        }
+      ]
+    },
+    "templates": {
+      "title": "Templates and prompt sources (harvest sections, not whole sites)",
+      "purpose": "Find templates and prompt specs, then harvest only the sections you need with scripts/harvest.mjs.",
+      "pick": 6,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "motion-sites",
+          "name": "Motion Sites",
+          "url": "https://motionsites.ai",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "templates",
+            "motion",
+            "landing"
+          ],
+          "fetch": "fetch",
+          "note": "Full-site templates with prompt-style motion specs; has an MCP"
+        },
+        {
+          "rank": 2,
+          "id": "21st-dev",
+          "name": "21st.dev",
+          "url": "https://21st.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "components",
+            "sections"
+          ],
+          "fetch": "fetch",
+          "note": "Components plus prompts; .md twins",
+          "index": "https://21st.dev/llms.txt"
+        },
+        {
+          "rank": 3,
+          "id": "v0-community",
+          "name": "v0 Community",
+          "url": "https://v0.app",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "templates",
+            "react",
+            "shadcn"
+          ],
+          "fetch": "stealth",
+          "note": "Community generations with prompts and code"
+        },
+        {
+          "rank": 4,
+          "id": "aura",
+          "name": "Aura",
+          "url": "https://www.aura.build",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "templates",
+            "landing"
+          ],
+          "fetch": "fetch",
+          "note": "AI-built landing templates with prompts"
+        },
+        {
+          "rank": 5,
+          "id": "google-stitch",
+          "name": "Google Stitch",
+          "url": "https://stitch.withgoogle.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "prompts",
+            "mobile-app",
+            "web-app"
+          ],
+          "fetch": "stealth",
+          "note": "Prompt-to-UI for mobile and web"
+        },
+        {
+          "rank": 6,
+          "id": "magic-patterns",
+          "name": "Magic Patterns",
+          "url": "https://www.magicpatterns.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "prototypes"
+          ],
+          "fetch": "fetch",
+          "note": "Prompt-to-prototype gallery"
+        },
+        {
+          "rank": 7,
+          "id": "relume",
+          "name": "Relume",
+          "url": "https://www.relume.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "sections",
+            "sitemap",
+            "wireframe"
+          ],
+          "fetch": "fetch",
+          "note": "Section library and AI sitemaps; great for section order"
+        },
+        {
+          "rank": 8,
+          "id": "lovable",
+          "name": "Lovable",
+          "url": "https://lovable.dev",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "templates",
+            "apps"
+          ],
+          "fetch": "stealth",
+          "note": "Template remixes with prompts"
+        },
+        {
+          "rank": 9,
+          "id": "bolt",
+          "name": "Bolt",
+          "url": "https://bolt.new",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "prompts",
+            "expo",
+            "apps"
+          ],
+          "fetch": "stealth",
+          "note": "Prompt-built apps incl. Expo"
+        },
+        {
+          "rank": 10,
+          "id": "shadcnblocks-templates",
+          "name": "Shadcnblocks Templates",
+          "url": "https://www.shadcnblocks.com/templates",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "react",
+            "shadcn"
+          ],
+          "fetch": "get",
+          "note": "Full templates built from blocks"
+        },
+        {
+          "rank": 11,
+          "id": "tailwind-plus-templates",
+          "name": "Tailwind Plus Templates",
+          "url": "https://tailwindcss.com/plus/templates",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "next",
+            "licensed"
+          ],
+          "fetch": "get",
+          "note": "Official Tailwind templates (licensed)"
+        },
+        {
+          "rank": 12,
+          "id": "cruip",
+          "name": "Cruip",
+          "url": "https://cruip.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "landing",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Tailwind landing templates (free + paid)"
+        },
+        {
+          "rank": 13,
+          "id": "aceternity-templates",
+          "name": "Aceternity Templates",
+          "url": "https://ui.aceternity.com/templates",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "motion",
+            "next"
+          ],
+          "fetch": "get",
+          "note": "Animated Next.js templates"
+        },
+        {
+          "rank": 14,
+          "id": "page-ui",
+          "name": "Page UI",
+          "url": "https://pageui.shipixen.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "sections",
+            "landing",
+            "react"
+          ],
+          "fetch": "get",
+          "note": "Landing page sections for React"
+        },
+        {
+          "rank": 15,
+          "id": "launch-ui",
+          "name": "Launch UI",
+          "url": "https://www.launchuicomponents.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "sections",
+            "landing",
+            "shadcn"
+          ],
+          "fetch": "get",
+          "note": "Landing components for shadcn"
+        },
+        {
+          "rank": 16,
+          "id": "once-ui",
+          "name": "Once UI",
+          "url": "https://once-ui.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "design-system",
+            "next"
+          ],
+          "fetch": "get",
+          "note": "Next.js design system and templates"
+        },
+        {
+          "rank": 17,
+          "id": "vercel-templates",
+          "name": "Vercel Templates",
+          "url": "https://vercel.com/templates",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "next",
+            "starter"
+          ],
+          "fetch": "get",
+          "note": "Official starters across frameworks"
+        },
+        {
+          "rank": 18,
+          "id": "astro-themes",
+          "name": "Astro Themes",
+          "url": "https://astro.build/themes/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "astro"
+          ],
+          "fetch": "get",
+          "note": "Astro themes"
+        },
+        {
+          "rank": 19,
+          "id": "nuxt-templates",
+          "name": "Nuxt Templates",
+          "url": "https://nuxt.com/templates",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "nuxt",
+            "vue"
+          ],
+          "fetch": "get",
+          "note": "Nuxt templates"
+        },
+        {
+          "rank": 20,
+          "id": "framer-marketplace",
+          "name": "Framer Marketplace",
+          "url": "https://www.framer.com/marketplace/templates/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "motion",
+            "landing"
+          ],
+          "fetch": "fetch",
+          "note": "Framer templates with motion"
+        },
+        {
+          "rank": 21,
+          "id": "webflow-templates",
+          "name": "Webflow Templates",
+          "url": "https://webflow.com/templates",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "landing"
+          ],
+          "fetch": "fetch",
+          "note": "Webflow templates"
+        },
+        {
+          "rank": 22,
+          "id": "figma-community",
+          "name": "Figma Community",
+          "url": "https://www.figma.com/community",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "templates",
+            "mobile-app",
+            "ui-kit"
+          ],
+          "fetch": "stealth",
+          "note": "Open Figma files"
+        },
+        {
+          "rank": 23,
+          "id": "codepen",
+          "name": "CodePen",
+          "url": "https://codepen.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "snippets",
+            "effects"
+          ],
+          "fetch": "stealth",
+          "note": "Effect snippets",
+          "search": "https://codepen.io/search/pens?q={q}"
+        },
+        {
+          "rank": 24,
+          "id": "codesandbox",
+          "name": "CodeSandbox",
+          "url": "https://codesandbox.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "sandboxes",
+            "examples"
+          ],
+          "fetch": "fetch",
+          "note": "Runnable examples"
+        },
+        {
+          "rank": 25,
+          "id": "github-landing-page",
+          "name": "GitHub: landing-page",
+          "url": "https://github.com/topics/landing-page",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "oss",
+            "templates"
+          ],
+          "fetch": "get",
+          "note": "Open-source landing templates"
+        },
+        {
+          "rank": 26,
+          "id": "github-nextjs-template",
+          "name": "GitHub: nextjs-template",
+          "url": "https://github.com/topics/nextjs-template",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "oss",
+            "next"
+          ],
+          "fetch": "get",
+          "note": "Open-source Next.js templates"
+        },
+        {
+          "rank": 27,
+          "id": "github-react-native-template",
+          "name": "GitHub: react-native-template",
+          "url": "https://github.com/topics/react-native-template",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "oss",
+            "react-native"
+          ],
+          "fetch": "get",
+          "note": "RN templates"
+        },
+        {
+          "rank": 28,
+          "id": "github-expo-template",
+          "name": "GitHub: expo-template",
+          "url": "https://github.com/topics/expo-template",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "oss",
+            "expo"
+          ],
+          "fetch": "get",
+          "note": "Expo templates"
+        },
+        {
+          "rank": 29,
+          "id": "expo-examples",
+          "name": "Expo examples",
+          "url": "https://github.com/expo/examples",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "expo",
+            "examples"
+          ],
+          "fetch": "get",
+          "note": "Official Expo examples"
+        },
+        {
+          "rank": 30,
+          "id": "github-flutter-template",
+          "name": "GitHub: flutter-template",
+          "url": "https://github.com/topics/flutter-template",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "oss",
+            "flutter"
+          ],
+          "fetch": "get",
+          "note": "Flutter templates"
+        },
+        {
+          "rank": 31,
+          "id": "github-sveltekit-template",
+          "name": "GitHub: sveltekit-template",
+          "url": "https://github.com/topics/sveltekit-template",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "oss",
+            "svelte"
+          ],
+          "fetch": "get",
+          "note": "SvelteKit templates"
+        },
+        {
+          "rank": 32,
+          "id": "github-tauri-template",
+          "name": "GitHub: tauri-template",
+          "url": "https://github.com/topics/tauri-template",
+          "platforms": [
+            "desktop"
+          ],
+          "tags": [
+            "oss",
+            "tauri",
+            "desktop"
+          ],
+          "fetch": "get",
+          "note": "Tauri templates"
+        },
+        {
+          "rank": 33,
+          "id": "github-electron-template",
+          "name": "GitHub: electron-template",
+          "url": "https://github.com/topics/electron-template",
+          "platforms": [
+            "desktop"
+          ],
+          "tags": [
+            "oss",
+            "electron",
+            "desktop"
+          ],
+          "fetch": "get",
+          "note": "Electron templates"
+        },
+        {
+          "rank": 34,
+          "id": "next-js-saas-starter",
+          "name": "Next.js SaaS Starter",
+          "url": "https://github.com/nextjs/saas-starter",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "starter",
+            "saas"
+          ],
+          "fetch": "get",
+          "note": "Official Next.js SaaS starter"
+        },
+        {
+          "rank": 35,
+          "id": "html5-up",
+          "name": "HTML5 UP",
+          "url": "https://html5up.net",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "html"
+          ],
+          "fetch": "get",
+          "note": "Free HTML templates (CC BY)"
+        },
+        {
+          "rank": 36,
+          "id": "tailwind-awesome",
+          "name": "Tailwind Awesome",
+          "url": "https://www.tailwindawesome.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Tailwind templates directory"
+        },
+        {
+          "rank": 37,
+          "id": "untitled-ui",
+          "name": "Untitled UI",
+          "url": "https://www.untitledui.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "figma",
+            "ui-kit",
+            "react"
+          ],
+          "fetch": "fetch",
+          "note": "Figma kit + React components"
+        },
+        {
+          "rank": 38,
+          "id": "shadcn-ui-kit",
+          "name": "Shadcn UI Kit",
+          "url": "https://shadcnuikit.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "dashboard",
+            "shadcn"
+          ],
+          "fetch": "get",
+          "note": "Dashboard templates for shadcn"
+        },
+        {
+          "rank": 39,
+          "id": "ux-pilot",
+          "name": "UX Pilot",
+          "url": "https://uxpilot.ai",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "prompts",
+            "wireframes"
+          ],
+          "fetch": "fetch",
+          "note": "Prompt-to-UI and wireframes"
+        },
+        {
+          "rank": 40,
+          "id": "uizard",
+          "name": "Uizard",
+          "url": "https://uizard.io",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "prompts",
+            "mobile-app",
+            "templates"
+          ],
+          "fetch": "fetch",
+          "note": "AI UI templates for app and web"
+        },
+        {
+          "rank": 41,
+          "id": "visily",
+          "name": "Visily",
+          "url": "https://www.visily.ai",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "prompts",
+            "templates"
+          ],
+          "fetch": "fetch",
+          "note": "AI wireframe templates"
+        },
+        {
+          "rank": 42,
+          "id": "banani",
+          "name": "Banani",
+          "url": "https://www.banani.co",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "prompts",
+            "mobile-app"
+          ],
+          "fetch": "fetch",
+          "note": "Prompt-to-UI designs"
+        },
+        {
+          "rank": 43,
+          "id": "subframe",
+          "name": "Subframe",
+          "url": "https://www.subframe.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "react",
+            "tailwind"
+          ],
+          "fetch": "fetch",
+          "note": "Visual editor exporting React+Tailwind"
+        },
+        {
+          "rank": 44,
+          "id": "builder-io",
+          "name": "Builder.io",
+          "url": "https://www.builder.io",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "figma-to-code",
+            "templates"
+          ],
+          "fetch": "fetch",
+          "note": "Visual Copilot and templates"
+        },
+        {
+          "rank": 45,
+          "id": "onlook",
+          "name": "Onlook",
+          "url": "https://onlook.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "prompts",
+            "react",
+            "visual"
+          ],
+          "fetch": "fetch",
+          "note": "Visual editor for React"
+        },
+        {
+          "rank": 46,
+          "id": "same",
+          "name": "Same",
+          "url": "https://same.new",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "clone",
+            "prompts"
+          ],
+          "fetch": "fetch",
+          "note": "UI cloning from a URL"
+        },
+        {
+          "rank": 47,
+          "id": "locofy",
+          "name": "Locofy",
+          "url": "https://www.locofy.ai",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "figma-to-code",
+            "react-native",
+            "flutter"
+          ],
+          "fetch": "fetch",
+          "note": "Design-to-code for web and mobile"
+        },
+        {
+          "rank": 48,
+          "id": "prompts-chat",
+          "name": "prompts.chat",
+          "url": "https://prompts.chat",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "prompts",
+            "library"
+          ],
+          "fetch": "get",
+          "note": "Open prompt library"
+        },
+        {
+          "rank": 49,
+          "id": "promptbase",
+          "name": "PromptBase",
+          "url": "https://promptbase.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "prompts",
+            "marketplace"
+          ],
+          "fetch": "fetch",
+          "note": "Prompt marketplace"
+        },
+        {
+          "rank": 50,
+          "id": "themeforest",
+          "name": "ThemeForest",
+          "url": "https://themeforest.net",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "licensed"
+          ],
+          "fetch": "stealth",
+          "note": "Paid templates; harvest structure only unless licensed"
+        },
+        {
+          "rank": 51,
+          "id": "lapa-ninja-templates",
+          "name": "Lapa Ninja Templates",
+          "url": "https://www.lapa.ninja/templates/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "templates",
+            "landing"
+          ],
+          "fetch": "fetch",
+          "note": "Landing templates"
+        },
+        {
+          "rank": 52,
+          "id": "mobbin-explore",
+          "name": "Mobbin Explore",
+          "url": "https://mobbin.com/explore",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "flows",
+            "mobile-app"
+          ],
+          "fetch": "fetch",
+          "note": "Flow structures for app screens"
+        },
+        {
+          "rank": 53,
+          "id": "instamobile",
+          "name": "Instamobile",
+          "url": "https://instamobile.io",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "templates",
+            "react-native",
+            "flutter"
+          ],
+          "fetch": "fetch",
+          "note": "RN and Flutter app templates"
+        }
+      ]
+    },
+    "assets": {
+      "title": "Icons, illustration, 3D, imagery, colour and texture",
+      "purpose": "One icon library per project; colour built in OKLCH with contrast checked; assets licensed.",
+      "pick": 6,
+      "entries": [
+        {
+          "rank": 1,
+          "id": "lucide",
+          "name": "Lucide",
+          "url": "https://lucide.dev",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "react",
+            "vue",
+            "svelte",
+            "react-native",
+            "flutter"
+          ],
+          "fetch": "get",
+          "note": "Default icon set (shadcn); RN via lucide-react-native",
+          "search": "https://lucide.dev/icons/?search={q}"
+        },
+        {
+          "rank": 2,
+          "id": "phosphor",
+          "name": "Phosphor",
+          "url": "https://phosphoricons.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "weights",
+            "react",
+            "vue",
+            "flutter",
+            "swift"
+          ],
+          "fetch": "get",
+          "note": "Six weights incl. duotone"
+        },
+        {
+          "rank": 3,
+          "id": "tabler-icons",
+          "name": "Tabler Icons",
+          "url": "https://tabler.io/icons",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "react",
+            "vue",
+            "svelte"
+          ],
+          "fetch": "get",
+          "note": "5000+ stroke icons"
+        },
+        {
+          "rank": 4,
+          "id": "heroicons",
+          "name": "Heroicons",
+          "url": "https://heroicons.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "icons",
+            "tailwind"
+          ],
+          "fetch": "get",
+          "note": "Tailwind Labs icons"
+        },
+        {
+          "rank": 5,
+          "id": "radix-icons",
+          "name": "Radix Icons",
+          "url": "https://www.radix-ui.com/icons",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "icons",
+            "15px"
+          ],
+          "fetch": "get",
+          "note": "Crisp 15px icons"
+        },
+        {
+          "rank": 6,
+          "id": "iconoir",
+          "name": "Iconoir",
+          "url": "https://iconoir.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "react",
+            "flutter",
+            "react-native"
+          ],
+          "fetch": "get",
+          "note": "Open icon set"
+        },
+        {
+          "rank": 7,
+          "id": "remix-icon",
+          "name": "Remix Icon",
+          "url": "https://remixicon.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons"
+          ],
+          "fetch": "get",
+          "note": "Neutral system icons"
+        },
+        {
+          "rank": 8,
+          "id": "material-symbols",
+          "name": "Material Symbols",
+          "url": "https://fonts.google.com/icons",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "android",
+            "material",
+            "variable"
+          ],
+          "fetch": "fetch",
+          "note": "Variable icon font"
+        },
+        {
+          "rank": 9,
+          "id": "hugeicons",
+          "name": "Hugeicons",
+          "url": "https://hugeicons.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "react",
+            "flutter"
+          ],
+          "fetch": "get",
+          "note": "Large icon library (free + pro)"
+        },
+        {
+          "rank": 10,
+          "id": "iconify",
+          "name": "Iconify",
+          "url": "https://icon-sets.iconify.design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "meta",
+            "any-framework"
+          ],
+          "fetch": "get",
+          "note": "200k icons from 150 sets; one API",
+          "search": "https://icon-sets.iconify.design/?query={q}"
+        },
+        {
+          "rank": 11,
+          "id": "sf-symbols",
+          "name": "SF Symbols",
+          "url": "https://developer.apple.com/sf-symbols/",
+          "platforms": [
+            "mobile"
+          ],
+          "tags": [
+            "icons",
+            "ios",
+            "macos",
+            "native"
+          ],
+          "fetch": "get",
+          "note": "Apple platform icons (native only)"
+        },
+        {
+          "rank": 12,
+          "id": "fluent-ui-system-icons",
+          "name": "Fluent UI System Icons",
+          "url": "https://github.com/microsoft/fluentui-system-icons",
+          "platforms": [
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "windows",
+            "fluent"
+          ],
+          "fetch": "get",
+          "note": "Windows/Fluent icons"
+        },
+        {
+          "rank": 13,
+          "id": "simple-icons",
+          "name": "Simple Icons",
+          "url": "https://simpleicons.org",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "brand-icons",
+            "logos"
+          ],
+          "fetch": "get",
+          "note": "Brand logos as SVG"
+        },
+        {
+          "rank": 14,
+          "id": "lineicons",
+          "name": "Lineicons",
+          "url": "https://lineicons.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons"
+          ],
+          "fetch": "get",
+          "note": "Line icons"
+        },
+        {
+          "rank": 15,
+          "id": "streamline",
+          "name": "Streamline",
+          "url": "https://www.streamlinehq.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons",
+            "illustrations"
+          ],
+          "fetch": "fetch",
+          "note": "Huge icon and illustration library"
+        },
+        {
+          "rank": 16,
+          "id": "ionicons",
+          "name": "Ionicons",
+          "url": "https://ionic.io/ionicons",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "icons",
+            "ionic",
+            "capacitor",
+            "react-native"
+          ],
+          "fetch": "get",
+          "note": "Ionic/Expo default icons"
+        },
+        {
+          "rank": 17,
+          "id": "bootstrap-icons",
+          "name": "Bootstrap Icons",
+          "url": "https://icons.getbootstrap.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "icons"
+          ],
+          "fetch": "get",
+          "note": "Bootstrap icon set"
+        },
+        {
+          "rank": 18,
+          "id": "akar-icons",
+          "name": "Akar Icons",
+          "url": "https://akaricons.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "icons",
+            "rounded"
+          ],
+          "fetch": "get",
+          "note": "Rounded stroke icons"
+        },
+        {
+          "rank": 19,
+          "id": "css-gg",
+          "name": "css.gg",
+          "url": "https://css.gg",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "icons",
+            "css"
+          ],
+          "fetch": "get",
+          "note": "Pure-CSS icons"
+        },
+        {
+          "rank": 20,
+          "id": "mingcute",
+          "name": "MingCute",
+          "url": "https://www.mingcute.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "icons"
+          ],
+          "fetch": "get",
+          "note": "Cute rounded icons"
+        },
+        {
+          "rank": 21,
+          "id": "pixelarticons",
+          "name": "Pixelarticons",
+          "url": "https://pixelarticons.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "icons",
+            "pixel",
+            "retro"
+          ],
+          "fetch": "get",
+          "note": "Pixel-art icons"
+        },
+        {
+          "rank": 22,
+          "id": "undraw",
+          "name": "unDraw",
+          "url": "https://undraw.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "illustration",
+            "svg",
+            "recolourable"
+          ],
+          "fetch": "get",
+          "note": "Recolourable open illustrations"
+        },
+        {
+          "rank": 23,
+          "id": "storyset",
+          "name": "Storyset",
+          "url": "https://storyset.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "illustration",
+            "animated"
+          ],
+          "fetch": "get",
+          "note": "Animated illustrations"
+        },
+        {
+          "rank": 24,
+          "id": "blush",
+          "name": "Blush",
+          "url": "https://blush.design",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "illustration",
+            "customizable"
+          ],
+          "fetch": "fetch",
+          "note": "Customizable illustration systems"
+        },
+        {
+          "rank": 25,
+          "id": "open-peeps",
+          "name": "Open Peeps",
+          "url": "https://www.openpeeps.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "illustration",
+            "people"
+          ],
+          "fetch": "get",
+          "note": "Hand-drawn people (CC0)"
+        },
+        {
+          "rank": 26,
+          "id": "3dicons",
+          "name": "3dicons",
+          "url": "https://3dicons.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "3d",
+            "icons"
+          ],
+          "fetch": "get",
+          "note": "Open 3D icons"
+        },
+        {
+          "rank": 27,
+          "id": "sketchfab",
+          "name": "Sketchfab",
+          "url": "https://sketchfab.com",
+          "platforms": [
+            "web",
+            "mobile"
+          ],
+          "tags": [
+            "3d",
+            "models",
+            "glb"
+          ],
+          "fetch": "fetch",
+          "note": "3D models (check licence)"
+        },
+        {
+          "rank": 28,
+          "id": "poly-haven",
+          "name": "Poly Haven",
+          "url": "https://polyhaven.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "3d",
+            "hdri",
+            "textures",
+            "cc0"
+          ],
+          "fetch": "get",
+          "note": "CC0 HDRIs, textures, models"
+        },
+        {
+          "rank": 29,
+          "id": "poly-pizza",
+          "name": "Poly Pizza",
+          "url": "https://poly.pizza",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "3d",
+            "low-poly"
+          ],
+          "fetch": "get",
+          "note": "Free low-poly models"
+        },
+        {
+          "rank": 30,
+          "id": "kenney",
+          "name": "Kenney",
+          "url": "https://kenney.nl",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "game-assets",
+            "cc0"
+          ],
+          "fetch": "get",
+          "note": "CC0 game assets"
+        },
+        {
+          "rank": 31,
+          "id": "unsplash",
+          "name": "Unsplash",
+          "url": "https://unsplash.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "photos"
+          ],
+          "fetch": "fetch",
+          "note": "Free photos (Unsplash licence)",
+          "search": "https://unsplash.com/s/photos/{slug}"
+        },
+        {
+          "rank": 32,
+          "id": "pexels",
+          "name": "Pexels",
+          "url": "https://www.pexels.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "photos",
+            "video"
+          ],
+          "fetch": "stealth",
+          "note": "Free photos and video",
+          "search": "https://www.pexels.com/search/{slug}/"
+        },
+        {
+          "rank": 33,
+          "id": "coverr",
+          "name": "Coverr",
+          "url": "https://coverr.co",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "video",
+            "hero"
+          ],
+          "fetch": "fetch",
+          "note": "Free background video"
+        },
+        {
+          "rank": 34,
+          "id": "mixkit",
+          "name": "Mixkit",
+          "url": "https://mixkit.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "video",
+            "music",
+            "sfx"
+          ],
+          "fetch": "get",
+          "note": "Free video, music, SFX"
+        },
+        {
+          "rank": 35,
+          "id": "lummi",
+          "name": "Lummi",
+          "url": "https://www.lummi.ai",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "photos",
+            "ai-stock"
+          ],
+          "fetch": "fetch",
+          "note": "Free AI stock imagery"
+        },
+        {
+          "rank": 36,
+          "id": "coolors",
+          "name": "Coolors",
+          "url": "https://coolors.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "palettes"
+          ],
+          "fetch": "fetch",
+          "note": "Palette generator"
+        },
+        {
+          "rank": 37,
+          "id": "realtime-colors",
+          "name": "Realtime Colors",
+          "url": "https://www.realtimecolors.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "colour",
+            "preview",
+            "tokens"
+          ],
+          "fetch": "get",
+          "note": "Preview palettes on a real layout; exports tokens"
+        },
+        {
+          "rank": 38,
+          "id": "huemint",
+          "name": "Huemint",
+          "url": "https://huemint.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "ml"
+          ],
+          "fetch": "get",
+          "note": "ML palette generation by layout"
+        },
+        {
+          "rank": 39,
+          "id": "radix-colors",
+          "name": "Radix Colors",
+          "url": "https://www.radix-ui.com/colors",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "scales",
+            "dark-mode"
+          ],
+          "fetch": "get",
+          "note": "12-step accessible scales"
+        },
+        {
+          "rank": 40,
+          "id": "tailwind-colors",
+          "name": "Tailwind Colors",
+          "url": "https://tailwindcss.com/docs/colors",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "colour",
+            "oklch"
+          ],
+          "fetch": "get",
+          "note": "OKLCH default palette"
+        },
+        {
+          "rank": 41,
+          "id": "ui-colors",
+          "name": "UI Colors",
+          "url": "https://uicolors.app",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "colour",
+            "tailwind-scale"
+          ],
+          "fetch": "get",
+          "note": "Generate Tailwind 50-950 scales"
+        },
+        {
+          "rank": 42,
+          "id": "happy-hues",
+          "name": "Happy Hues",
+          "url": "https://www.happyhues.co",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "colour",
+            "in-context"
+          ],
+          "fetch": "get",
+          "note": "Palettes shown in context"
+        },
+        {
+          "rank": 43,
+          "id": "color-hunt",
+          "name": "Color Hunt",
+          "url": "https://colorhunt.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "palettes"
+          ],
+          "fetch": "get",
+          "note": "Curated palettes"
+        },
+        {
+          "rank": 44,
+          "id": "oklch-picker",
+          "name": "OKLCH Picker",
+          "url": "https://oklch.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "oklch"
+          ],
+          "fetch": "get",
+          "note": "OKLCH picker and converter"
+        },
+        {
+          "rank": 45,
+          "id": "adobe-color",
+          "name": "Adobe Color",
+          "url": "https://color.adobe.com",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "harmony",
+            "a11y"
+          ],
+          "fetch": "fetch",
+          "note": "Harmony rules and accessibility tools"
+        },
+        {
+          "rank": 46,
+          "id": "khroma",
+          "name": "Khroma",
+          "url": "https://www.khroma.co",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "colour",
+            "ai"
+          ],
+          "fetch": "get",
+          "note": "AI colour preferences"
+        },
+        {
+          "rank": 47,
+          "id": "haikei",
+          "name": "Haikei",
+          "url": "https://haikei.app",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svg",
+            "backgrounds",
+            "blobs",
+            "waves"
+          ],
+          "fetch": "get",
+          "note": "Generative SVG backgrounds"
+        },
+        {
+          "rank": 48,
+          "id": "fffuel",
+          "name": "fffuel",
+          "url": "https://www.fffuel.co",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svg",
+            "gradients",
+            "noise",
+            "textures"
+          ],
+          "fetch": "get",
+          "note": "SVG generators: grain, gradients, patterns"
+        },
+        {
+          "rank": 49,
+          "id": "grainy-gradients-css-tricks",
+          "name": "Grainy Gradients (CSS-Tricks)",
+          "url": "https://css-tricks.com/grainy-gradients/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "gradients",
+            "noise"
+          ],
+          "fetch": "get",
+          "note": "Technique for grainy CSS gradients"
+        },
+        {
+          "rank": 50,
+          "id": "css-hero-mesher",
+          "name": "CSS Hero Mesher",
+          "url": "https://csshero.org/mesher/",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "mesh-gradient",
+            "css"
+          ],
+          "fetch": "get",
+          "note": "CSS mesh gradients"
+        },
+        {
+          "rank": 51,
+          "id": "bgjar",
+          "name": "BGJar",
+          "url": "https://bgjar.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svg",
+            "backgrounds"
+          ],
+          "fetch": "get",
+          "note": "Free SVG backgrounds"
+        },
+        {
+          "rank": 52,
+          "id": "hero-patterns",
+          "name": "Hero Patterns",
+          "url": "https://heropatterns.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "patterns",
+            "svg"
+          ],
+          "fetch": "get",
+          "note": "Repeatable SVG patterns"
+        },
+        {
+          "rank": 53,
+          "id": "svg-backgrounds",
+          "name": "SVG Backgrounds",
+          "url": "https://www.svgbackgrounds.com",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "svg",
+            "backgrounds"
+          ],
+          "fetch": "get",
+          "note": "Customizable SVG backgrounds"
+        },
+        {
+          "rank": 54,
+          "id": "pattern-monster",
+          "name": "Pattern Monster",
+          "url": "https://pattern.monster",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "patterns",
+            "svg"
+          ],
+          "fetch": "get",
+          "note": "SVG pattern generator"
+        },
+        {
+          "rank": 55,
+          "id": "magic-pattern-tools",
+          "name": "Magic Pattern tools",
+          "url": "https://www.magicpattern.design/tools",
+          "platforms": [
+            "web"
+          ],
+          "tags": [
+            "css",
+            "patterns",
+            "gradients"
+          ],
+          "fetch": "get",
+          "note": "CSS backgrounds, blobs, gradients"
+        },
+        {
+          "rank": 56,
+          "id": "shots",
+          "name": "Shots",
+          "url": "https://shots.so",
+          "platforms": [
+            "web",
+            "mobile",
+            "desktop"
+          ],
+          "tags": [
+            "mockups",
+            "devices"
+          ],
+          "fetch": "fetch",
+          "note": "Device mockups for screenshots"
+        }
+      ]
+    }
+  }
+}

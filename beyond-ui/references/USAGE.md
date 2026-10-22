@@ -57,7 +57,7 @@ this file applies it to the run itself:
 ## The gate
 
 ```bash
-node scripts/verify-run.mjs            # runs G1–G19, stamps state.json -> enforcement, exit 1 on any fail
+node scripts/verify-run.mjs            # runs G1–G21, stamps state.json -> enforcement, exit 1 on any fail
 ```
 
 Gates: G1 state · G2 scout evidence · G3 routed skills (5 permanent + 5 selected, never 33) ·
@@ -73,7 +73,12 @@ G16 state coverage (every async surface designs loading + empty + error — `sta
 G17 craft (zero critical CRAFT.md defects in the source — `craft-check.mjs`) ·
 G18 production (crawl surface, per-page metadata, share images, headers and real 404s verified against a
 production build — `production-check.mjs`; n/a when `surface` is `component`) ·
-G19 parity (the signed-off design was frozen and every later pass left it intact — `parity.mjs`).
+G19 parity (the signed-off design was frozen and every later pass left it intact — `parity.mjs`) ·
+G2b auto-sourcing (the catalog was fetched with Scrapling, 8+ reference images saved and recorded as viewed — `sources.mjs`) ·
+G20 fidelity (85% of sections from the anchor and references, evidence on disk — `fidelity.mjs`) ·
+G21 type (fonts chosen from a rendered specimen across 10 free libraries, no overused defaults — `fonts.mjs`).
+Native apps without a web preview satisfy G9/G14/G15/G19 with `.beyond-ui/native-evidence.json` and G18 with
+`.beyond-ui/store-checklist.json` (`references/PLATFORMS.md`).
 
 Phase specialists (`references/PLAYBOOK.md` §2) are cited like routed skills, `skill://<name> -> <rule>`,
 and recorded in `state.skills.invoked`. CRAFT recipes are cited as `CRAFT R<n>`.

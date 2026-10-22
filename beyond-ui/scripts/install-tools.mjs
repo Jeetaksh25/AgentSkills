@@ -26,10 +26,16 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 
 const skillRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const projectDir = path.resolve(process.argv[2] || process.cwd());
+const projectArg = process.argv.slice(2).find((a) => !a.startsWith("-"));
+if (process.argv.includes("--help") || process.argv.includes("-h")) {
+  console.log("usage: node <skill>/scripts/install-tools.mjs [projectDir]   (run from the target project, never from the skill folder)");
+  process.exit(0);
+}
+const projectDir = path.resolve(projectArg || process.cwd());
 const statePath = path.join(projectDir, ".beyond-ui", "state.json");
 
 const log = (...a) => console.log(...a);
+process.env.PLAYWRIGHT_SKIP_BROWSER_GC = "1";
 const run = (cmd, args, opts = {}) =>
   execFileSync(cmd, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], shell: process.platform === "win32", ...opts });
 
@@ -96,7 +102,7 @@ function installPlaywright() {
     log("  chromium binary present");
   } else {
     log("  downloading chromium (npx playwright install chromium)…");
-    try { run("npx", ["playwright", "install", "chromium"], { timeout: 10 * 60 * 1000 }); out.chromium = true; }
+    try { run("npx", ["playwright", "install", "chromium"], { timeout: 10 * 60 * 1000, env: { ...process.env, PLAYWRIGHT_SKIP_BROWSER_GC: "1" } }); out.chromium = true; }
     catch (e) { log("  FAILED: chromium download —", String(e.stderr || e.message).split("\n")[0]); }
   }
   return out;
@@ -231,6 +237,7 @@ function installScrapling(cfg) {
         const args = ["install", "--force"];
         if (out.engine === "module") run(out.docker ? "docker" : (python || "python"), ["-m", "scrapling.cli", ...args], { timeout: 20 * 60 * 1000 });
         else run("scrapling", args, { timeout: 20 * 60 * 1000 });
+        for (const py of [python, "python", "python3", "py"].filter(Boolean)) { try { run(py, ["-m", "patchright", "install", "chromium"], { timeout: 20 * 60 * 1000 }); break; } catch { /* next interpreter */ } }
         log("  scrapling browsers ready");
       } catch (e) { log(`  scrapling browsers NOT installed — ${String(e.stderr || e.message).split("\n")[0]} (get works; fetch/stealthy-fetch may not)`); }
     }
@@ -281,6 +288,7 @@ async function installBrowserUse(cfg) {
 function installAgentSkills() {
   const wanted = [
     ["lackeyjb/playwright-skill", "playwright-skill", "Playwright automation for coding agents"],
+    ["browser-use/browser-use", "browser-use", "Browser Use (official skill folder from GitHub): human-like browsing for QA and JS-heavy reference sites"],
   ];
   const results = {};
   for (const [repo, skill, why] of wanted) {

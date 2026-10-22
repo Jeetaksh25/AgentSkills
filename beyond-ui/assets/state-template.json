@@ -1,8 +1,8 @@
 {
   "skill": "beyond-ui",
-  "version": 3,
+  "version": 5,
   "started": "<ISO date>",
-  "surface": "<landing page | dashboard | component | app | mobile app>",
+  "surface": "<landing page | app | dashboard | component | mobile app | desktop app>",
   "stack": {
     "framework": "",
     "frameworkVersion": "",
@@ -181,7 +181,10 @@
         "candidate": "",
         "reason": ""
       }
-    ]
+    ],
+    "fetchLog": ".beyond-ui/fetch-log.json",
+    "imagesViewed": [],
+    "_imagesNote": "record only images actually opened: sources.mjs viewed <files> (G2b)"
   },
   "components": {
     "shadcn": [],
@@ -311,5 +314,30 @@
     "gatesBelowThree": []
   },
   "deferred": [],
-  "notes": ""
+  "notes": "",
+  "platform": {
+    "report": ".beyond-ui/platform.json",
+    "kinds": [],
+    "framework": "",
+    "webPreview": true,
+    "_note": "sources.mjs detect; references/PLATFORMS.md"
+  },
+  "brief": {
+    "file": ".beyond-ui/brief.md",
+    "idea": "",
+    "domainInventory": [],
+    "_note": "sources.mjs brief; every inventory item must be on screen"
+  },
+  "fidelity": {
+    "file": ".beyond-ui/fidelity.json",
+    "report": ".beyond-ui/fidelity-report.json",
+    "anchor": "",
+    "pass": null,
+    "_note": "85/15 (G20)"
+  },
+  "fonts": {
+    "choice": ".beyond-ui/fonts/choice.json",
+    "brandLocked": false,
+    "_note": "fonts.mjs search/specimen/choose (G21); brandLocked only when the brand's own fonts are kept"
+  }
 }

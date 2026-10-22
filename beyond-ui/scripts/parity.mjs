@@ -13,6 +13,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { launchChromium } from "./lib/browser.mjs";
 
 const argv = process.argv.slice(2);
 const mode = argv[0];
@@ -42,17 +43,6 @@ const STOPS = [0, 0.25, 0.5, 0.75, 1];
 if (!["baseline", "check"].includes(mode) || !url) {
   console.log("usage: node scripts/parity.mjs baseline|check <url> [--routes / /x] [--viewports 1440x900,390x844] [--reason \"...\"] [--mask sel] [--threshold 1.5]");
   process.exit(2);
-}
-
-async function loadPlaywright() {
-  const { createRequire } = await import("node:module");
-  const tries = [
-    () => import("playwright"),
-    () => createRequire(path.join(projectDir, "package.json"))("playwright"),
-    () => createRequire(projectDir)("playwright"),
-  ];
-  for (const t of tries) { try { return await t(); } catch { /* next */ } }
-  return null;
 }
 
 const normRoute = (r) => {
@@ -121,9 +111,8 @@ async function capture(browser, kind, cfg, differ) {
   return shots;
 }
 
-const pw = await loadPlaywright();
-if (!pw) { console.log("parity: playwright not installed — run `node scripts/install-tools.mjs`"); process.exit(1); }
-const browser = await pw.chromium.launch();
+const browser = await launchChromium(projectDir);
+if (!browser) { console.log("parity: playwright not installed — run `node scripts/install-tools.mjs`"); process.exit(1); }
 const differ = await browser.newPage();
 
 if (mode === "baseline") {

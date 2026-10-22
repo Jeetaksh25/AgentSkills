@@ -1,5 +1,7 @@
 # Component registries — install facts
 
+> **Canonical ranked lists live in `assets/sources.json` (461 sources, 8 categories) and `references/SOURCES-CATALOG.md`.** `scripts/sources.mjs pick` chooses from them automatically and `fetch` retrieves them with Scrapling; this file is narrative depth.
+
 Every entry is a way to get a *finished* component instead of writing one. Registries marked with a
 namespace install directly into the shadcn system (`components/ui` + the same CSS variables), which is
 why shadcn is the base: it makes all of them composable.

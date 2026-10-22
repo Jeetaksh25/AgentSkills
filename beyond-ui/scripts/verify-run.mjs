@@ -5,7 +5,7 @@
  * the 5-reference selection and teardown (never 10), the synthesized project skill, rule citations
  * (including one per active skill), critique scores, verify evidence, the plan, the import-first
  * ledger, the human-like QA journey, the rendered-page critique, state coverage, the CRAFT.md audit,
- * the production pass and design parity (G1-G19).
+ * the production pass, design parity, auto-sourcing, 85/15 fidelity and type choice (G1-G21).
  *
  *   node scripts/verify-run.mjs [projectDir] [--min-citations N]
  *
@@ -32,14 +32,29 @@ console.log(`beyond-ui enforcement gate — ${projectDir}`);
 
 // G1 state
 const state = readJson(path.join(beyondDir, "state.json"));
+const platform = readJson(path.join(beyondDir, "platform.json")) || {};
+const nativeOnly = platform.webPreview === false;
+const nativeEv = readJson(path.join(beyondDir, "native-evidence.json"));
+const nativeShots = (nativeEv?.screenshots || []).filter((f) => fs.existsSync(path.resolve(projectDir, f)));
+const nativeOk = !!nativeEv && nativeEv.pass === true && nativeShots.length >= 3 && (nativeEv.devices || []).length >= 2
+  && ["reducedMotion", "largeText", "screenReader", "flow"].every((k) => nativeEv[k] === "pass");
 gate("G1", "state.json present", !!state, state ? "" : "run scripts/scaffold-state.mjs");
 
 // G2 scout
 const scout = readMd(path.join(beyondDir, "scout.md"));
 const scoutUrls = new Set((scout.match(/https?:\/\/[^\s)|`"\]]+/g) || []));
-const libCmds = (scout.match(/npx\s+(shadcn|skills|skills@latest|@21st-dev)/g) || []).length;
+const libCmds = (scout.match(/npx\s+(shadcn|shadcn-vue|shadcn-svelte|skills|skills@latest|@21st-dev|expo install|@react-native-reusables|jsrepo|nuxi)|(npm i|npm install|pnpm add|bun add|yarn add)\s+\S+|flutter pub add|dart pub add|ng add|swift package add|implementation\(/g) || []).length;
 gate("G2", "scout.md cites 4+ URLs + library map", scoutUrls.size >= 4 && libCmds >= 1,
   `${scoutUrls.size} urls, ${libCmds} install commands`);
+
+// G2b auto-sourcing — the catalog was fetched with Scrapling and the reference images were looked at
+const fetchLog = readJson(path.join(beyondDir, "fetch-log.json"));
+const scraplingMissing = state?.tools?.scrapling?.engine === "none";
+const viewed = (state?.scout?.imagesViewed || []).filter((f) => fs.existsSync(path.resolve(projectDir, f)));
+const sourcingOk = !!fetchLog && fetchLog.okCount >= 8 && (fetchLog.categoriesOk || []).length >= 4
+  && (scraplingMissing || fetchLog.scraplingShare >= 60) && fetchLog.imageCount >= 8 && viewed.length >= 8;
+gate("G2b", "auto-sourcing: catalog fetched via Scrapling, 8+ reference images saved and viewed", sourcingOk,
+  fetchLog ? `${fetchLog.okCount} fetched, ${(fetchLog.categoriesOk || []).length} categories, scrapling ${fetchLog.scraplingShare}%, ${fetchLog.imageCount} images, ${viewed.length} viewed (state.scout.imagesViewed)` : "run `sources.mjs brief`, `pick`, `fetch`");
 
 // G3 skills: exactly 5 permanent + 5 selected = 10 routed units, each installed or URL-documented
 const active = readJson(path.join(beyondDir, "active-skills.json"));
@@ -99,7 +114,7 @@ gate("G8", "critique: 12 gates scored, all >= 3, mean >= 4.0", critiqueOk,
 const v = state?.verify || {};
 const shots = (v.screenshots || []).length;
 const verifyOk = shots >= 3 && ["pass"].includes(v.reducedMotion) && ["pass"].includes(v.keyboard) && v.console === "clean";
-gate("G9", "verify evidence: 3+ screenshots, reduced-motion + keyboard + console pass", verifyOk,
+gate("G9", "verify evidence: 3+ screenshots, reduced-motion + keyboard + console pass", (nativeOnly ? nativeOk : verifyOk),
   `${shots} shots, rm=${v.reducedMotion}, kb=${v.keyboard}, console=${v.console}`);
 
 // G10 plan — the hand-picked build plan must exist and be concrete
@@ -148,7 +163,7 @@ gate("G13", "import-first: every planned block imported, no unmarked hand-rolled
 const qaFiles = fs.existsSync(path.join(beyondDir, "qa")) ? fs.readdirSync(path.join(beyondDir, "qa")).filter((f) => f.endsWith(".json")) : [];
 const qaReports = qaFiles.map((f) => readJson(path.join(beyondDir, "qa", f))).filter(Boolean);
 const qaPassed = qaReports.some((r) => r.keyboard === "pass" && r.reducedMotion === "pass" && r.console === "clean");
-gate("G14", "QA journey: app exercised in a real browser (keyboard + reduced-motion + console clean)", qaPassed,
+gate("G14", "QA journey: app exercised in a real browser (keyboard + reduced-motion + console clean)", (nativeOnly ? nativeOk : qaPassed),
   `${qaReports.length} journey report(s)${qaReports.length ? ` — ${qaFiles.join(", ")}` : " — run `node scripts/qa.mjs journey <url>`"}`);
 
 // G15 auto-critique — the RENDERED page measured against CRITIQUE.md's mechanical hard fails.
@@ -164,7 +179,7 @@ const critWarns = critPresent ? autoCritique.warn ?? 0 : 0;
 // finished until the data is slow, empty or fails. Machine-checked by scanning the built source.
 const statesAudit = readJson(path.join(beyondDir, "states-audit.json"));
 const statesOk = !!statesAudit && statesAudit.pass === true;
-gate("G15", "auto-critique: rendered page measured, zero critical hard fails", autoCritiqueOk,
+gate("G15", "auto-critique: rendered page measured, zero critical hard fails", (nativeOnly ? nativeOk : autoCritiqueOk),
   critPresent
     ? `${autoCritique.critical} critical, ${critWarns} warn${autoCritique.critical ? ` — ${(autoCritique.findings || []).filter((f) => f.severity === "critical").slice(0, 2).map((f) => `${f.rule}: ${f.detail}`).join("; ")}` : ""}`
     : "run `node scripts/critique.mjs <url>`");
@@ -176,21 +191,34 @@ gate("G16", "state coverage: async surfaces design loading + empty + error", sta
 // G17 craft — the build checked against references/CRAFT.md (a11y of split text, glass fallbacks,
 // WebGL mobile gates and cleanup, cursor crispness, rAF/listener hygiene).
 const craftAudit = readJson(path.join(beyondDir, "craft-audit.json"));
-gate("G17", "craft audit: zero critical CRAFT.md defects in the source", !!craftAudit && craftAudit.pass === true,
+gate("G17", "craft audit: zero critical CRAFT.md defects in the source", (!!craftAudit && craftAudit.pass === true) || (nativeOnly && !!craftAudit && craftAudit.filesScanned === 0),
   craftAudit ? `${craftAudit.critical} critical, ${craftAudit.warn} warn over ${craftAudit.filesScanned} files` : "run `node scripts/craft-check.mjs`");
 
 // G18 production — the ship surface (metadata, OG, sitemap, robots, 404, headers, JSON-LD) proven
 // against a running production build. A single-component brief has no ship surface of its own.
 const componentOnly = /^\s*component\s*$/i.test(String(state?.surface || ""));
 const prodAudit = readJson(path.join(beyondDir, "production-audit.json"));
-gate("G18", "production pass: crawl surface + metadata + headers + 404 verified live", componentOnly || (!!prodAudit && prodAudit.pass === true),
+gate("G18", "production pass: crawl surface + metadata + headers + 404 verified live", componentOnly || (nativeOnly ? readJson(path.join(beyondDir, "store-checklist.json"))?.pass === true : (!!prodAudit && prodAudit.pass === true)),
   componentOnly ? "n/a: surface is a single component" : prodAudit ? `${prodAudit.critical} critical, ${prodAudit.warn} warn, ${prodAudit.live?.routes?.length || 0} routes crawled` : "run `node scripts/production-check.mjs <url>` against a production build");
 
 // G19 parity — the signed-off design was frozen and every later pass left it intact.
 const parity = readJson(path.join(beyondDir, "parity-report.json"));
 const parityOk = !!parity && parity.pass === true && (parity.shots || []).length > 0;
-gate("G19", "parity: frozen design unchanged by later passes (baseline + check)", parityOk,
+gate("G19", "parity: frozen design unchanged by later passes (baseline + check)", (nativeOnly ? nativeOk : parityOk),
   parity ? `${(parity.shots || []).filter((s) => !s.pass).length}/${(parity.shots || []).length} shots over ${parity.threshold ?? "-"}%, baselines: ${(parity.baselines || []).map((b) => b.reason).join(" | ")}` : "run `node scripts/parity.mjs baseline <url>` at sign-off, then `check` after every later pass");
+
+// G20 fidelity — 85% from the anchor + references, 15% the product's own (references/FIDELITY.md)
+const fid = readJson(path.join(beyondDir, "fidelity-report.json"));
+gate("G20", "fidelity: 85% of sections from the anchor/references, evidence on disk", componentOnly || (!!fid && fid.pass === true),
+  componentOnly ? "n/a: surface is a single component" : fid ? `${fid.borrowedPct}% borrowed, ${fid.anchorSections} from anchor, ${fid.ownSections} own${fid.problems?.length ? ` — ${fid.problems[0]}` : ""}` : "run `fidelity.mjs init` then `fidelity.mjs check`");
+
+// G21 type — chosen from the free libraries with a specimen, never an overused default (references/TYPE.md)
+const fontChoice = readJson(path.join(beyondDir, "fonts", "choice.json"));
+const brandFonts = state?.fonts?.brandLocked === true;
+gate("G21", "type: display/text chosen from a rendered specimen, not an overused default", brandFonts || (!!fontChoice && fontChoice.pass === true),
+  brandFonts ? "brand fonts preserved (state.fonts.brandLocked)" : fontChoice ? `${fontChoice.display?.family || "-"} / ${fontChoice.text?.family || "-"}${fontChoice.mono ? ` / ${fontChoice.mono.family}` : ""}${fontChoice.problems?.length ? ` — ${fontChoice.problems[0]}` : ""}` : "run `fonts.mjs search`, `specimen`, `choose`");
+
+if (nativeOnly) console.log(`  note: no web preview (${platform.framework || "native"}) — G9/G14/G15/G19 read native-evidence.json (${nativeShots.length} shots), G18 reads store-checklist.json`);
 
 // stamp
 const failed = results.filter((r) => !r.pass);

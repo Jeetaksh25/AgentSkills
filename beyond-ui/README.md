@@ -1,4 +1,4 @@
-# beyond-ui — how it works (v4)
+# beyond-ui — how it works (v5)
 
 A skill that makes a coding agent produce UI a working designer would sign their name to.
 
@@ -12,6 +12,24 @@ them from shadcn/ui and the animated registries instead of reinventing them, use
 human, then prove it was rendered, scored, cited *and still matches the plan* — or the run is not done.
 
 The agent's opinions are deliberately constrained at every step. That is the whole design.
+
+### v5 — idea in, studio-level UI out, on any platform
+
+v5 removes every instruction a user still had to give. Before, a good result needed a prompt like
+"use Beyond UI with Scrapling, get images from Dribbble and motionsites, copy 85% of the design, use
+better fonts, add GSAP and Lenis, import animated components, add the model metrics". Now the idea alone
+is enough:
+
+| Added | File | Gate |
+|---|---|---|
+| Idea → complete brief with a domain content inventory (what an expert expects on screen) | `references/BRIEF.md`, `sources.mjs brief` | — |
+| Ranked catalogs: 461 sources in 8 categories (references 63, animated components 57, components/kits 66, design rules 53, typography 53, motion 60, templates/prompts 53, assets 56), platform-tagged, URL-validated | `assets/sources.json`, `references/SOURCES-CATALOG.md` | — |
+| Automatic sourcing: picks per brief and platform, fetches with Scrapling (get → fetch → stealthy, self-repairing browsers), saves reference images, records which were viewed | `scripts/sources.mjs` | G2b |
+| Section-level harvesting from templates and prompt specs (screenshot + cleaned markup + measured styles per section) | `scripts/harvest.mjs` | G20 evidence |
+| The 85/15 contract: one anchor reference carries layout, spacing, components, type and motion; the product adds content, domain sections and theme; full overhaul when an existing UI fails | `references/FIDELITY.md`, `scripts/fidelity.mjs` | G20 |
+| Designer-grade type: 10 free libraries searched (Google Fonts, Fontshare, Fontsource APIs + 7 scraped foundries), overused families excluded by popularity, specimen rendered with the product's words, choice recorded | `references/TYPE.md`, `scripts/fonts.mjs` | G21 |
+| Every platform: Next/Vue/Svelte/Angular/Astro, Expo/React Native, Capacitor, Flutter, SwiftUI, Compose, Tauri/Electron — base kit, animated libs, motion engine, verification and native evidence per platform | `references/PLATFORMS.md`, `sources.mjs detect` | G9/G14/G15/G18/G19 native paths |
+| Tool layer: Browser Use installed from github.com/browser-use/browser-use; Scrapling + Patchright browsers repaired automatically; Playwright browser GC disabled so the two never delete each other's browsers | `scripts/install-tools.mjs`, `scripts/lib/browser.mjs` | — |
 
 ### v4 — from "imports the right blocks" to "ships studio-level work unattended"
 
@@ -58,7 +76,7 @@ flowchart TD
     G --> H{"gates >= 3<br/>and mean >= 4.0?"}
     H -- no --> F
     H -- yes --> I["6 VERIFY + QA<br/>390/768/1440 + rm + kb + console<br/>qa.mjs journey like a human"]
-    I --> J["7 GATE<br/>verify-run.mjs G1-G19<br/>artifacts + citations + plan<br/>+ import-first + QA, or not done"]
+    I --> J["7 GATE<br/>verify-run.mjs G1-G21<br/>artifacts + citations + plan<br/>+ import-first + QA, or not done"]
 
     style A fill:#1f2937,color:#fff
     style S1 fill:#7c2d12,color:#fff
@@ -397,7 +415,7 @@ wants to act now · a keyboard-only user · a screen-reader user · a maintainer
 | Token discipline | No raw hex/`px` outside tokens; dark mode verified |
 | Registry integrity | Every added registry component still compiles; unused ones removed |
 
-### 7. Gate — `scripts/verify-run.mjs` (v4: G1–G19)
+### 7. Gate — `scripts/verify-run.mjs` (v4: G1–G21)
 
 The run's final step is mechanical, not narrative. Fourteen gates, all must pass, exit 1 otherwise:
 
@@ -423,6 +441,9 @@ The run's final step is mechanical, not narrative. Fourteen gates, all must pass
 | **G17** | **craft: zero critical CRAFT.md defects — split text without sr-only, aria-label on non-interactive elements, SVG glass without a probe, WebGL without a mobile gate / reduced-motion / cleanup, cursor on touch (`scripts/craft-check.mjs`)** |
 | **G18** | **production: sitemap, robots, 404, share images, canonical + unique metadata + one h1 per page, JSON-LD, security headers, verified live against a production build (`scripts/production-check.mjs`)** |
 | **G19** | **parity: the signed-off design is frozen (`parity.mjs baseline`) and every later pass is pixel-compared at 1440 and 390 (`parity.mjs check`)** |
+| **G2b** | **auto-sourcing: catalog fetched with Scrapling, 8+ reference images saved and recorded as viewed (`scripts/sources.mjs`)** |
+| **G20** | **fidelity: 85% of sections from the anchor and references, evidence on disk (`scripts/fidelity.mjs`)** |
+| **G21** | **type: fonts chosen from a rendered specimen across 10 free libraries, no overused defaults (`scripts/fonts.mjs`)** |
 
 G10-G16 are what make the difference between "the agent read a direction" and "the agent built the
 hand-picked blocks, imported them, measured the result, and used it like a human". A failing gate is remedied by **doing the missing work** - never by relaxing the
@@ -543,10 +564,15 @@ beyond-ui/
     qa.mjs # phase 8 - human-like QA journey: screenshots, keyboard, rm, console
     critique.mjs # phase 9 - AUTO-CRITIQUE: measures the rendered page's hard fails
     states.mjs # phase 10 - state coverage: loading + empty + error per async surface
+    sources.mjs           # phase 0b-1 - brief, detect, pick, fetch (Scrapling), viewed (G2b)
+    fonts.mjs             # phase 5 - search 10 libraries, specimen, choose (G21)
+    fidelity.mjs          # phase 5/11 - 85/15 map + check (G20)
+    harvest.mjs           # phase 6 - section-level harvest from templates and prompts
+    lib/browser.mjs       # self-healing Playwright launcher
     craft-check.mjs       # phase 11 - CRAFT.md source audit (G17)
     parity.mjs            # phase 10-12 - freeze + pixel compare (G19)
     production-check.mjs  # phase 12 - live ship-surface check (G18)
-    verify-run.mjs # phase 13 - enforcement gate G1-G19
+    verify-run.mjs # phase 13 - enforcement gate G1-G21
   assets/
     skills-catalog.json         # the 5 permanent star-ranked skills + the routed pool (install facts)
     state-template.json         # run state: tools, selection, teardown, synthesis, plan, citations, gates
@@ -559,8 +585,13 @@ beyond-ui/
   references/                   # loaded on demand when the run reaches that step
     SCOUT.md          source universe + protocol + scout.md schema
     TEARDOWN.md       select 5 / teardown 5 / synthesize 1 / plan protocol + rubric
-    USAGE.md          citation contract + the enforcement gate (G1–G19)
+    USAGE.md          citation contract + the enforcement gate (G1–G21)
     PLAYBOOK.md       decision procedure: skills per phase, lane skill, sources, fetch chain, defaults
+    BRIEF.md          idea -> brief + domain content inventory
+    FIDELITY.md       anchor + 85/15 contract + overhaul rule
+    TYPE.md           designer font selection
+    PLATFORMS.md      web, mobile, desktop stacks and native gates
+    SOURCES-CATALOG.md generated ranked catalog (461 sources)
     CRAFT.md          nine production-proven craft recipes
     PARITY.md         mobile/desktop parity, freeze-and-compare
     PRODUCTION.md     the ship pass + smoke-test template
@@ -601,11 +632,15 @@ node <skill>/scripts/qa.mjs journey <url>            # 8: use it like a human (k
 node <skill>/scripts/critique.mjs <url>              # 9: MEASURE the rendered page (hard fails -> G15)
 node <skill>/scripts/states.mjs                      # 10: loading + empty + error per async surface (G16)
 node <skill>/scripts/skills-router.mjs verify        # confirm 5+5 skills, 5 refs, every skill cited
+node <skill>/scripts/sources.mjs brief "<idea>"       # 0b: the idea is the only input
+node <skill>/scripts/sources.mjs pick && node <skill>/scripts/sources.mjs fetch   # 1: Scrapling, images (G2b)
+node <skill>/scripts/fonts.mjs search && node <skill>/scripts/fonts.mjs specimen   # 5: then choose (G21)
+node <skill>/scripts/fidelity.mjs init               # 5: anchor + section map, then check (G20)
 node <skill>/scripts/parity.mjs baseline <url>        # 10: freeze the signed-off design (G19)
 node <skill>/scripts/craft-check.mjs                 # 11: CRAFT.md defects in the source (G17)
 node <skill>/scripts/parity.mjs check <url>           # 11-12: after every later pass (G19)
 node <skill>/scripts/production-check.mjs <url>      # 12: production build, live crawl surface (G18)
-node <skill>/scripts/verify-run.mjs                  # 13: gates G1–G19 — or the run is not done
+node <skill>/scripts/verify-run.mjs                  # 13: gates G1–G21 — or the run is not done
 ```
 
 Fetching anything by hand — galleries, a competitor's pricing page, the reference you are tearing down:

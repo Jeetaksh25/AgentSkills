@@ -458,7 +458,10 @@ function digest() {
   lines.push("- **Freeze, then compare.** `node scripts/parity.mjs baseline <url>` at design sign-off; every later pass (responsive, perf, a11y, production) ends with `parity.mjs check` (G19). Mobile work on a signed-off desktop lives behind max-width queries only (`references/PARITY.md`).");
   lines.push("- **Ship it.** `references/PRODUCTION.md` + the `production-suite-completion` skill; `node scripts/production-check.mjs <url>` against a production build (G18).");
   lines.push("- **Phase specialists.** Invoke the skills in `references/PLAYBOOK.md` §2 at their phase when present, and cite them.");
-  lines.push("- **Gate: G1-G19** — `node scripts/verify-run.mjs`; exit 1 means the run is not done.");
+  lines.push("- **Idea-only autopilot.** `sources.mjs brief` → `pick` → `fetch` (Scrapling) → open every image in `.beyond-ui/refs/` → `sources.mjs viewed` (G2b). Never ask the user to name sites or describe the UI.");
+  lines.push("- **85/15.** One anchor reference supplies layout, spacing, components, type and motion; the product supplies content, domain sections and theme. `fidelity.mjs check` (G20).");
+  lines.push("- **Type like a designer.** `fonts.mjs search` → `specimen` → look → `choose` (G21). No reflex defaults, no decorative display on app titles, no all-caps mono decoration.");
+  lines.push("- **Gate: G1-G21** — `node scripts/verify-run.mjs`; exit 1 means the run is not done.");
   lines.push("");
   fs.mkdirSync(beyondDir, { recursive: true });
   fs.writeFileSync(digestPath, lines.join("\n"));

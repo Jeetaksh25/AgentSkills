@@ -1,165 +1,151 @@
 ---
 name: beyond-ui
-description: Use when building, redesigning, styling or polishing any user interface - landing pages, marketing or SaaS sites, portfolios, dashboards, web, mobile or desktop apps, or a single component - where the result must match award-level studio work (Awwwards, Godly, motionsites.ai, Dribbble shots) instead of looking AI-generated. Covers skill routing, reference teardowns, component sourcing from shadcn/ui and animated registries, scroll choreography and motion craft, mobile/desktop parity, the production/SEO pass, and mechanical gates (G1-G19) that prove each step happened.
+description: Use when building, redesigning, styling or polishing any user interface on any platform - websites, landing pages, SaaS and dashboards, web apps, mobile apps (Expo/React Native, Capacitor, Flutter, SwiftUI, Compose), desktop apps (Tauri, Electron), or a single component - including when the user only describes a product idea and says nothing about the UI. Produces award-level studio work (Awwwards, Dribbble, motionsites.ai level) instead of AI-generated slop by automatically fetching references, templates and fonts from ranked catalogs with Scrapling, copying 85% of the design from a chosen anchor reference, importing components from shadcn/ui and animated registries, and proving every step with gates G1-G21.
 license: MIT
 ---
 
 # Beyond UI
 
-The output must read like work a design studio charged five figures for, produced without the user
-directing each step. That never comes from inventing a gradient hero from memory. It comes from five
-moves, in order:
+The user gives an idea. The agent ships a UI that looks like a design studio made it, on whichever
+platform the idea needs, without asking the user how it should look. That never comes from inventing a
+design from memory. It comes from six moves, in order:
 
-1. **ROUTE** the right skills — 10 routed (5 permanent + 5 for this project) plus phase specialists.
-2. **STUDY** what already wins — exactly 5 award-level references, torn down to their systems.
-3. **IMPORT** what already exists — shadcn/ui for controls, the animated registries for effects.
-4. **CRAFT** what registries get wrong — choreography, reveals, glass, shaders, transitions, cursor.
-5. **PROVE** it — exercised like a human, measured, frozen, shipped, gated.
+1. **BRIEF** the idea into screens, sections and the domain content an expert expects.
+2. **SOURCE** automatically: ranked catalogs (8 categories × 50+ sites) fetched with Scrapling,
+   reference images saved and looked at.
+3. **ANCHOR** the design: one reference supplies 85% (layout, spacing, components, type, motion); the
+   product supplies 15% (content, domain sections, theme).
+4. **IMPORT** what exists: the platform's base kit for controls, animated registries for effects,
+   harvested template sections for what the anchor lacks. Custom code is the last resort.
+5. **CRAFT** what registries get wrong: choreography, reveals, glass, shaders, transitions.
+6. **PROVE** it: exercised like a human, measured, frozen, shipped, gated (G1–G21).
 
 ## Failure modes this skill exists to kill
 
-1. **AI slop** — centred hero, three feature cards, Inter everywhere, purple-blue gradient, emoji icons,
-   `transition-all` on everything, `rounded-2xl bg-white/10 backdrop-blur`.
-2. **Reinventing the wheel** — hand-writing a marquee, dialog or text effect a registry ships.
-3. **Unused tooling** — skills installed and never read; skills read and never cited.
-4. **Static craft** — the right components, no choreography: nothing moves with intent, nothing reveals.
-5. **The fix that flattens** — a responsive, performance or production pass that quietly changes the
-   signed-off design, or a phone that gets the desktop squeezed.
-6. **Finished but not shipped** — no metadata, share images, sitemap, headers or 404.
+1. **AI slop** — centred hero, three cards, Inter everywhere, purple gradient, emoji icons, decorative
+   display fonts on app page titles, ALL-CAPS MONO LABELS as decoration.
+2. **Waiting to be told** — asking the user which sites to look at, what the UI should be, to "use
+   Scrapling", to "use the skills". The skill does all of that by itself.
+3. **Inventing instead of referencing** — a design composed from memory instead of from a real anchor.
+4. **Reinventing the wheel** — hand-writing a dialog, marquee or text effect a registry ships.
+5. **Incomplete domain** — an ML dashboard without accuracy, curves, parameters or hyperparameters.
+6. **The fix that flattens, the phone that gets squeezed, the site that is finished but not shipped.**
 
-## Contracts (numbers are enforced, not suggested)
+## Contracts (numbers are enforced)
 
 | Contract | Value | Enforced by |
 |---|---|---|
-| Routed skills | **exactly 10** (5 permanent + 5 by project profile) | `skills-router.mjs verify` · G3 |
-| Phase specialists | invoked at their phase **when present**, never installed for it | `state.skills.invoked` · G7 citations |
-| Reference sites | **exactly 5** | G4 |
-| Components | shadcn/ui first, registries second, custom last (with a reason) | `import-ledger.mjs audit` · G13 |
-| Citations | ≥5, plus one per routed skill | G7 |
-| QA | journey through the real app | `qa.mjs journey` · G14 |
-| Rendered critique | 0 critical hard fails | `critique.mjs` · G15 |
-| States | loading + empty + error on every async surface | `states.mjs` · G16 |
-| Craft | 0 critical CRAFT.md defects | `craft-check.mjs` · G17 |
-| Production | crawl surface, metadata, headers, 404 verified live | `production-check.mjs` · G18 |
-| Parity | signed-off design unchanged by later passes | `parity.mjs` · G19 |
+| Auto-sourcing | catalog fetched via Scrapling, 8+ reference images saved **and viewed** | `sources.mjs` · G2b |
+| Reference fidelity | ≥85% of sections from the anchor/references, anchor carries ≥50% | `fidelity.mjs` · G20 |
+| Type | chosen from 10 free libraries via a rendered specimen; overused defaults excluded | `fonts.mjs` · G21 |
+| Routed skills | exactly 10 (5 permanent + 5 by profile) + phase specialists when present | `skills-router.mjs` · G3, G7 |
+| References | exactly 5 (one anchor) | G4 |
+| Components | base kit first, registries second, custom last (with a reason) | `import-ledger.mjs` · G13 |
+| QA · critique · states | journey passes · 0 critical hard fails · loading+empty+error | G14 · G15 · G16 |
+| Craft · production · parity | 0 critical CRAFT defects · ship surface verified · design unchanged by later passes | G17 · G18 · G19 |
 
 ## Autonomy
 
-Run the whole loop without stopping for approval. Decide unspecified choices with
-`references/PLAYBOOK.md` §7 and record them. Ask the user only for what cannot be inferred and changes
-the outcome: real proof (customers, numbers), brand assets that exist somewhere, or a hard constraint
-that contradicts the brief. Never invent those; ship a labelled gap instead. Deploying, publishing and
-pushing still need the user's word.
+Run the whole loop without stopping for approval. The only input needed is the idea. Decide everything
+unspecified with `references/PLAYBOOK.md` §7 and record it. Ask the user only for what would be wrong to
+invent: real customers and numbers, brand assets that exist somewhere, a constraint that contradicts
+the brief. A user preference (theme, font, layout, platform) always wins over the defaults and the
+anchor. Deploying, publishing, pushing and store submission still need the user's word.
 
 ## The operating loop
 
-Each phase names what to load, what to invoke and what proves it. Scripts live in `scripts/` and run
-from the target project (`node <skill>/scripts/<name>.mjs`).
+Scripts live in `scripts/` and run from the target project: `node <skill>/scripts/<name>.mjs`.
 
 | # | Phase | Load | Invoke (PLAYBOOK §2) | Run / produce | Gate |
 |---|---|---|---|---|---|
-| 0a | BOOTSTRAP | `references/PLAYBOOK.md` | — | empty repo: scaffold the default stack first (PLAYBOOK §7); then `scaffold-state.mjs`, `bootstrap-upstream-skills.mjs` (`.sh` on POSIX) | G1, G3 |
-| 0b | ROUTE | `references/SKILLS.md` | — | `skills-router.mjs status` | G3 |
-| 0c | RECON | `references/STACKS.md` | redesign/audit skills if a UI exists | stack, brand, design system, audience into `state.json` | — |
-| 1 | SCOUT | `references/SCOUT.md`, `INSPIRATION.md`, `PROMPTS.md` | `design-inspiration-index`, `hallmark` (URL extraction) | `.beyond-ui/scout.md` (frame, refs, prompts, library map) | G2 |
-| 2 | SELECT | `references/TEARDOWN.md` | studio `*-design` skills as candidate references | `teardown.mjs init` → exactly 5 | G4 |
-| 3 | TEARDOWN | `references/TEARDOWN.md` | — | `teardown.mjs run` → `DESIGN-SKILL.md`, `PLAN.json` | G5, G6, G10, G11 |
+| 0a | BOOTSTRAP | `PLAYBOOK.md`, `PLATFORMS.md` | — | empty repo: scaffold the platform's stack first; `scaffold-state.mjs`; `bootstrap-upstream-skills.mjs` (skills + Playwright, Scrapling + browsers, browser-use, skillui) | G1, G3 |
+| 0b | BRIEF | `BRIEF.md` | — | `sources.mjs brief "<idea>"` → complete `.beyond-ui/brief.md` (screens, domain inventory) | — |
+| 0c | RECON | `PLATFORMS.md`, `STACKS.md` | redesign/audit skills if a UI exists | `sources.mjs detect`, `skills-router.mjs status` | G3 |
+| 1 | SOURCE | `SOURCES-CATALOG.md`, `SCOUT.md` | `design-inspiration-index`, `browser-use` when needed | `sources.mjs pick` → `fetch`; **open every image** in `.beyond-ui/refs/`; `sources.mjs viewed <images>`; write `scout.md` | G2, G2b |
+| 2 | SELECT | `FIDELITY.md`, `TEARDOWN.md` | matching `<studio>-design` skill | anchor + 4 in `references-selection.json` (`"anchor": true`) | G4 |
+| 3 | TEARDOWN | `TEARDOWN.md` | — | `teardown.mjs run` → `DESIGN-SKILL.md`, `PLAN.json` | G5, G6, G10, G11 |
 | 4 | DIGEST | — | — | `skills-router.mjs digest` → `.beyond-ui/SKILL.md` | G3b |
-| 5 | DIRECTION | `references/DESIGN.md`, `MOTION.md`, `CONTENT.md` | `frontend-design`, `ui-ux-pro-max`, `taste`, one lane skill, typography, refactoring-ui | the direction contract in `scout.md` | G7 |
-| 6 | COMPOSE | `references/COMPONENTS.md`, `SHADCN.md` | shadcn + the 2–3 registries in play | `import-ledger.mjs plan` | G13 |
-| 7 | BUILD | `references/CRAFT.md`, `PARITY.md`, `EFFECTS.md`, `THREEJS.md` (3D only) | `frontend-ui-engineering`, `impeccable`, motion-engine skill | tokens, real copy, real states, recipes | G12, G13 |
-| 8 | QA | — | `playwright-skill`, `browser-use` | `qa.mjs journey <url>` at 390 and 1440 | G9, G14 |
-| 9 | CRITIQUE | `references/CRITIQUE.md` | `hallmark`, `impeccable` critique, accesslint scan + inspect | `critique.mjs <url>`; fix; re-render | G8, G15 |
-| 10 | FREEZE | `references/PARITY.md` | — | `parity.mjs baseline <url> --routes …` | G19 |
-| 11 | HARDEN | `references/A11Y-PERF.md`, `PARITY.md` | `accesslint-accessibility-fix` / `-diff` | `states.mjs`, `craft-check.mjs`, perf + a11y fixes, `parity.mjs check` | G16, G17, G19 |
-| 12 | SHIP | `references/PRODUCTION.md` | `production-suite-completion` | production build → `production-check.mjs <url>` → smoke tests → `parity.mjs check` | G18, G19 |
-| 13 | GATE | `references/USAGE.md` | — | `import-ledger.mjs audit && skills-router.mjs verify && verify-run.mjs` | G1–G19 |
+| 5 | DIRECTION | `FIDELITY.md`, `TYPE.md`, `DESIGN.md`, `MOTION.md`, `CONTENT.md` | `frontend-design`, `ui-ux-pro-max`, `taste`, one lane skill, typography, refactoring-ui | `fidelity.mjs init` + map; `fonts.mjs search` → `specimen` → look → `choose`; direction contract | G7, G20, G21 |
+| 6 | COMPOSE | `COMPONENTS.md`, `SHADCN.md`, `PLATFORMS.md` | base kit + 2–3 registries | `import-ledger.mjs plan`; `harvest.mjs page|prompt --pick …` for missing sections | G13 |
+| 7 | BUILD | `CRAFT.md`, `PARITY.md`, `EFFECTS.md`, `THREEJS.md` (3D) | `frontend-ui-engineering`, `impeccable`, motion-engine skill, platform skill | tokens, real copy, the full domain inventory, real states, recipes | G12, G13 |
+| 8 | QA | `PLATFORMS.md` (native) | `playwright-skill`, `browser-use` | `qa.mjs journey <url>` at phone + desktop sizes; native: `native-evidence.json` | G9, G14 |
+| 9 | CRITIQUE | `CRITIQUE.md` | `hallmark`, `impeccable` critique, accesslint | `critique.mjs <url>`; fix; re-render. Any gate < 3 on an existing UI → full overhaul | G8, G15 |
+| 10 | FREEZE | `PARITY.md` | — | `parity.mjs baseline <url> --routes …` | G19 |
+| 11 | HARDEN | `A11Y-PERF.md`, `PARITY.md` | accesslint fix / diff | `states.mjs`, `craft-check.mjs`, `fidelity.mjs check`, `parity.mjs check` | G16, G17, G19, G20 |
+| 12 | SHIP | `PRODUCTION.md` | `production-suite-completion` | `production-check.mjs <url>` (web) or `store-checklist.json` (store apps); `parity.mjs check` | G18, G19 |
+| 13 | GATE | `USAGE.md` | — | `import-ledger.mjs audit && skills-router.mjs verify && verify-run.mjs` | G1–G21 |
 
-Phases 1–5 are a third of the work and the ones agents skip. Output quality is decided there.
-A single-component brief runs the same loop at component scale: 3+ references, no SHIP phase
-(`surface: "component"` makes G18 n/a), FREEZE on the page that hosts the component.
+Phases 0b–5 are about a third of the work and decide the quality. A single-component brief runs the same
+loop at component scale (`surface: "component"`: G18 and G20 n/a).
 
 ## Non-negotiables
 
-1. **Route before you work.** Bootstrap, then read `.beyond-ui/SKILL.md`. A skill that cannot be
-   installed is fetched from its raw `SKILL.md` URL, read, and recorded in `state.skills.missing`. The
-   bootstrap also installs the tool layer, skip-if-present: Playwright + Chromium (the only hard
-   requirement), skillui, opensrc, Scrapling, browser-use.
-2. **Follow the skills, and show it.** Every load-bearing decision cites its source
-   (`skill://<id> -> <rule>`, `DESIGN-SKILL.md §n`, `teardown/<slug>`, `CRAFT R<n>`), every routed skill
-   at least once, every invoked specialist at least once.
-3. **Scout before you design.** No layout, palette, type scale or motion before `scout.md` exists and
-   names its URLs and what was taken from each.
-4. **Import, don't reinvent.** shadcn/ui supplies every control; the plan's registries supply every
-   animated piece. Hand-rolling what a library ships is a defect; custom code carries
-   `beyond-ui:custom <reason>` or an entry in `state.components.handWritten`.
-5. **Choreograph, don't decorate.** A marketing page gets a motion system (CRAFT R1/R2/R6/R8 by
-   default): scroll-timeline sections authored in viewport-heights, overhang-padded reveals, one
-   entrance grammar, expo/quint easing, no bounce. App UI gets micro-interactions only. Everything
-   respects `prefers-reduced-motion`.
-6. **Every viewport is designed.** Design 390 / 768 / 1440. Hover reveals become scroll- or
-   tap-driven on touch; WebGL becomes a static gradient on phones; mobile work on a signed-off desktop
-   lives behind max-width queries only (`references/PARITY.md`).
-7. **Remove cost, not design.** Performance and accessibility fixes make the same effect cheaper,
-   deferred or device-scoped; a fix that can only be reached by changing the look is an accepted risk
-   reported to the user, not a silent edit. `parity.mjs check` proves it.
-8. **Real content, real states.** No lorem, no "Empower your workflow", no invented metrics or logos.
-   Loading, empty (with a next action) and error (with recovery) on every async surface.
-9. **Preserve identity.** An existing brand or design system wins over your taste; extend it.
-10. **Ship, then claim.** Metadata per page, generated share images, sitemap, robots, manifest,
-    JSON-LD, security headers, a designed 404, smoke tests and CI (`references/PRODUCTION.md`).
-11. **No unverified claims.** Done means rendered, measured, frozen-compared and gated. A failing gate
-    is fixed by doing the work, never by relaxing the gate, re-baselining without a reason, or editing
-    `state.json` by hand.
+1. **Never ask the user to describe the UI.** The idea is enough: BRIEF.md turns it into screens,
+   sections and the domain inventory.
+2. **Sourcing is automatic and uses Scrapling.** `sources.mjs fetch` runs before any design decision; the
+   saved images are opened and recorded as viewed. A design chosen before that is a defect.
+3. **85% from the anchor, 15% the product's own.** Layout, spacing, component styling, type system and
+   motion come from the anchor and supporting references; content, domain sections and theme are the
+   product's. Copy, logos, imagery and proprietary fonts are never copied.
+4. **Type like a designer.** `fonts.mjs` across 10 free libraries, a rendered specimen, a recorded
+   reason. No reflex defaults; no decorative display faces on app page titles; mono only for code and
+   data; no all-caps monospace decoration.
+5. **Route and follow the skills, and show it.** Bootstrap, read `.beyond-ui/SKILL.md`, invoke phase
+   specialists when present, cite every routed skill and specialist (`skill://<id> -> <rule>`).
+6. **Import, don't reinvent.** The platform's base kit supplies every control; registries supply every
+   animated piece; harvested template sections fill gaps. Custom code carries `beyond-ui:custom <reason>`.
+7. **Choreograph, don't decorate.** Marketing pages get GSAP + ScrollTrigger + Lenis + registry effects
+   + CRAFT recipes; app UIs get purposeful micro-interactions; native apps get platform springs.
+   Everything respects reduced motion.
+8. **Complete the domain.** Every item in `brief.md -> Domain content inventory` is on screen.
+9. **Every viewport and platform is designed.** PARITY.md for the web, PLATFORMS.md for native and
+   desktop. Performance and accessibility fixes remove cost, not design.
+10. **Overhaul, don't patch.** When an existing UI is called bad or fails critique, rerun from phase 1
+    with fresh references and a new anchor; keep data and routes, replace the presentation.
+11. **No theme by habit.** Light, dark or both comes from the user's request or project, else the anchor.
+12. **Real content, real states, preserved identity, shipped.** No lorem, no invented metrics; loading,
+    empty and error designed; an existing brand wins; metadata, share images, sitemap, headers, 404 and
+    smoke tests (or the store checklist).
+13. **No unverified claims.** A failing gate is fixed by doing the work, never by relaxing it,
+    re-baselining without a reason, or editing `state.json` by hand.
 
 ## What to load, by need
 
 | Need | File |
 |---|---|
-| Which skill, source, fetch tool or default — the decision procedure | `references/PLAYBOOK.md` |
-| Scroll timelines, mask reveals, liquid glass, jelly pill, shader backgrounds, page curtain, cursor, Lenis | `references/CRAFT.md` |
+| Decision procedure: skills per phase, lane skill, sources, fetch chain, defaults | `references/PLAYBOOK.md` |
+| Idea → brief, domain content inventory | `references/BRIEF.md` |
+| The ranked catalogs (461 sources, 8 categories) | `assets/sources.json`, `references/SOURCES-CATALOG.md` |
+| Anchor + 85/15 contract, overhaul rule | `references/FIDELITY.md` |
+| Font selection procedure | `references/TYPE.md` |
+| Web, mobile, desktop stacks and native gates | `references/PLATFORMS.md` |
+| Scroll timelines, mask reveals, glass, jelly pill, shaders, page curtain, cursor, Lenis | `references/CRAFT.md` |
 | Mobile/desktop parity, freeze-and-compare, perf/a11y without flattening | `references/PARITY.md` |
-| Production/SEO pass, smoke-test template | `references/PRODUCTION.md` |
+| Production/SEO pass, store-app checklist, smoke tests | `references/PRODUCTION.md` |
 | Upstream skill catalogue, inheritance, conflict rulings | `references/SKILLS.md` |
-| Scout protocol, galleries, prompt/template sources | `references/SCOUT.md`, `INSPIRATION.md`, `PROMPTS.md` |
+| Scout artefact, galleries and prompt sources in depth | `references/SCOUT.md`, `INSPIRATION.md`, `PROMPTS.md` |
 | Select 5, teardown, synthesis, plan | `references/TEARDOWN.md` |
-| Registries, install commands, compatibility; shadcn setup | `references/COMPONENTS.md`, `SHADCN.md` |
-| Type, colour, spacing, hierarchy; motion contract; effects; 3D | `references/DESIGN.md`, `MOTION.md`, `EFFECTS.md`, `THREEJS.md` |
-| Copy and metadata surface | `references/CONTENT.md` |
-| Accessibility and performance constraints | `references/A11Y-PERF.md` |
-| Stack recipes | `references/STACKS.md` |
-| Hard fails and the 12 quality gates | `references/CRITIQUE.md` |
-| Citation contract and gate list | `references/USAGE.md` |
-| Worked walkthroughs | `references/EXAMPLES.md` |
-| Library index | `references/LIBRARIES.md` |
-| Machine-readable catalogs (skills, blocks, motion, archetypes, registries, galleries) | `assets/*.json` |
+| Registries and install commands; shadcn setup | `references/COMPONENTS.md`, `SHADCN.md` |
+| Type, colour, spacing, hierarchy; motion; effects; 3D | `references/DESIGN.md`, `MOTION.md`, `EFFECTS.md`, `THREEJS.md` |
+| Copy and metadata · a11y/perf · stack recipes | `references/CONTENT.md` · `A11Y-PERF.md` · `STACKS.md` |
+| Hard fails and quality gates · citation contract · walkthroughs · library index | `CRITIQUE.md` · `USAGE.md` · `EXAMPLES.md` · `LIBRARIES.md` |
 
 ## Traps
 
-- **Installing everything.** Install the 10; read the 10; cite the 10. Specialists are used if present,
-  never installed to tick a box.
-- **Ten references.** Five, handpicked. G4 fails anything else.
-- **Registry roulette.** Eight animated components that share no aesthetic. 2–3 registries, max.
-- **Scout and teardown theatre.** Galleries opened, then the same generic hero built from memory.
-  Every direction choice cites its contributing site.
-- **Version drift.** Tailwind v3 snippets in a v4 project; `framer-motion` registry code in a `motion`
-  project. Check the stack first.
-- **Motion everywhere.** Every element fading up on scroll is its own slop. One grammar, one
-  orchestrated moment, choreography where the story is.
-- **Clipped reveals.** `overflow-hidden` line reveals without em overhang padding slice italic tails,
-  descenders and question marks (CRAFT R2).
-- **Glass as a personality, glass without a fallback.** SVG-refraction glass renders nothing in Safari
-  and Firefox (CRAFT R3).
-- **WebGL on phones.** Flicker, battery, leaked contexts. Static fallback on mobile (CRAFT R5).
-- **A blurry cursor.** Scaling a small dot up rasterises it; render large, scale down (CRAFT R7).
-- **Split headings read letter by letter.** sr-only sentence + `aria-hidden` spans; never `aria-label`
-  on a `div`/`span` (CRAFT R2).
-- **Squeezed mobile, flattened desktop.** See PARITY.md; G19 catches the second.
-- **Happy-path UI.** Looks finished until the data is slow, empty or fails (G16).
-- **Finished, not shipped.** Root-layout canonical inherited by every page, no share images, soft 404s
-  (G18).
-- **Copying a reference wholesale.** Steal grammar — section order, rhythm, motion behaviour — never
-  identity, copy, imagery or assets. Studio `*-design` skills say "match exactly"; here they are
-  evidence, not a costume.
-- **Evidence fabrication.** Citations to files that do not exist, screenshots listed but not on disk:
-  the gates check artifacts, not claims.
+- **Waiting for site names.** The catalogs exist so the agent never needs them from the user.
+- **Fetched but not looked at.** Saving 40 images and designing from memory anyway. Open them; G2b
+  counts what was viewed.
+- **The flashy anchor.** Pick the reference closest to this product's surface and audience with the
+  most complete system, not the most impressive shot.
+- **Copying identity.** 85% of the *design system*, 0% of the copy, logos and imagery.
+- **Reflex fonts and theme.** Inter + dark mode + purple accent is the default the skill exists to
+  avoid; let the anchor, the specimen and the user decide.
+- **Monospace as decoration.** Uppercase mono labels and terminal-style headings on a non-terminal
+  product read as AI.
+- **Thin domain.** A beautiful dashboard missing the numbers its users came for.
+- **Patching ugliness.** Tweaking spacing on a UI that failed critique instead of overhauling it.
+- **Web habits on mobile.** Hover states, Lenis, custom cursors, web easing curves in a native app.
+- **Registry roulette, motion everywhere, glass as a personality, WebGL on phones, a blurry cursor,
+  split headings read letter by letter** — see CRAFT.md.
+- **Finished, not shipped; squeezed mobile; flattened desktop** — PRODUCTION.md and PARITY.md.
+- **Evidence fabrication.** The gates check files on disk, not claims.

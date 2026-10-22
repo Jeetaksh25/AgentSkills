@@ -1,5 +1,7 @@
 # Inspiration sources (50+)
 
+> **Canonical ranked lists live in `assets/sources.json` (461 sources, 8 categories) and `references/SOURCES-CATALOG.md`.** `scripts/sources.mjs pick` chooses from them automatically and `fetch` retrieves them with Scrapling; this file is narrative depth.
+
 How to use this file: pick **4–8 sources across different categories** (award gallery + curated
 directory + motion showcase + product-specific), search using the frame from `references/SCOUT.md`,
 and extract *structure*. Record what you took in `.beyond-ui/scout.md`.

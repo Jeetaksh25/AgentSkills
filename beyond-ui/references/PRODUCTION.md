@@ -121,3 +121,21 @@ Write `.beyond-ui/PRODUCTION.md` (or let `production-suite-completion` write its
 fixed, what was measured (Lighthouse per page, mobile and desktop), and the **accepted risks** — any
 score that could only be reached by changing the design, stated plainly with the number, for the
 user to decide on.
+
+## Store apps (Expo / React Native, Capacitor, Flutter, SwiftUI, Compose)
+
+The web checklist applies to any marketing site or web build. A store app additionally ships:
+
+- App name, bundle id / application id, version and build number set; a deep-link scheme.
+- App icon in every required size (adaptive icon on Android, no alpha on iOS) and a splash screen in
+  the brand's page tone, generated from one source image (`expo prebuild` / `@capacitor/assets` /
+  `flutter_launcher_icons`).
+- Permission strings that explain *why* (iOS `NS*UsageDescription`, Android rationale UI); request
+  permissions in context, never at launch.
+- Privacy policy URL, App Store privacy labels / Play data-safety answers drafted in
+  `.beyond-ui/PRODUCTION.md` for the user to submit.
+- Store screenshots designed (not raw captures): 6.7"/6.5" iPhone, iPad if supported, Android phone;
+  the Scrnshts and Screensdesign references from the catalog show the current bar.
+- Offline and slow-network states, crash reporting wired, release build tested on a real device or
+  simulator.
+- Submitting to a store is the user's action; prepare everything, then hand it over.

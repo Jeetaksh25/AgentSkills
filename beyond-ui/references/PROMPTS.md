@@ -1,5 +1,7 @@
 # Prompt & template sources (55+)
 
+> **Canonical ranked lists live in `assets/sources.json` (461 sources, 8 categories) and `references/SOURCES-CATALOG.md`.** `scripts/sources.mjs pick` chooses from them automatically and `fetch` retrieves them with Scrapling; this file is narrative depth.
+
 Template prompts matter because they encode **section order and content shape** — the part of a page
 that is hardest to get right and most obvious when it is wrong. Take the skeleton; rewrite every word.
 

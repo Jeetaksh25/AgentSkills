@@ -115,6 +115,33 @@
         "parity.mjs baseline taken before the harden/ship passes; parity-report.json pass === true after them",
         "craft-check.mjs, production-check.mjs <url> and verify-run.mjs exit 0 (G17, G18, G19 pass)"
       ]
+    },
+    {
+      "id": 10,
+      "prompt": "an app to monitor my ML models",
+      "expected_output": "No questions about the UI. A complete brief with an ML domain inventory; references and templates fetched with Scrapling and images viewed; a dashboard anchor from Dribbble/Refero-class sources; fonts picked from a specimen; shadcn + Tailwind + registry components imported; accuracy/precision/recall/F1, loss curves, confusion matrix, parameters, hyperparameters, runs and datasets all on screen; G1-G21 pass.",
+      "assertions": [
+        "The agent did not ask the user which sites to use or how the UI should look",
+        ".beyond-ui/brief.md lists a domain inventory incl. accuracy, curves, confusion matrix, parameters, hyperparameters, runs",
+        ".beyond-ui/fetch-log.json shows >= 8 successful fetches via scrapling across >= 4 categories; >= 8 images recorded in state.scout.imagesViewed",
+        "references-selection.json marks exactly one anchor; fidelity-report.json pass with >= 80% borrowed sections",
+        ".beyond-ui/fonts/choice.json pass; neither face is in the overused/banned list; no all-caps monospace labels in the UI",
+        "Every domain inventory item is visible in the rendered dashboard",
+        "verify-run.mjs exits 0 (G1-G21)"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "build a habit tracker mobile app",
+      "expected_output": "Expo + NativeWind + React Native Reusables + Reanimated; mobile references (Mobbin, Screensdesign, Dribbble mobile) fetched and viewed; anchor chosen; native navigation, safe areas, dynamic type, reduced motion; web preview used for the Playwright gates plus device screenshots; store checklist prepared.",
+      "assertions": [
+        "sources.mjs detect/brief report platform mobile and framework expo",
+        "fetch-plan.json references are mobile-tagged sources",
+        "No Lenis, hover states or custom cursor in the app",
+        "Reanimated used for motion with reduced-motion handling",
+        "QA ran against Expo web and device screenshots exist",
+        ".beyond-ui/store-checklist.json or PRODUCTION.md store section completed"
+      ]
     }
   ]
 }

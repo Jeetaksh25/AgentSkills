@@ -1,5 +1,7 @@
 # Scout — the source universe and the protocol
 
+> **Canonical ranked lists live in `assets/sources.json` (461 sources, 8 categories) and `references/SOURCES-CATALOG.md`.** `scripts/sources.mjs pick` chooses from them automatically and `fetch` retrieves them with Scrapling; this file is narrative depth.
+
 Scouting is not "looking at pretty websites". It is evidence collection: find what already solves
 this exact problem, name it, extract the structure, and map every element you will build to
 something that already ships it.

@@ -1,5 +1,7 @@
 # Library index — animation, 3D, effects, assets
 
+> **Canonical ranked lists live in `assets/sources.json` (461 sources, 8 categories) and `references/SOURCES-CATALOG.md`.** `scripts/sources.mjs pick` chooses from them automatically and `fetch` retrieves them with Scrapling; this file is narrative depth.
+
 Install facts and framework support. Check the project's framework and version column before adding:
 a Vue project cannot take a React registry, and a Tailwind v4 project must not paste v3 snippets.
 

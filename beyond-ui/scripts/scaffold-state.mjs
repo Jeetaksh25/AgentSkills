@@ -12,7 +12,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const skillRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const projectDir = path.resolve(process.argv[2] || process.cwd());
+const projectArg = process.argv.slice(2).find((a) => !a.startsWith("-"));
+if (process.argv.includes("--help") || process.argv.includes("-h")) {
+  console.log("usage: node <skill>/scripts/scaffold-state.mjs [projectDir]   (run from the target project, never from the skill folder)");
+  process.exit(0);
+}
+const projectDir = path.resolve(projectArg || process.cwd());
+if (path.relative(skillRoot, projectDir) === "" || !path.relative(skillRoot, projectDir).startsWith("..")) {
+  console.log("scaffold-state: refusing to create a run inside the skill folder — cd into the target project first");
+  process.exit(1);
+}
 const outDir = path.join(projectDir, ".beyond-ui");
 
 fs.mkdirSync(outDir, { recursive: true });
