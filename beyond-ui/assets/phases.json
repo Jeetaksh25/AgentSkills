@@ -1,0 +1,204 @@
+{
+  "_comment": "Phase cards printed by scripts/next.mjs. Each card carries the rules that phase must obey INLINE, so lazy loading never hides a rule. `read` is just-in-time and scoped (a section, not a file); `invoke` says how to use a skill: digest (already in .beyond-ui/SKILL.md, do not invoke), full (Skill tool, counts toward the budget of 4), head (read only the first N lines), or tool (run its script/command only).",
+  "budget": {
+    "fullInvocations": 4,
+    "headLines": 150,
+    "neverRead": ["README.md", "references/SOURCES-CATALOG.md (use `sources.mjs list <cat>`)", ".beyond-ui/sources/**/*.md (look at .beyond-ui/refs images instead)", ".beyond-ui/fonts/candidates.json (use shortlist.json)", "any *-design studio skill beyond its first 150 lines", "node_modules, lockfiles"]
+  },
+  "phases": [
+    {
+      "id": "0a", "title": "BOOTSTRAP",
+      "goal": "A project to build in, a run state, the 10 routed skills and the tool layer.",
+      "run": [
+        "Empty repo? Scaffold the platform's default stack first (PLATFORMS.md table, or: web `npx create-next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm && npx shadcn@latest init -d && npm i motion gsap lenis`; mobile `npx create-expo-app@latest .`).",
+        "node <skill>/scripts/scaffold-state.mjs",
+        "node <skill>/scripts/bootstrap-upstream-skills.mjs   (skills + Playwright, Scrapling + browsers, browser-use; skip-if-present)"
+      ],
+      "rules": ["Never ask the user what the UI should look like; the idea is enough.", "A skill that fails to install: fetch its raw SKILL.md URL, read only what the digest needs, record it in state.skills.missing."],
+      "read": [],
+      "invoke": [],
+      "done": ".beyond-ui/state.json and .beyond-ui/active-skills.json exist"
+    },
+    {
+      "id": "0b", "title": "BRIEF",
+      "goal": "Turn the idea into screens, sections and the domain content an expert expects.",
+      "run": ["node <skill>/scripts/sources.mjs brief \"<the user's idea, verbatim>\" [--platform web|mobile|desktop]", "Complete every TODO in .beyond-ui/brief.md (web-search the category's leaders for content expectations)."],
+      "rules": [
+        "Domain content inventory is a checklist the build must satisfy (ML dashboard: accuracy/precision/recall/F1, loss curves, confusion matrix, parameters, hyperparameters, runs, datasets, latency).",
+        "Screens before sections: list every page/screen with its primary action.",
+        "Theme only if the user or brand states it; otherwise the anchor decides later. No default theme.",
+        "Ask only for what would be wrong to invent: real customers, real numbers, brand assets."
+      ],
+      "read": [{ "file": "references/BRIEF.md", "section": "whole file (2.5 KB)", "when": "the first time in a session" }],
+      "invoke": [],
+      "done": ".beyond-ui/brief.md has no TODO left"
+    },
+    {
+      "id": "0c", "title": "RECON",
+      "goal": "Know the platform, framework and existing design system.",
+      "run": ["node <skill>/scripts/sources.mjs detect", "node <skill>/scripts/skills-router.mjs status"],
+      "rules": ["An existing brand or design system wins over any reference.", "Pick the stack from PLATFORMS.md §'Choosing the platform' when the repo has none."],
+      "read": [{ "file": "references/PLATFORMS.md", "section": "§'The stack per platform' row for this platform only", "when": "always (one table row)" }],
+      "invoke": [{ "skill": "taste-redesign-skill / bencium-design-design-audit", "how": "full", "when": "only when redesigning an existing UI" }],
+      "done": ".beyond-ui/platform.json exists"
+    },
+    {
+      "id": "1", "title": "SOURCE",
+      "goal": "Real references, templates and components on disk, and the images actually looked at.",
+      "run": [
+        "node <skill>/scripts/sources.mjs pick",
+        "node <skill>/scripts/sources.mjs fetch      (Scrapling; takes 10-15 min; run in the background if the harness allows)",
+        "Open every image under .beyond-ui/refs/references and .beyond-ui/refs/templates (multimodal Read). Then: node <skill>/scripts/sources.mjs viewed <the files you opened>",
+        "Write .beyond-ui/scout.md: 4+ source URLs with what you took from each, and a library map with install commands."
+      ],
+      "rules": [
+        "Never wait for the user to name sites; the catalogs exist for that.",
+        "Judge images for THIS product's surface and audience: a dashboard idea needs dashboard references, a mobile app needs app screens.",
+        "If a gallery is bot-walled, web-search site:<gallery> <category> and fetch the winners directly (Scrapling MCP tools).",
+        "Do not read .beyond-ui/sources/*.md wholesale; grep them for links if needed."
+      ],
+      "read": [],
+      "invoke": [{ "skill": "browser-use", "how": "tool", "when": "a gallery needs scrolling/filters that fetch cannot do" }],
+      "done": "fetch-log.json okCount>=8 across >=4 categories, >=8 images viewed, scout.md has 4+ URLs and an install command"
+    },
+    {
+      "id": "2", "title": "SELECT",
+      "goal": "One anchor reference that will supply 85% of the design, plus 4 supporting references.",
+      "run": ["Write .beyond-ui/references-selection.json: exactly 5 selected, one with \"anchor\": true, each with url, why, award/curation note."],
+      "rules": [
+        "The anchor is the reference closest to this product's surface and audience with the most complete system, not the flashiest.",
+        "At least one supporting reference should be a live product site (computed CSS and motion truth).",
+        "A matching studio *-design skill: read its first 150 lines only (tokens, type, palette), cite it."
+      ],
+      "read": [{ "file": "references/FIDELITY.md", "section": "§'The procedure' steps 1-2 and 'Image anchors'", "when": "always" }],
+      "invoke": [{ "skill": "matching <studio>-design skill (PLAYBOOK §3)", "how": "head", "when": "the lane matches one" }],
+      "done": "references-selection.json has 5 entries and exactly one anchor"
+    },
+    {
+      "id": "3", "title": "TEARDOWN",
+      "goal": "Measured design systems for the references and a section plan.",
+      "run": ["node <skill>/scripts/teardown.mjs run", "Image anchors (Dribbble/Behance/Mobbin): write .beyond-ui/teardown/<slug>/image-analysis.md — grid, spacing steps, radius, borders/shadows, type classification and scale, OKLCH palette, components, density."],
+      "rules": ["Teardown tokens of a gallery host are the gallery's, not the design's; measure the image instead.", "If teardown.mjs fails, read TEARDOWN.md §'TEARDOWN — run it' only."],
+      "read": [],
+      "invoke": [],
+      "done": "DESIGN-SKILL.md and PLAN.json exist"
+    },
+    {
+      "id": "4", "title": "DIGEST",
+      "goal": "One condensed project skill holding the 10 routed skills' rules and the build sheet.",
+      "run": ["node <skill>/scripts/skills-router.mjs digest", "Read .beyond-ui/SKILL.md once, fully. It replaces invoking the 5 permanent skills."],
+      "rules": ["Do NOT invoke frontend-design, ui-ux-pro-max, taste, impeccable or frontend-ui-engineering in full: their rules are in the digest. Invoke one only to use its tool (ui-ux-pro-max search, impeccable detectors)."],
+      "read": [{ "file": ".beyond-ui/SKILL.md", "section": "whole file", "when": "always" }],
+      "invoke": [],
+      "done": ".beyond-ui/SKILL.md exists"
+    },
+    {
+      "id": "5", "title": "DIRECTION",
+      "goal": "The anchor mapped section by section, the type chosen from a specimen, the direction contract written.",
+      "run": [
+        "node <skill>/scripts/fidelity.mjs init  -> fill .beyond-ui/fidelity.json (source, evidence file, adapted, per section; source per system aspect)",
+        "node <skill>/scripts/fidelity.mjs check",
+        "node <skill>/scripts/fonts.mjs search && node <skill>/scripts/fonts.mjs specimen  -> open every specimen-*.png",
+        "node <skill>/scripts/fonts.mjs choose --display \"X\" --text \"Y\" [--mono \"Z\"] --why \"...\"",
+        "Write the direction contract in scout.md: Design Read, type, OKLCH colours (neutral ramp, one accent, one signal), spacing, radius, motion tokens (MICRO.md table), non-goals, evidence per field."
+      ],
+      "rules": [
+        "85% from references: layout, spacing rhythm, component styling, type scale, motion grammar. 15% own: content, domain sections, theme. Never copy copy, logos, imagery, proprietary fonts.",
+        "Type matches the anchor's classification; app titles use the text family at weight, not a display face; mono only for code/data; no ALL-CAPS mono labels.",
+        "Apple HIG as the tie-breaker: hierarchy (content first, controls recede), harmony (concentric radii, consistent spacing), consistency (platform conventions).",
+        "One accent colour; tinted neutrals (never pure #000/#fff); contrast ≥ 4.5:1 body, 3:1 large text and UI."
+      ],
+      "read": [{ "file": "references/TYPE.md", "section": "§'How to choose'", "when": "before fonts.mjs choose" }, { "file": "references/MICRO.md", "section": "§'Timing and easing tokens' table", "when": "writing the motion tokens" }],
+      "invoke": [{ "skill": "the ONE lane skill (PLAYBOOK §3)", "how": "full", "when": "always (budget 1 of 4)" }, { "skill": "ui-ux-pro-max", "how": "tool", "when": "search its database for the product type's pattern" }],
+      "done": "fidelity-report.json pass and fonts/choice.json pass"
+    },
+    {
+      "id": "6", "title": "COMPOSE",
+      "goal": "Every control and section imported, not hand-written.",
+      "run": ["node <skill>/scripts/import-ledger.mjs plan", "Install the base kit items and the planned registry blocks (exact commands in .beyond-ui/BLOCK-MAP.md).", "Sections the anchor lacks: node <skill>/scripts/harvest.mjs page <template-url> --pick <roles>  (look at the PNGs), rebuild in the anchor's system."],
+      "rules": [
+        "Base kit first (shadcn/ui on React web; RN Reusables on Expo; see PLATFORMS.md), registries second (2-3 in play), custom last with `beyond-ui:custom <reason>`.",
+        "Restyle imported components through tokens; an unthemed shadcn default is itself an AI tell.",
+        "Never paste a template's copy; harvested HTML is structure only."
+      ],
+      "read": [{ "file": "references/COMPONENTS.md", "section": "§'Tier 1' + §'Choosing'", "when": "only if BLOCK-MAP.md lacks a command you need" }],
+      "invoke": [],
+      "done": ".beyond-ui/import-ledger.json exists"
+    },
+    {
+      "id": "7", "title": "BUILD",
+      "goal": "An experience, not a screenshot: real content, full domain inventory, real states, micro-interactions on every component, transitions between every page.",
+      "run": ["Build section by section from fidelity.json; after each section, render it and compare with its evidence image.", "Wire motion with the MICRO.md tokens: every interactive component gets hover/press/focus feedback; overlays enter and exit; lists animate; numbers roll; charts draw in; routes transition."],
+      "rules": [
+        "Every interactive element answers within one frame: hover/press/focus states, 120-320ms, exits shorter than enters, no transition: all, no bounce on chrome.",
+        "Every page/screen change has a transition (View Transitions / AnimatePresence on web, native stack + shared element on mobile); the shell never animates.",
+        "Loading is a skeleton in the final layout; empty has a next action; error has recovery.",
+        "Marketing pages: GSAP + ScrollTrigger + Lenis + registry effects + CRAFT R1/R2/R6/R8. App UI: purposeful motion only. Native: platform springs and haptics.",
+        "Every domain inventory item from brief.md is on screen.",
+        "Responsive by construction (390/768/1440) on web; safe areas, 44pt/48dp targets, dynamic type on mobile.",
+        "Reduced motion swaps movement for opacity everywhere."
+      ],
+      "read": [{ "file": "references/MICRO.md", "section": "§'Per component' rows for components you are building + §'Page and screen transitions' row for this platform", "when": "wiring each component" }, { "file": "references/CRAFT.md", "section": "only the recipe(s) the direction picked (R1-R9)", "when": "marketing/storytelling pages" }],
+      "invoke": [{ "skill": "gsap-skills or animejs-skills or the platform skill (vercel-react-native-skills, flutter-expert, swift-expert, kotlin-specialist)", "how": "full", "when": "the motion engine or platform needs it (budget 2 of 4)" }],
+      "done": "the app renders every screen with real content (move on to QA)"
+    },
+    {
+      "id": "8", "title": "QA",
+      "goal": "Used like a human on a phone and a desktop.",
+      "run": ["node <skill>/scripts/qa.mjs journey <url>", "Native without web preview: screenshots on 2 device sizes + flow test into .beyond-ui/native-evidence.json (PLATFORMS.md §'Gates on non-web platforms')."],
+      "rules": ["Keyboard-complete, visible focus, no console errors, reduced motion passes.", "Fix what the journey finds, then rerun."],
+      "read": [],
+      "invoke": [{ "skill": "playwright-skill / browser-use", "how": "tool", "when": "a flow needs scripting beyond qa.mjs" }],
+      "done": "a .beyond-ui/qa/*.json report passes keyboard, reduced motion and console"
+    },
+    {
+      "id": "9", "title": "CRITIQUE",
+      "goal": "Measured and judged against the anchor; overhaul if it is not at the anchor's level.",
+      "run": ["node <skill>/scripts/critique.mjs <url>", "node <skill>/scripts/motion-audit.mjs <url>", "Screenshot each section next to its evidence image; score the 12 gates in CRITIQUE.md Part 2 into state.critique."],
+      "rules": [
+        "Hard fails first (gradient text, pure black/white, emoji icons, transition: all, invisible focus, contrast < 4.5:1, sub-24px targets, horizontal scroll at 320px).",
+        "Any gate < 3, or the build visibly below the anchor: full overhaul from phase 1, not patches.",
+        "Fix, re-render, re-run until critique and motion-audit pass."
+      ],
+      "read": [{ "file": "references/CRITIQUE.md", "section": "Part 2 table only", "when": "scoring" }],
+      "invoke": [{ "skill": "accesslint-accessibility-scan", "how": "full", "when": "main page/screen (budget 3 of 4)" }],
+      "done": "critique-auto.json pass, motion-audit.json pass, state.critique.mean >= 4"
+    },
+    {
+      "id": "10", "title": "FREEZE",
+      "goal": "Lock the signed-off design before any later pass.",
+      "run": ["Production build (next build && next start -p 3100, or the platform's preview).", "node <skill>/scripts/parity.mjs baseline http://localhost:3100 --routes / <main routes>"],
+      "rules": ["Later passes may not change the look; an intended change is re-baselined with --reason."],
+      "read": [],
+      "invoke": [],
+      "done": "parity-report.json has a baseline"
+    },
+    {
+      "id": "11", "title": "HARDEN",
+      "goal": "States, craft, fidelity and parity all green without flattening the design.",
+      "run": ["node <skill>/scripts/states.mjs", "node <skill>/scripts/craft-check.mjs", "node <skill>/scripts/fidelity.mjs check", "node <skill>/scripts/parity.mjs check http://localhost:3100"],
+      "rules": ["Remove cost, not design: cheaper, deferred, or device-scoped before removed.", "A11y fixes change tokens or markup, never the look."],
+      "read": [{ "file": "references/PARITY.md", "section": "§'Performance and accessibility without flattening'", "when": "a fix would change the look" }],
+      "invoke": [],
+      "done": "states-audit, craft-audit, fidelity-report and parity-report all pass"
+    },
+    {
+      "id": "12", "title": "SHIP",
+      "goal": "Production-ready: metadata, share images, crawl surface, headers, 404, smoke tests (or the store checklist).",
+      "run": ["node <skill>/scripts/production-check.mjs http://localhost:3100", "Store apps: complete .beyond-ui/store-checklist.json (PRODUCTION.md §'Store apps').", "node <skill>/scripts/parity.mjs check http://localhost:3100"],
+      "rules": ["Per-page canonical + unique title/description + OG image; one h1; real 404; security headers.", "Deploying or submitting is the user's call."],
+      "read": [{ "file": "references/PRODUCTION.md", "section": "§'Step 2 — the checklist'", "when": "production-check reports a failure" }],
+      "invoke": [{ "skill": "production-suite-completion", "how": "full", "when": "the project will be deployed (budget 4 of 4)" }],
+      "done": "production-audit.json pass (or store-checklist.json pass, or surface is a component)"
+    },
+    {
+      "id": "13", "title": "GATE",
+      "goal": "Prove it.",
+      "run": ["node <skill>/scripts/import-ledger.mjs audit", "node <skill>/scripts/skills-router.mjs verify", "node <skill>/scripts/verify-run.mjs"],
+      "rules": ["A failing gate is fixed by doing the work. Report what passed, what was accepted as risk, and the screenshots."],
+      "read": [],
+      "invoke": [],
+      "done": "verify-run.mjs exits 0"
+    }
+  ]
+}

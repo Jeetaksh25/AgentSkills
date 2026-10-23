@@ -1,4 +1,4 @@
-# beyond-ui — how it works (v5)
+# beyond-ui — how it works (v6)
 
 A skill that makes a coding agent produce UI a working designer would sign their name to.
 
@@ -12,6 +12,19 @@ them from shadcn/ui and the animated registries instead of reinventing them, use
 human, then prove it was rendered, scored, cited *and still matches the plan* — or the run is not done.
 
 The agent's opinions are deliberately constrained at every step. That is the whole design.
+
+### v6 — the token-optimised run, with micro-interactions everywhere
+
+v5 told the agent to open about 21 reference files and invoke about 24 skills in full, roughly 683 KB
+(~171k tokens) of instructions per run, much of it duplicated (the 5 permanent skills were digested
+*and* invoked). v6 loads about 148 KB (~37k tokens), a 78% cut, without hiding a single rule:
+
+| Change | Why it does not cost quality |
+|---|---|
+| `SKILL.md` is now an 8 KB always-on **design core**: 18 binding rules (references, 85/15, type, colour, space, hierarchy, micro-interactions, transitions, HIG, targets, states, domain completeness, mobile) | The rules that decide quality are always in context; only *procedure* is deferred |
+| `scripts/next.mjs` + `assets/phases.json`: the agent runs `next.mjs` between phases and gets one ~1 KB card with the commands, **the phase's binding rules inline**, one scoped section to read, how to use skills, and the done condition | Lazy loading is driven by the run's own state, so it cannot be skipped, and each card carries its rules instead of pointing at them (the failure mode of earlier lazy-loading attempts) |
+| Skill budget: permanent skills via the digest only; ≤4 full invocations per run; studio and large skills by their first 150 lines; never-read list (README, full catalog, fetched pages, font candidates) | The digest already holds the extracted rules; the budget removes duplicates, not content |
+| `references/MICRO.md` + `scripts/motion-audit.mjs` (**G22**): per-component micro-interactions (button, input, toggle, tabs, popover, dialog, sheet, toast, accordion, lists, skeletons, numbers, charts, cards, drag), page/screen transitions and haptics for web, Expo/RN, SwiftUI, Compose, Flutter and desktop; the audit hovers/focuses/presses every element and fails under 80% feedback coverage or a missing route transition | Calibrated: linear.app 90%, vercel.com 92% pass; a static page fails at 17% |
 
 ### v5 — idea in, studio-level UI out, on any platform
 
@@ -76,7 +89,7 @@ flowchart TD
     G --> H{"gates >= 3<br/>and mean >= 4.0?"}
     H -- no --> F
     H -- yes --> I["6 VERIFY + QA<br/>390/768/1440 + rm + kb + console<br/>qa.mjs journey like a human"]
-    I --> J["7 GATE<br/>verify-run.mjs G1-G21<br/>artifacts + citations + plan<br/>+ import-first + QA, or not done"]
+    I --> J["7 GATE<br/>verify-run.mjs G1-G22<br/>artifacts + citations + plan<br/>+ import-first + QA, or not done"]
 
     style A fill:#1f2937,color:#fff
     style S1 fill:#7c2d12,color:#fff
@@ -415,7 +428,7 @@ wants to act now · a keyboard-only user · a screen-reader user · a maintainer
 | Token discipline | No raw hex/`px` outside tokens; dark mode verified |
 | Registry integrity | Every added registry component still compiles; unused ones removed |
 
-### 7. Gate — `scripts/verify-run.mjs` (v4: G1–G21)
+### 7. Gate — `scripts/verify-run.mjs` (v4: G1–G22)
 
 The run's final step is mechanical, not narrative. Fourteen gates, all must pass, exit 1 otherwise:
 
@@ -572,7 +585,7 @@ beyond-ui/
     craft-check.mjs       # phase 11 - CRAFT.md source audit (G17)
     parity.mjs            # phase 10-12 - freeze + pixel compare (G19)
     production-check.mjs  # phase 12 - live ship-surface check (G18)
-    verify-run.mjs # phase 13 - enforcement gate G1-G21
+    verify-run.mjs # phase 13 - enforcement gate G1-G22
   assets/
     skills-catalog.json         # the 5 permanent star-ranked skills + the routed pool (install facts)
     state-template.json         # run state: tools, selection, teardown, synthesis, plan, citations, gates
@@ -585,7 +598,7 @@ beyond-ui/
   references/                   # loaded on demand when the run reaches that step
     SCOUT.md          source universe + protocol + scout.md schema
     TEARDOWN.md       select 5 / teardown 5 / synthesize 1 / plan protocol + rubric
-    USAGE.md          citation contract + the enforcement gate (G1–G21)
+    USAGE.md          citation contract + the enforcement gate (G1–G22)
     PLAYBOOK.md       decision procedure: skills per phase, lane skill, sources, fetch chain, defaults
     BRIEF.md          idea -> brief + domain content inventory
     FIDELITY.md       anchor + 85/15 contract + overhaul rule
@@ -640,7 +653,7 @@ node <skill>/scripts/parity.mjs baseline <url>        # 10: freeze the signed-of
 node <skill>/scripts/craft-check.mjs                 # 11: CRAFT.md defects in the source (G17)
 node <skill>/scripts/parity.mjs check <url>           # 11-12: after every later pass (G19)
 node <skill>/scripts/production-check.mjs <url>      # 12: production build, live crawl surface (G18)
-node <skill>/scripts/verify-run.mjs                  # 13: gates G1–G21 — or the run is not done
+node <skill>/scripts/verify-run.mjs                  # 13: gates G1–G22 — or the run is not done
 ```
 
 Fetching anything by hand — galleries, a competitor's pricing page, the reference you are tearing down:

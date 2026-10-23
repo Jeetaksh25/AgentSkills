@@ -5,7 +5,7 @@
  * the 5-reference selection and teardown (never 10), the synthesized project skill, rule citations
  * (including one per active skill), critique scores, verify evidence, the plan, the import-first
  * ledger, the human-like QA journey, the rendered-page critique, state coverage, the CRAFT.md audit,
- * the production pass, design parity, auto-sourcing, 85/15 fidelity and type choice (G1-G21).
+ * the production pass, design parity, auto-sourcing, 85/15 fidelity and type choice, micro-interactions (G1-G22).
  *
  *   node scripts/verify-run.mjs [projectDir] [--min-citations N]
  *
@@ -217,6 +217,12 @@ const fontChoice = readJson(path.join(beyondDir, "fonts", "choice.json"));
 const brandFonts = state?.fonts?.brandLocked === true;
 gate("G21", "type: display/text chosen from a rendered specimen, not an overused default", brandFonts || (!!fontChoice && fontChoice.pass === true),
   brandFonts ? "brand fonts preserved (state.fonts.brandLocked)" : fontChoice ? `${fontChoice.display?.family || "-"} / ${fontChoice.text?.family || "-"}${fontChoice.mono ? ` / ${fontChoice.mono.family}` : ""}${fontChoice.problems?.length ? ` — ${fontChoice.problems[0]}` : ""}` : "run `fonts.mjs search`, `specimen`, `choose`");
+
+// G22 micro-interactions — every interactive element gives feedback, routes transition (references/MICRO.md)
+const motionAudit = readJson(path.join(beyondDir, "motion-audit.json"));
+const microOk = nativeOnly ? nativeEv?.microInteractions === "pass" : !!motionAudit && motionAudit.pass === true;
+gate("G22", "micro-interactions: >=80% of interactive elements give feedback, page transitions present", microOk,
+  nativeOnly ? `native-evidence.microInteractions=${nativeEv?.microInteractions ?? "-"}` : motionAudit ? `${motionAudit.coverage}% coverage over ${motionAudit.elements} elements, page transition ${motionAudit.pageTransition ? "present" : "absent"}${motionAudit.findings?.length ? ` — ${motionAudit.findings[0].detail}` : ""}` : "run `node scripts/motion-audit.mjs <url>`");
 
 if (nativeOnly) console.log(`  note: no web preview (${platform.framework || "native"}) — G9/G14/G15/G19 read native-evidence.json (${nativeShots.length} shots), G18 reads store-checklist.json`);
 

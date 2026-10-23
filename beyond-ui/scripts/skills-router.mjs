@@ -461,7 +461,9 @@ function digest() {
   lines.push("- **Idea-only autopilot.** `sources.mjs brief` → `pick` → `fetch` (Scrapling) → open every image in `.beyond-ui/refs/` → `sources.mjs viewed` (G2b). Never ask the user to name sites or describe the UI.");
   lines.push("- **85/15.** One anchor reference supplies layout, spacing, components, type and motion; the product supplies content, domain sections and theme. `fidelity.mjs check` (G20).");
   lines.push("- **Type like a designer.** `fonts.mjs search` → `specimen` → look → `choose` (G21). No reflex defaults, no decorative display on app titles, no all-caps mono decoration.");
-  lines.push("- **Gate: G1-G21** — `node scripts/verify-run.mjs`; exit 1 means the run is not done.");
+  lines.push("- **Micro-interactions everywhere.** Every interactive element has hover/press/focus feedback (120-320ms), overlays enter and exit, routes transition; `references/MICRO.md`, `motion-audit.mjs` (G22).");
+  lines.push("- **Drive the run with `node scripts/next.mjs`** — it prints the current phase card with that phase's rules.");
+  lines.push("- **Gate: G1-G22** — `node scripts/verify-run.mjs`; exit 1 means the run is not done.");
   lines.push("");
   fs.mkdirSync(beyondDir, { recursive: true });
   fs.writeFileSync(digestPath, lines.join("\n"));

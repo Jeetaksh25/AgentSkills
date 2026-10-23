@@ -76,7 +76,8 @@ production build — `production-check.mjs`; n/a when `surface` is `component`) 
 G19 parity (the signed-off design was frozen and every later pass left it intact — `parity.mjs`) ·
 G2b auto-sourcing (the catalog was fetched with Scrapling, 8+ reference images saved and recorded as viewed — `sources.mjs`) ·
 G20 fidelity (85% of sections from the anchor and references, evidence on disk — `fidelity.mjs`) ·
-G21 type (fonts chosen from a rendered specimen across 10 free libraries, no overused defaults — `fonts.mjs`).
+G21 type (fonts chosen from a rendered specimen across 10 free libraries, no overused defaults — `fonts.mjs`) ·
+G22 micro-interactions (≥80% of interactive elements give hover/press/focus feedback, page transitions present, nothing slower than 600ms — `motion-audit.mjs`; native: `native-evidence.json -> microInteractions`).
 Native apps without a web preview satisfy G9/G14/G15/G19 with `.beyond-ui/native-evidence.json` and G18 with
 `.beyond-ui/store-checklist.json` (`references/PLATFORMS.md`).
 

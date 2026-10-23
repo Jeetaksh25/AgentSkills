@@ -58,6 +58,6 @@ motion engine, the verification tool and which gates have a native equivalent.
 - **No web preview** (SwiftUI, Compose): G9, G14, G15 and G19 accept native evidence instead: write
   `.beyond-ui/native-evidence.json` with at least 3 screenshots across at least 2 device sizes (files
   on disk), a reduced-motion pass, a largest-dynamic-type pass, a screen-reader label pass and a flow
-  run (Maestro/XCUITest/Compose test) — each `"pass"`. G17 runs on JS/TS/Vue/Svelte sources and is
+  run (Maestro/XCUITest/Compose test) and `microInteractions` (before/after captures of each component state and a screen transition, MICRO.md) — each `"pass"`. G17 runs on JS/TS/Vue/Svelte sources and is
   n/a for pure Swift/Kotlin/Dart projects (record why in `state.json -> notes`). G18 (web production) is replaced by the store checklist in
   `references/PRODUCTION.md` -> "Store apps".

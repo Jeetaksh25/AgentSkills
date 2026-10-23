@@ -4,6 +4,15 @@ Load this at phase 0 and keep it open. It answers, without asking the user, the 
 wrong on its own: **which skill do I invoke now, where do I pull this piece from, how do I fetch it,
 and what do I decide when nobody said.**
 
+## 0. Budget (read this first)
+
+`scripts/next.mjs` prints each phase's card and is the primary driver; this file is the lookup behind it.
+The 5 permanent skills are read **through the digest** (`.beyond-ui/SKILL.md`), never invoked in full.
+At most **4 full invocations** per run (the lane skill, the motion/platform skill, accesslint, production-
+suite-completion). Large skills (taste 88 KB, hallmark 68 KB, studio `*-design` up to 231 KB) are read by
+their first 150 lines or used for their tools only. Rows below marked *digest*, *head* or *tool* follow
+that rule.
+
 ## 1. Two kinds of skills
 
 - **Routed skills (exactly 10).** Chosen by `scripts/skills-router.mjs`, installed by the bootstrap,
@@ -31,19 +40,20 @@ install → the raw `SKILL.md` URL in `assets/skills-catalog.json`. Names separa
 | 1 Source | `firecrawl-search` / `firecrawl-scrape` | Only when authenticated, as an extra discovery path. |
 | 1 Source | `hallmark` | Extracting a design system from a URL or screenshot the user supplied. |
 | 2 Select | `<studio>-design` skills: `linear-design`, `okc-design`, `activetheory-design`, `bruno-simon-design`, `revolut-design`, `monzo-design`, `pitch-design`, `brilliant-design`, `copilot-design`, `splitwise-design` | When one matches the lane (§3): its live site joins the 5 references and the skill is read as its deep-dive. Grammar only. |
-| 5 Direction | `frontend-design` / `anthropic-frontend-design` | Always. |
-| 5 Direction | `ui-ux-pro-max` / `ui-ux-pro-max-ui-ux-pro-max` | Always: its database for the product type's style, palette and landing pattern, as evidence. |
-| 5 Direction | `taste-taste-skill` / `design-taste-frontend` | Always: the Design Read and the three dials. |
-| 5 Direction | exactly **one lane skill** from §3 | Always. |
-| 5 Direction | `scripts/fonts.mjs` + `references/TYPE.md`, then `bencium-design-typography` / `ui-typography` | Always: search 10 libraries, render the specimen, look, choose; then enforce typographic correctness. |
-| 5 Direction | `refactoring-ui-01…10` in order, or `refactoring-ui-meta-refactor-ui` | Building or repairing the token system. |
+| 5 Direction | `frontend-design` / `anthropic-frontend-design` | *digest* — its rules are in `.beyond-ui/SKILL.md`. |
+| 5 Direction | `ui-ux-pro-max` / `ui-ux-pro-max-ui-ux-pro-max` | *tool* — run its search for the product type's pattern and palette; rules via the digest. |
+| 5 Direction | `taste-taste-skill` / `design-taste-frontend` | *digest* — write the Design Read and set the three dials from the digest's rules. |
+| 5 Direction | exactly **one lane skill** from §3 | Always, *full* (budget 1 of 4). |
+| 5 Direction | `scripts/fonts.mjs` + `references/TYPE.md`, then `bencium-design-typography` / `ui-typography` | Always `fonts.mjs`; the typography skill *head* (first 150 lines) for punctuation and spacing rules. |
+| 5 Direction | `refactoring-ui-01…10` (3 KB each) | Only the step you are fixing (e.g. 09 contrast) when critique flags it; never all ten. |
 | 5 Direction | `scripts/fidelity.mjs` + `references/FIDELITY.md` | Always: anchor + section map before any code. |
 | 6 Compose | `shadcn-components` / `ui-ux-pro-max-ui-styling` (web), the platform's base kit (`references/PLATFORMS.md`) | Always: every control. |
 | 6 Compose | `magicui-components`, `acernity-components`, `reactbits-components`, `motion-components` | The 2–3 registries in play. |
 | 6 Compose | `scripts/harvest.mjs page|prompt` | A template or prompt has the section the anchor lacks. |
-| 7 Build | `frontend-ui-engineering` | Always. |
-| 7 Build | `impeccable` / `impeccable-impeccable` | Always: `animate`, `bolder`, `quieter`, `polish`; its detectors after each section. |
-| 7 Build | `gsap-skills` | GSAP picked: pinning, scrubbed timelines, SVG, SplitText. Default for marketing pages, with Lenis. |
+| 7 Build | `frontend-ui-engineering` | *digest*. |
+| 7 Build | `impeccable` / `impeccable-impeccable` | *tool* — run its detectors on finished sections; rules via the digest. |
+| 7 Build | `gsap-skills` | GSAP picked (marketing pages, with Lenis): *full*, budget 2 of 4. |
+| 7 Build | `references/MICRO.md` | Always: the per-component micro-interaction and page-transition spec for this platform. |
 | 7 Build | `animejs-skills` | Anime.js v4 picked: SVG draw/morph, staggers. |
 | 7 Build | `taste-gpt-tasteskill` | GSAP-heavy scroll storytelling. |
 | 7 Build | `vercel-composition-patterns`, `vercel-react-best-practices` | React stacks. |
@@ -53,7 +63,7 @@ install → the raw `SKILL.md` URL in `assets/skills-catalog.json`. Names separa
 | 7 Build | `taste-output-skill` / `full-output-enforcement` | Any long file or multi-file generation. |
 | 7 Build | `taste-imagegen-frontend-web` / `-mobile`, then `taste-image-to-code-skill` | An image-generation tool is available and the lane is visual-first. |
 | 8 QA | `playwright-skill` / `playwright-expert`, `browser-use` | Always. |
-| 9 Critique | `hallmark` (slop test), `impeccable` (`critique`, `audit`), `refactoring-ui-06-eliminate-visual-clutter` | Always, against the rendered page. |
+| 9 Critique | `hallmark` (*head*: its slop test section), `impeccable` (*tool*: `critique`, `audit`) | Against the rendered page. |
 | 9 Critique | `accesslint-accessibility-scan` + `-inspect`, then `-fix`, `-diff` | Always on the main page/screens. |
 | 12 Ship | `production-suite-completion` | Always for anything deployed. |
 | 12 Ship | `accesslint-accessibility-audit`, `web-design-guidelines`, `vercel-optimize`, `bencium-design-bencium-aeo` | Multi-page sites; final interface audit; Next/Vercel perf; marketing sites for AI search. |

@@ -1,6 +1,6 @@
 {
   "skill": "beyond-ui",
-  "version": 5,
+  "version": 6,
   "started": "<ISO date>",
   "surface": "<landing page | app | dashboard | component | mobile app | desktop app>",
   "stack": {
@@ -61,8 +61,9 @@
       {
         "skill": "",
         "phase": "",
+        "how": "full | head | tool",
         "why": "",
-        "_note": "phase specialists from references/PLAYBOOK.md §2, invoked only when present; cite them in ruleCitations"
+        "_note": "phase specialists; at most 4 with how=full per run (next.mjs counts them)"
       }
     ],
     "lane": {
@@ -339,5 +340,14 @@
     "choice": ".beyond-ui/fonts/choice.json",
     "brandLocked": false,
     "_note": "fonts.mjs search/specimen/choose (G21); brandLocked only when the brand's own fonts are kept"
+  },
+  "build": {
+    "complete": false,
+    "_note": "set true when every screen renders with real content (next.mjs phase 7)"
+  },
+  "motion": {
+    "report": ".beyond-ui/motion-audit.json",
+    "pass": null,
+    "_note": "motion-audit.mjs (G22); references/MICRO.md"
   }
 }
