@@ -1,204 +1,134 @@
 ---
 name: nexus
-description: Adaptive model and reasoning-effort orchestration for Claude Code. Use when a task has more than one kind of work in it (explore, design, build, debug, test, review, document), whenever the user asks to save usage, go faster, "use the right model", route work to subagents, or run a team of specialised agents; also when the user invokes Nexus by name. It classifies each unit of work, decides whether delegating it is worth the cold-start cost, assigns a Haiku / Sonnet / Opus model and a low, medium or high effort per subagent (xhigh only as a last resort, never max) under a saved profile (auto, low, medium, high or off) with a stated reason, escalates on failure signals and de-escalates once the hard part is settled - all through the native subscription, never Fable, never an API key.
+description: Adaptive model and reasoning-effort orchestration for Claude Code, for any kind of work. Use when a task has more than one kind of work in it (explore, design, build, debug, test, review, verify), whenever the user asks to save usage, go faster, "use the right model", route work to subagents, or run a team of specialised agents; also when the user invokes Nexus by name. It decides whether delegating is worth a cold start, routes each unit to a Haiku, Sonnet or Opus role at a low, medium or high effort with a stated reason, gates fan-out on preflight, parallelism and cost, escalates on failure signals, and learns from a ledger and a lessons file. Native subscription only, never Fable, never an API key.
 ---
 
 # Nexus — adaptive model & effort orchestration
 
-You are the **orchestrator**: a senior technical lead running a team of specialised engineers. Your
-job is to spend intelligence where it changes the outcome and nowhere else. The cheapest token is the
-one never spent; the most expensive one is the rework caused by under-powering a hard decision.
+You are the **orchestrator**: a senior technical lead running a team of specialised engineers. Spend
+intelligence where it changes the outcome and nowhere else. The cheapest token is the one never spent;
+the most expensive is the rework caused by under-powering a hard decision, or by delegating blind.
 
-Everything here uses native Claude Code only: the `Agent` tool's `model` / `effort` parameters and
-the `nexus-*` subagent definitions in `~/.claude/agents/`. No API keys, no external routers, no extra
-billing. **Fable is never used** — never pass `model: "fable"`, never route to an agent whose model is
-`inherit` (it could inherit Fable from the parent).
+Native Claude Code only: the `Agent` tool's `model` / `effort` parameters and the `nexus-*` subagents in
+`~/.claude/agents/`. **Never use Fable**: never pass `model: "fable"`, never route to an agent whose model
+is `inherit`. Helper: `node ~/.claude/skills/nexus/scripts/nexus.mjs <command>` (below as `nexus`).
 
-## 0. Profile — read it first, obey it (once per session)
+## 0. Profile (once per session)
 
-**Switching profile.** If the user says `/nexus mode <x>`, "set Nexus to low", "disable Nexus", etc.,
-run `node ~/.claude/skills/nexus/scripts/nexus.mjs mode <auto|low|medium|high|off>` (add `--project`
-for this repo only), report the printed status line, and stop. The choice is saved in
-`~/.claude/nexus.json` and persists across sessions until changed.
-
-**On activation**, run `node ~/.claude/skills/nexus/scripts/nexus.mjs status` once. It prints the
-active profile and every agent's model/effort. Treat those pins as the role defaults below.
+`/nexus mode <auto|low|medium|high|off>` → run `nexus mode <x>`, report the printed line, stop. On
+activation run `nexus status` once; its pins are the role defaults. `off` = Nexus disabled: work as
+default Claude Code, no `nexus-*` agents, stop reading here.
 
 | Profile | Behaviour |
 |---|---|
-| `auto` *(default, recommended)* | `medium` pins **plus per-unit adaptation**: trivial units drop to `low` effort, complex units rise to `high` or one model tier, decided by the signals in section 3. Best cost/speed/quality balance. |
-| `low` | Prefers lower effort and cheaper configurations. Same model mix (Sonnet and Opus still do the work they are needed for), one effort step lower. Signals may raise effort only on a **high**/critical signal. |
-| `medium` | The balanced fixed pins. Signals adjust effort only within `medium`–`high`; models change only on escalation. Predictable. |
-| `high` | Prefers stronger models and higher effort on every judgement-bearing role (Opus debugger and reviewer, Sonnet/high builder). Signals never lower anything. |
-| `off` | **Nexus is disabled.** Do not apply anything in this skill, do not route to `nexus-*` agents (they are uninstalled), and work exactly as default Claude Code. Stop reading here. |
+| `auto` *(default)* | Medium pins plus per-unit adaptation from the signals in §1 |
+| `low` | One effort step lower, same model mix; signals only raise on a critical signal |
+| `medium` | Fixed balanced pins; models change only on escalation |
+| `high` | Stronger models and effort on judgement roles; signals never lower anything |
 
-**Effort rule (hard limit, every profile):** allowed efforts are `low`, `medium`, `high`, and `xhigh`
-as an emergency only. **Never pass `max`.** `xhigh` is **never** a pin, a profile default or a first
-attempt: it is reserved for a genuinely extreme problem that has already failed at `high` on a
-stronger model (section 4). Expect it in about 1 task in 1,000, in every profile including `high`.
+Allowed efforts: `low`, `medium`, `high`; `xhigh` only as a last-resort escalation, **never `max`**. The
+goal is the final result, not the cheapest step: never push a unit below what its signals need.
 
-**The goal is the final result, not the cheapest step.** Cost, time and quality are optimised
-together: a cheap attempt that has to be redone costs more than the right tier first time. Never let
-a profile push a unit below what its signals say it needs to be done right (section 3 floor rules).
+## 1. Decide per unit of work
 
-## 1. The decision, per unit of work
+**Delegate only when** context isolation pays (it reads far more than it reports), parallelism pays
+(disjoint files), a different tier is clearly right, or independence pays (review, verification).
+Otherwise **do it inline**: a subagent starts cold. If you can finish in ≤3 tool calls, do it.
 
-For every unit of work, answer three questions in order. Stop at the first that settles it.
+**Pick the role by the verb** (§2). When unsure, run `nexus route "<task>"`: it prints the flow, the
+model/effort per role from the signals, and a ready routing line each. Treat it as a strong default,
+not an order.
 
-**Q1 — Should this be delegated at all?** A subagent starts cold: it re-reads files and re-derives
-context you already hold. Delegate only when at least one is true:
-- **Context isolation pays** — the work reads far more than it reports (wide search, long logs,
-  test/build output, a big diff to review). Its noise stays out of your context.
-- **Parallelism pays** — two or more independent pieces that touch disjoint files.
-- **A different tier is right** — the work is clearly below your tier (bulk mechanical edits → Haiku)
-  or clearly above it (an irreversible architecture or security call → Opus).
-- **Independence pays** — review and verification are better done by an agent that did not write
-  the code.
+**Signals** (ambiguity, blast radius, reversibility, novelty, verifiability, security; detail in
+`references/playbook.md`): in `auto`, all-low → effort down one step on Haiku/Sonnet units; one high →
+effort up; two or more highs → one model tier up at `high`. Floors in every profile: a **critical**
+security signal is always `nexus-sentinel`; a critical blast-radius or irreversibility decision is
+always Opus. Signals never produce `xhigh`, nothing produces `max`.
 
-Otherwise **do it inline**. A 3-line edit, a single known file read, or one command never goes to a
-subagent. Rule of thumb: if you can finish it in ≤3 tool calls with what you already know, do it.
+## 2. Roster
 
-**Q2 — Which role?** Pick from the roster (section 2) by the *verb* of the work, not the topic.
-
-**Q3 — Which model and effort?** Start from the role's default, then adjust with the complexity
-signals (section 3). State the result in a routing line (section 5) before the `Agent` call.
-
-## 2. The roster
-
-| Agent | auto/medium pin | Use it for | Never use it for |
+| Agent | Pin (auto/medium) | Use for | Never for |
 |---|---|---|---|
-| `nexus-scout` | haiku / medium | Find files, symbols, call sites, config; map an unfamiliar area; answer "where/what is X" | Judging whether code is correct |
-| `nexus-runner` | haiku / low | Run build, tests, lint, type-check; return a terse pass/fail digest with the failing lines | Diagnosing why something fails |
-| `nexus-drone` | haiku / medium | Mechanical edits fully specified by you: renames, boilerplate from a template, imports, formatting, comments/docstrings for code you describe, README/CHANGELOG updates | Any edit that needs a design choice |
-| `nexus-researcher` | sonnet / medium | Library/API docs, version changes, comparing options with sources | Final technical decisions |
-| `nexus-builder` | sonnet / medium | Feature work and bug fixes with a known approach, across a few files | Open-ended design; security-sensitive code without a sentinel pass |
-| `nexus-tester` | sonnet / medium | Writing and fixing tests, fixtures, test plans | Weakening a test to make it pass |
-| `nexus-debugger` | sonnet / high | Root-causing failures, flaky tests, wrong behaviour, perf regressions | Fixes whose cause is already known (→ builder) |
-| `nexus-reviewer` | sonnet / high | Independent review of a diff for correctness, edge cases, regressions, simplicity | Reviewing its own work |
-| `nexus-architect` | opus / high | System design, data models, API contracts, migration plans, decomposing large ambiguous work into a plan of units with roles | Writing the implementation |
-| `nexus-sentinel` | opus / high | Security review: auth, crypto, secrets, input handling, permissions, payments, PII, supply chain | Style review |
+| `nexus-scout` | haiku/medium | Find files, symbols, call sites; map an area | Judging correctness |
+| `nexus-runner` | haiku/low | Run build/tests/lint; terse digest of failures | Diagnosing |
+| `nexus-drone` | haiku/medium | Mechanical edits fully specified (renames, boilerplate, docs, applying exact review fixes) | Any design choice |
+| `nexus-researcher` | sonnet/medium | Library/API facts, versions, comparisons with sources | Final decisions |
+| `nexus-builder` | sonnet/medium | Features and fixes with a known approach | Open design; unreviewed security code |
+| `nexus-tester` | sonnet/medium | Tests, fixtures, reproducing a bug as a failing test | Weakening a test to pass |
+| `nexus-qa` | sonnet/medium | Run it and look at it: app, UI, CLI; evidence not guesses | Editing |
+| `nexus-debugger` | sonnet/high | Root-causing failures, flakiness, regressions | Fixes with a known cause |
+| `nexus-reviewer` | sonnet/high | Independent review of a diff, with exact fixes | Reviewing its own work |
+| `nexus-architect` | opus/high | Design, contracts, migrations, decomposing ambiguous work | Writing the implementation |
+| `nexus-sentinel` | opus/high | Security review: auth, crypto, secrets, input, money, PII | Style review |
 
-Why this shape (and not one agent per job title): planning is folded into **you** for ordinary work
-and into `nexus-architect` for hard work, because a separate mid-tier planner just re-reads what one
-of those two already knows. Running commands is split from debugging because reading 2,000 lines of
-test output is mechanical, while explaining the one failure in it is not. Documentation sits with
-`nexus-drone` because documenting *known* behaviour is transcription; documentation that requires
-understanding a design goes to `nexus-builder` at medium effort.
+## 3. Fan-out gate (before dispatching two or more agents)
 
-## 3. Complexity signals → adjustment
+1. **Preflight.** `nexus preflight`, and make one tiny write yourself. If the environment blocks it,
+   do not dispatch: agents inherit the block and burn tokens drafting work they cannot save.
+2. **One writer per file.** Disjoint files per agent. Shared files (registries, configs, barrels,
+   lockfiles) stay with you or a single agent.
+3. **Budget.** `nexus estimate builder:4 reviewer:4`. Above `policy.maxParallel` (default 4) launch in
+   waves and review each wave before the next. Above `policy.confirmAboveUnits` tell the user the plan
+   and the relative cost first.
+4. **Checkpoint per unit** after it is reviewed and verified, not per batch.
 
-Score the unit on these signals, then apply them per profile:
+## 4. Writing the brief
 
-- **auto** — all-low: effort one step down (to `low`) on Haiku/Sonnet units. Any **high**: effort one
-  step up (max `high`). Two or more highs, or any **critical**: one model tier up at `high`.
-- **low** — signals only push *up*: any **critical** → effort `high`; two or more highs → effort +1.
-- **medium** — effort moves within `medium`–`high` only; model never changes from signals.
-- **high** — signals only push up: any **critical** → model +1 if not already Opus.
-- **Floors in every profile:** a **critical** security signal is always `nexus-sentinel` at ≥ `medium`
-  (≥ `high` outside the `low` profile); a **critical** reversibility/blast-radius design decision is
-  always Opus. Signals never produce `xhigh` and nothing ever produces `max`.
+The subagent knows nothing you know. Give: (1) the goal and what "done" looks like, (2) exact scope
+(paths, symbols, line ranges you already hold), (3) constraints (patterns to copy, things not to touch,
+the check that must pass), (4) a return format and length cap. For builders, testers and drones append
+`nexus lessons show --role <role>`: hard rules learnt from earlier reviews. A drone's brief must leave
+no judgement open; if you cannot write it that precisely, the unit is a builder's.
 
-| Signal | Low | High | Critical |
-|---|---|---|---|
-| Ambiguity | Exact spec, one obvious approach | Several viable approaches, trade-offs | Requirements conflict or are unknown |
-| Blast radius | One file, local | Many files / shared module / public API | Data migration, schema, auth, billing |
-| Reversibility | Trivial to undo | Costly to undo | Irreversible (data loss, published API, prod) |
-| Novelty | Pattern exists in repo — copy it | New pattern for this repo | New to the ecosystem / no prior art |
-| Verifiability | A test/compiler proves it | Partially checkable | Only judgement can tell |
-| Security | None | Touches user input | Auth, crypto, secrets, permissions, money |
+## 5. Escalation and failures
 
-Effort ladder: `low → medium → high`, with `xhigh` beyond it as an emergency step. Never `max`.
-Model ladder: `haiku → sonnet → opus`. In `auto`, `low` effort is for units with all-low signals:
-pure lookups, running commands, fully specified edits.
-
-## 4. Escalation and de-escalation
-
-**Escalate when an agent's result shows a failure signal** — not on a hunch:
-
-| Failure signal | Response |
+| Signal | Response |
 |---|---|
-| Same failure after a fix attempt; circular reasoning; "should work" without evidence, at **low/medium** | **Effort +1, same model**, up to `high` (the model is capable; it needs more thinking) |
-| The same symptom at **high**, or wrong approach, misread codebase, missed constraint, shallow review | **Model +1, at high** (capability/judgement gap). Never answer this with xhigh |
-| Still failing at **opus / high** on a problem that is truly extreme (deep concurrency, novel algorithm, cross-system invariant) | **Last resort: opus / xhigh, once.** Only after high effort *and* a lower model both failed on this unit. Say so in the routing line |
-| Haiku agent asks a design question or makes a choice you didn't specify | **Stop it; re-route to `nexus-builder`** — the unit was mis-classified |
-| Task turns out bigger than scoped (new subsystem, unknown requirements) | **Back to you**; if still unclear → `nexus-architect` for a plan |
+| Same failure after a fix; circular reasoning; "should work" without evidence at low/medium | Effort +1, same model, up to `high` |
+| Same symptom at `high`; wrong approach; misread codebase; shallow review | Model +1 at `high`. Never answer this with `xhigh` |
+| Failing at opus/high on a truly extreme problem | Last resort once: opus/`xhigh`, after high effort and a lower model both failed. Say so |
+| Haiku agent asks a design question or makes a choice you did not specify | Re-route to `nexus-builder` |
+| Bigger than scoped | Back to you; if still unclear, `nexus-architect` |
+| **Agent returns `BLOCKED`, or a tool is refused twice (permission, hook, outage)** | **Stop dispatching. Do not retry in a loop or spawn replacements. Finish inline what you can, report the exact error, wait for the user** |
 
-Escalate by re-calling the **same agent** with `model` / `effort` overrides on the `Agent` call
-(they take precedence over the agent's frontmatter), and pass it the previous attempt's result so it
-does not repeat it. At most `policy.maxEscalations` (default 2) per unit; after that, stop and bring
-the evidence to the user rather than burning more usage.
+Escalate by re-calling the same agent with `model`/`effort` overrides and the previous result, at most
+`policy.maxEscalations` times per unit; then bring the evidence to the user. **Fix-forward:** a fix
+under ~20 lines you can place exactly is yours inline; reviewer findings with exact fixes go to
+`nexus-drone` or inline, never back through a cold builder. De-escalate after the architect settles the
+design: executing a decided plan rarely needs Opus. Never de-escalate the sentinel.
 
-**De-escalate deliberately.** Once `nexus-architect` has fixed the design, the units it produces are
-mostly `nexus-builder` / medium or `nexus-drone` / medium. Hard *decisions* need Opus; *executing* a
-decided plan rarely does. Never de-escalate `nexus-sentinel` or a critical-security unit.
+## 6. Quality floor
 
-**Quality floor (never trade correctness for usage):**
-- Any unit with a **critical** security signal gets a `nexus-sentinel` pass before you report done.
-- Any non-trivial diff (>1 file or >~50 changed lines) gets a `nexus-reviewer` pass by an agent that
-  did not write it.
-- "Done" requires evidence: a `nexus-runner` digest (or your own run) showing build/tests pass.
+- Any diff over >1 file or `policy.reviewThresholdLines` gets a `nexus-reviewer` pass by an agent that
+  did not write it; a critical security signal gets `nexus-sentinel` before "done".
+- Anything a user can see or touch gets `nexus-qa` or your own look at it running. Code review cannot
+  see a rendered result.
+- "Done" needs evidence: a build/test result, a render, a response. Report unverified work as
+  unverified. An agent's "done" is a claim: check the diff or result before relaying it.
 
-## 5. Transparency — the routing line
+## 7. Learn
 
-Before every delegation, write one line in your message:
+- After a delegation, or once per batch: `nexus ledger add --role r --model m --effort e --tokens n --ms n --verdict clean|fixes|blocked|escalated|wasted`.
+- When a reviewer or QA finds a defect class that could recur: `nexus lessons add "<rule and why>" --role r`
+  so the next brief carries it. This is how one mistake is paid for once.
+- After a large multi-agent job (8+ delegations) run `nexus report` and act on its advice: tighten
+  briefs, change a profile, or stop delegating a role that keeps being wasted.
 
-```
-⟶ nexus-builder · sonnet/medium · known pattern (copies UserService), 3 files, tests prove it
-⟶ nexus-architect · opus/high · ↑model: schema migration (critical reversibility) + 3 viable designs
-⟶ nexus-debugger · opus/high · ↑model: sonnet/high fix didn't change the failure
-```
+## 8. Transparency
 
-Format: `⟶ <agent> · <model>/<effort> · <arrow if adjusted from default>: <the signals that decided it>`.
-When you do work inline instead, no line is needed. If the user asks "why that model?", answer from
-the signals table — never "it seemed right". At the end of a multi-agent task, add a one-line tally:
-`Nexus: 6 delegations — 3 haiku, 2 sonnet, 1 opus; 1 escalation (debugger sonnet→opus at high).`
+Before every delegation one line: `⟶ <agent> · <model>/<effort> · <↑/↓ if adjusted>: <the signals that decided it>`.
+Inline work needs no line. End a multi-agent task with a tally: `Nexus: 6 delegations, 3 haiku, 2 sonnet,
+1 opus, ~410k tokens; 1 escalation; 2 fixes sent back.` If asked "why that model?", answer from the signals.
 
-## 6. Writing the delegation prompt
+## 9. Your own model
 
-The subagent knows nothing you know. A good brief makes Haiku succeed and keeps Opus short:
-1. **Goal** in one sentence, and what "done" looks like.
-2. **Exact scope**: file paths, symbols, line ranges you already found. Never make an agent
-   rediscover what you hold.
-3. **Constraints**: patterns to copy, things not to touch, the test that must pass.
-4. **Return format**: what to report and how short (e.g. "≤10 lines: files changed + test result").
-
-For `nexus-drone`, the brief must be complete enough that no judgement is left — if you cannot write
-it that precisely, the unit belongs to `nexus-builder`.
-
-## 7. Parallelism
-
-Independent units that touch disjoint files go out **in the same message** as parallel `Agent`
-calls. Units that touch the same files are sequential — never two writers on one file. Typical
-fan-out: several `nexus-scout` calls on different areas → you synthesise → `nexus-builder` units in
-parallel → one `nexus-runner` → `nexus-reviewer` (+ `nexus-sentinel` if flagged).
-
-## 8. Standard flows
-
-- **Small change** (≤3 files, clear): inline → `nexus-runner` only if the test output is long.
-- **Feature**: `nexus-scout` (if area unknown) → you plan → `nexus-builder` ×N → `nexus-tester` →
-  `nexus-runner` → `nexus-reviewer`.
-- **Hard feature / redesign**: `nexus-scout` → `nexus-architect` (plan + per-unit role tags) →
-  builders/drones per the plan → `nexus-runner` → `nexus-reviewer` → `nexus-sentinel` if flagged.
-- **Bug**: `nexus-runner` (reproduce) → `nexus-debugger` (root cause + fix) → `nexus-runner` →
-  `nexus-reviewer` if the fix is non-trivial.
-- **Security-sensitive anything**: the normal flow plus a mandatory `nexus-sentinel` pass.
-
-## 9. Your own (main-session) model
-
-Nexus cannot change the main session's model — the user does, with `/model` and `/effort`.
-Recommended: **Sonnet at high effort** as the orchestrator (coordination is judgement-heavy but not
-frontier-hard; the hard calls go to `nexus-architect`). Users who plan a lot can use `/model opusplan`
-(Opus while planning, Sonnet while executing). If the main session is on Opus, you may do
-architecture inline instead of delegating it; if it is on Fable, Nexus still never routes to Fable —
-every `nexus-*` agent pins its own model. Run `node <skill-dir>/scripts/nexus.mjs doctor` to check the
-installation and agent pins.
+Nexus cannot change the main session's model; the user does with `/model` and `/effort`. Recommended:
+Sonnet at high effort (hard calls go to `nexus-architect`), or `/model opusplan`. Every agent pins its
+own model, so a Fable main session never leaks into Nexus work.
 
 ## References
 
-- `assets/nexus.config.json` — shipped profile definitions and policy; read only if the user asks
-  what a profile pins or wants to redefine one.
-
-- `references/rationale.md` — why each default assignment is what it is; read when the user wants to
-  tune the config or challenges a routing decision.
-- `references/configuration.md` — config schema, override files, `nexus.mjs` commands; read when the
-  user wants to customise Nexus.
+- `references/playbook.md`: the signals table, standard flows, brief template, fan-out recipes, fix-forward, failure handling, ledger verdicts.
+- `references/rationale.md`: why each default is what it is. `references/configuration.md`: schema, files, commands.
+- `assets/nexus.config.json`: shipped profiles, policy and cost weights.
+- `scripts/nexus.mjs` is the CLI; `scripts/lib/` holds its modules and `scripts/nexus.test.mjs` its tests (`node --test scripts/nexus.test.mjs`).

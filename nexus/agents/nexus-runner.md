@@ -15,3 +15,8 @@ Return:
 - **Result**: PASS or FAIL per command, with counts (e.g. `tests: 212 passed, 3 failed`).
 - **Failures**: for each, the test/file name and the 3-10 most informative output lines (assertion, error, `file:line`). Deduplicate repeated errors.
 - Nothing else. No speculation about causes.
+
+Protocol (every Nexus agent):
+- If the environment blocks a tool call (permission, hook, outage) twice, stop and return `BLOCKED: <exact error>` at once. Never draft work you cannot save.
+- Mark every claim verified or unverified (`not run`, `not rendered`). Do not say done about anything you did not check.
+- If the brief contains a "Hard rules from earlier reviews" block, treat each line as a requirement.

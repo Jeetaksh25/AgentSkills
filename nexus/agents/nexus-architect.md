@@ -18,3 +18,8 @@ Return:
 3. **Risks**, and what the reviewer or sentinel must check.
 
 Keep it tight: a plan, not an essay.
+
+Protocol (every Nexus agent):
+- If the environment blocks a tool call (permission, hook, outage) twice, stop and return `BLOCKED: <exact error>` at once. Never draft work you cannot save.
+- Mark every claim verified or unverified (`not run`, `not rendered`). Do not say done about anything you did not check.
+- If the brief contains a "Hard rules from earlier reviews" block, treat each line as a requirement.

@@ -70,6 +70,8 @@ since more intelligence on a test run buys nothing.
   planner would re-read the same material and add a hop.
 - **No separate Documentation agent.** Documenting known behaviour is transcription (drone);
   documenting a design needs understanding (builder at medium effort).
+- **A QA role was added.** Reviewers read code, so they pass work whose rendered result is broken.
+  A role that runs the thing and looks at it closes that gap, cheaply, per defect found.
 - **A Runner was added.** Test and build output is the largest context sink in agentic coding;
   isolating it on Haiku is one of the biggest savings available.
 - **Delegation itself is gated.** Every subagent starts cold. Small tasks are faster and cheaper inline;
@@ -80,3 +82,23 @@ since more intelligence on a test run buys nothing.
 Recommended: Sonnet at high effort. Coordination is judgement-heavy, but the hardest calls are handed
 to the architect, so the orchestrator does not need to be Opus all session. `/model opusplan` is a
 good alternative for plan-heavy work.
+
+## Why the later additions exist
+
+Each one answers a failure observed in a long, parallel, real session, not a theory.
+
+- **Fan-out gate.** Eleven builders were launched at once while the environment was refusing writes.
+  Each drafted a full file three times and saved nothing. Preflight, a parallelism cap and the rule to
+  stop dispatching on `BLOCKED` make that failure cost one agent, not eleven.
+- **Router.** The same signal and flow decisions were re-derived in prose every time. Computing them
+  deterministically is faster, consistent, and leaves the orchestrator free for the exceptions. It is
+  advisory: keywords miss context, so the orchestrator may overrule it.
+- **Ledger and lessons.** Reviewers found the same defect classes in file after file because each builder
+  started cold. A lessons block in the next brief turns one reviewer finding into a rule every later
+  agent follows. The ledger then shows which roles earn their cost, so the profile can follow data.
+- **Fix-forward rule.** Sending small fixes back through a cold agent re-read the repo to find what the
+  orchestrator already knew. Exact fixes from reviewers go to a drone or are applied inline.
+- **A leaner `SKILL.md`.** The skill loads on every activation, so every line is paid for every session.
+  Detail lives in `references/`, read only when needed, and `doctor` enforces the budget.
+- **Honest agents.** Agents must say what they did not run or render. An unqualified "done" was the
+  most common way a defect reached the orchestrator.
