@@ -98,6 +98,17 @@ for (const target of targets) {
       console.log(`  FAILED  ${name}: ${e.message}`);
     }
   }
+  // Skills that ship subagents (agents/*.md) get them copied next to the skills dir (e.g. ~/.claude/agents).
+  if (path.basename(path.dirname(target)) === ".claude") {
+    const agentsDir = path.join(path.dirname(target), "agents");
+    for (const name of skills) {
+      const src = path.join(repoRoot, name, "agents");
+      if (!fs.existsSync(src)) continue;
+      fs.mkdirSync(agentsDir, { recursive: true });
+      for (const f of fs.readdirSync(src).filter((f) => f.endsWith(".md"))) fs.copyFileSync(path.join(src, f), path.join(agentsDir, f));
+      console.log(`  agents  ${name} -> ${agentsDir}`);
+    }
+  }
   console.log("");
 }
 

@@ -1,0 +1,65 @@
+{
+  "$comment": "Nexus defaults. The active profile is saved in ~/.claude/nexus.json ('profile') and persists across sessions; change it with `/nexus mode <auto|low|medium|high|off>` or `node scripts/nexus.mjs mode <...>`. Models: haiku | sonnet | opus. Efforts: low | medium | high | xhigh. max is rejected. xhigh is never a profile default: it is a last-resort escalation only. Fable and 'inherit' are rejected.",
+  "profile": "auto",
+  "policy": {
+    "maxEscalations": 2,
+    "forbiddenModels": ["fable", "inherit"],
+    "reviewThresholdLines": 50
+  },
+  "profiles": {
+    "low": {
+      "summary": "Cheapest and fastest that still ships correct work: same model mix, one step lower effort; Opus kept for design and security but at medium.",
+      "adaptive": false,
+      "roles": {
+        "nexus-scout":      { "model": "haiku",  "effort": "low" },
+        "nexus-runner":     { "model": "haiku",  "effort": "low" },
+        "nexus-drone":      { "model": "haiku",  "effort": "low" },
+        "nexus-researcher": { "model": "sonnet", "effort": "low" },
+        "nexus-builder":    { "model": "sonnet", "effort": "low" },
+        "nexus-tester":     { "model": "sonnet", "effort": "low" },
+        "nexus-debugger":   { "model": "sonnet", "effort": "medium" },
+        "nexus-reviewer":   { "model": "sonnet", "effort": "medium" },
+        "nexus-architect":  { "model": "opus",   "effort": "medium" },
+        "nexus-sentinel":   { "model": "opus",   "effort": "medium" }
+      }
+    },
+    "medium": {
+      "summary": "The balanced fixed configuration: best quality per unit of usage, predictable pins, model changes only on escalation.",
+      "adaptive": false,
+      "roles": {
+        "nexus-scout":      { "model": "haiku",  "effort": "medium" },
+        "nexus-runner":     { "model": "haiku",  "effort": "low" },
+        "nexus-drone":      { "model": "haiku",  "effort": "medium" },
+        "nexus-researcher": { "model": "sonnet", "effort": "medium" },
+        "nexus-builder":    { "model": "sonnet", "effort": "medium" },
+        "nexus-tester":     { "model": "sonnet", "effort": "medium" },
+        "nexus-debugger":   { "model": "sonnet", "effort": "high" },
+        "nexus-reviewer":   { "model": "sonnet", "effort": "high" },
+        "nexus-architect":  { "model": "opus",   "effort": "high" },
+        "nexus-sentinel":   { "model": "opus",   "effort": "high" }
+      }
+    },
+    "high": {
+      "summary": "Quality first: stronger models and higher effort on every judgement-bearing role; only purely mechanical roles stay cheap.",
+      "adaptive": false,
+      "roles": {
+        "nexus-scout":      { "model": "sonnet", "effort": "low" },
+        "nexus-runner":     { "model": "haiku",  "effort": "medium" },
+        "nexus-drone":      { "model": "sonnet", "effort": "low" },
+        "nexus-researcher": { "model": "sonnet", "effort": "high" },
+        "nexus-builder":    { "model": "sonnet", "effort": "high" },
+        "nexus-tester":     { "model": "sonnet", "effort": "high" },
+        "nexus-debugger":   { "model": "opus",   "effort": "high" },
+        "nexus-reviewer":   { "model": "opus",   "effort": "high" },
+        "nexus-architect":  { "model": "opus",   "effort": "high" },
+        "nexus-sentinel":   { "model": "opus",   "effort": "high" }
+      }
+    },
+    "auto": {
+      "summary": "Recommended. Medium pins, plus per-unit adaptation: trivial units drop to low effort, complex ones rise to high or a stronger model, decided by the complexity signals.",
+      "base": "medium",
+      "adaptive": true
+    }
+  },
+  "roles": {}
+}
