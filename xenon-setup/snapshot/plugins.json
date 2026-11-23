@@ -61,117 +61,402 @@
     "engineering-skills@claude-code-skills": {
       "version": "2.2.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": [
+          "SKILL.md",
+          "a11y-audit/SKILL.md",
+          "adversarial-reviewer/SKILL.md",
+          "ai-security/SKILL.md",
+          "aws-solution-architect/SKILL.md",
+          "azure-cloud-architect/SKILL.md",
+          "cloud-security/SKILL.md",
+          "code-reviewer/SKILL.md",
+          "email-template-builder/SKILL.md",
+          "epic-design/SKILL.md",
+          "gcp-cloud-architect/SKILL.md",
+          "google-workspace-cli/SKILL.md",
+          "incident-commander/SKILL.md",
+          "incident-response/SKILL.md",
+          "ms365-tenant-manager/SKILL.md",
+          "playwright-pro/SKILL.md",
+          "playwright-pro/skills/browserstack/SKILL.md",
+          "playwright-pro/skills/coverage/SKILL.md",
+          "playwright-pro/skills/fix/SKILL.md",
+          "playwright-pro/skills/generate/SKILL.md",
+          "playwright-pro/skills/init/SKILL.md",
+          "playwright-pro/skills/migrate/SKILL.md",
+          "playwright-pro/skills/report/SKILL.md",
+          "playwright-pro/skills/review/SKILL.md",
+          "playwright-pro/skills/testrail/SKILL.md",
+          "red-team/SKILL.md",
+          "security-pen-testing/SKILL.md",
+          "self-improving-agent/SKILL.md",
+          "self-improving-agent/skills/extract/SKILL.md",
+          "self-improving-agent/skills/promote/SKILL.md",
+          "self-improving-agent/skills/remember/SKILL.md",
+          "self-improving-agent/skills/review/SKILL.md",
+          "self-improving-agent/skills/status/SKILL.md",
+          "senior-architect/SKILL.md",
+          "senior-backend/SKILL.md",
+          "senior-computer-vision/SKILL.md",
+          "senior-data-engineer/SKILL.md",
+          "senior-data-scientist/SKILL.md",
+          "senior-devops/SKILL.md",
+          "senior-frontend/SKILL.md",
+          "senior-fullstack/SKILL.md",
+          "senior-ml-engineer/SKILL.md",
+          "senior-prompt-engineer/SKILL.md",
+          "senior-qa/SKILL.md",
+          "senior-secops/SKILL.md",
+          "senior-security/SKILL.md",
+          "snowflake-development/SKILL.md",
+          "stripe-integration-expert/SKILL.md",
+          "tdd-guide/SKILL.md",
+          "tech-stack-evaluator/SKILL.md",
+          "threat-detection/SKILL.md"
+        ]
+      }
     },
     "engineering-advanced-skills@claude-code-skills": {
       "version": "2.3.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": [
+          "SKILL.md",
+          "agent-designer/SKILL.md",
+          "agent-workflow-designer/SKILL.md",
+          "agenthub/SKILL.md",
+          "agenthub/skills/board/SKILL.md",
+          "agenthub/skills/eval/SKILL.md",
+          "agenthub/skills/init/SKILL.md",
+          "agenthub/skills/merge/SKILL.md",
+          "agenthub/skills/run/SKILL.md",
+          "agenthub/skills/spawn/SKILL.md",
+          "agenthub/skills/status/SKILL.md",
+          "api-design-reviewer/SKILL.md",
+          "api-test-suite-builder/SKILL.md",
+          "autoresearch-agent/SKILL.md",
+          "autoresearch-agent/skills/loop/SKILL.md",
+          "autoresearch-agent/skills/resume/SKILL.md",
+          "autoresearch-agent/skills/run/SKILL.md",
+          "autoresearch-agent/skills/setup/SKILL.md",
+          "autoresearch-agent/skills/status/SKILL.md",
+          "behuman/SKILL.md",
+          "browser-automation/SKILL.md",
+          "changelog-generator/SKILL.md",
+          "ci-cd-pipeline-builder/SKILL.md",
+          "code-tour/SKILL.md",
+          "codebase-onboarding/SKILL.md",
+          "data-quality-auditor/SKILL.md",
+          "database-designer/SKILL.md",
+          "database-schema-designer/SKILL.md",
+          "demo-video/SKILL.md",
+          "dependency-auditor/SKILL.md",
+          "docker-development/SKILL.md",
+          "env-secrets-manager/SKILL.md",
+          "focused-fix/SKILL.md",
+          "git-worktree-manager/SKILL.md",
+          "helm-chart-builder/SKILL.md",
+          "interview-system-designer/SKILL.md",
+          "karpathy-coder/SKILL.md",
+          "llm-cost-optimizer/SKILL.md",
+          "llm-wiki/SKILL.md",
+          "mcp-server-builder/SKILL.md",
+          "migration-architect/SKILL.md",
+          "monorepo-navigator/SKILL.md",
+          "observability-designer/SKILL.md",
+          "performance-profiler/SKILL.md",
+          "pr-review-expert/SKILL.md",
+          "prompt-governance/SKILL.md",
+          "rag-architect/SKILL.md",
+          "release-manager/SKILL.md",
+          "runbook-generator/SKILL.md",
+          "secrets-vault-manager/SKILL.md",
+          "self-eval/SKILL.md",
+          "skill-security-auditor/SKILL.md",
+          "skill-tester/SKILL.md",
+          "spec-driven-workflow/SKILL.md",
+          "sql-database-assistant/SKILL.md",
+          "statistical-analyst/SKILL.md",
+          "tc-tracker/SKILL.md",
+          "tech-debt-tracker/SKILL.md",
+          "terraform-patterns/SKILL.md"
+        ]
+      }
     },
     "frontend-design@claude-plugins-official": {
       "version": "1.1.1",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "superpowers@claude-plugins-official": {
       "version": "7.0.2",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "ponytail@ponytail": {
       "version": "4.8.4",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": [
+          ".openclaw/skills/ponytail-audit/SKILL.md",
+          ".openclaw/skills/ponytail-debt/SKILL.md",
+          ".openclaw/skills/ponytail-gain/SKILL.md",
+          ".openclaw/skills/ponytail-help/SKILL.md",
+          ".openclaw/skills/ponytail-review/SKILL.md",
+          ".openclaw/skills/ponytail/SKILL.md",
+          "skills/ponytail-audit/SKILL.md",
+          "skills/ponytail-debt/SKILL.md",
+          "skills/ponytail-gain/SKILL.md",
+          "skills/ponytail-help/SKILL.md",
+          "skills/ponytail-review/SKILL.md",
+          "skills/ponytail/SKILL.md"
+        ]
+      }
     },
     "agentmemory@agentmemory": {
       "version": "0.9.27",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": [
+          "skills/agentmemory-agents/SKILL.md",
+          "skills/agentmemory-architecture/SKILL.md",
+          "skills/agentmemory-config/SKILL.md",
+          "skills/agentmemory-hooks/SKILL.md",
+          "skills/agentmemory-mcp-tools/SKILL.md",
+          "skills/agentmemory-rest-api/SKILL.md",
+          "skills/commit-context/SKILL.md",
+          "skills/commit-history/SKILL.md",
+          "skills/forget/SKILL.md",
+          "skills/handoff/SKILL.md",
+          "skills/recall/SKILL.md",
+          "skills/recap/SKILL.md",
+          "skills/remember/SKILL.md",
+          "skills/session-history/SKILL.md",
+          "skills/write-agentmemory-skill/SKILL.md"
+        ]
+      }
     },
     "skill-creator@claude-plugins-official": {
       "version": "73c8cf3ea7e2",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "kotlin-lsp@claude-plugins-official": {
       "version": "1.0.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "expo@claude-plugins-official": {
       "version": "1.13.9",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "context7@claude-plugins-official": {
       "version": "73c8cf3ea7e2",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "supabase@claude-plugins-official": {
       "version": "0.1.16",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "firecrawl@claude-plugins-official": {
       "version": "2.0.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "firebase@claude-plugins-official": {
       "version": "73c8cf3ea7e2",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "playwright@claude-plugins-official": {
       "version": "73c8cf3ea7e2",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "firebase@firebase": {
       "version": "1.0.0",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": [
+          ".agent/skills/resolve-docker-vulnerabilities/SKILL.md",
+          ".agent/skills/update-pubsub-emulator/SKILL.md"
+        ]
+      }
     },
     "claude-code-setup@claude-plugins-official": {
       "version": "1.0.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "ui-ux-pro-max@ui-ux-pro-max-skill": {
       "version": "2.11.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "rust-analyzer-lsp@claude-plugins-official": {
       "version": "1.0.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "n8n-skills@n8n-io": {
       "version": "1.2.0",
       "scope": "user",
-      "enabled": false
+      "enabled": false,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "paper-desktop@paper": {
       "version": "0.2.1",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "understand-anything@understand-anything": {
       "version": "2.9.8",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     },
     "ecc@ecc": {
       "version": "2.2.3",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {
+          "agents": [
+            "agent-evaluator.md",
+            "bengali-reviewer.md",
+            "chief-of-staff.md",
+            "code-architect.md",
+            "comment-analyzer.md",
+            "commit-reviewer.md",
+            "cpp-build-resolver.md",
+            "cpp-reviewer.md",
+            "csharp-reviewer.md",
+            "dart-build-resolver.md",
+            "django-build-resolver.md",
+            "django-reviewer.md",
+            "fastapi-reviewer.md",
+            "flutter-reviewer.md",
+            "fsharp-reviewer.md",
+            "gan-evaluator.md",
+            "gan-generator.md",
+            "gan-planner.md",
+            "go-build-resolver.md",
+            "go-reviewer.md",
+            "harmonyos-app-resolver.md",
+            "harness-optimizer.md",
+            "healthcare-reviewer.md",
+            "homelab-architect.md",
+            "java-build-resolver.md",
+            "java-reviewer.md",
+            "loop-operator.md",
+            "marketing-agent.md",
+            "mle-reviewer.md",
+            "network-architect.md",
+            "network-config-reviewer.md",
+            "network-troubleshooter.md",
+            "opensource-forker.md",
+            "opensource-packager.md",
+            "opensource-sanitizer.md",
+            "php-reviewer.md",
+            "pr-test-analyzer.md",
+            "pytorch-build-resolver.md",
+            "rag-pipeline-reviewer.md",
+            "ruby-reviewer.md",
+            "seo-specialist.md",
+            "spec-miner.md",
+            "swift-build-resolver.md",
+            "swift-reviewer.md",
+            "type-design-analyzer.md",
+            "vue-reviewer.md"
+          ]
+        },
+        "manual": []
+      }
     },
     "headroom@headroom-marketplace": {
       "version": "0.45.0",
       "scope": "user",
-      "enabled": true
+      "enabled": true,
+      "overlay": {
+        "remove": {},
+        "manual": []
+      }
     }
   }
 }

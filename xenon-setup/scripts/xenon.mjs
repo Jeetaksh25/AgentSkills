@@ -180,10 +180,17 @@ function doExport(out) {
   const installed = readJson(path.join(CLAUDE_DIR, 'plugins', 'installed_plugins.json'));
   const plugins = {
     marketplaces: Object.fromEntries(Object.entries(known).map(([k, v]) => [k, v.source])),
-    plugins: Object.fromEntries(Object.entries(installed.plugins || {}).map(([id, arr]) => [id, {
-      version: arr[0]?.version, scope: arr[0]?.scope || 'user', enabled: settings.enabledPlugins?.[id] ?? true,
-    }])),
+    plugins: Object.fromEntries(Object.entries(installed.plugins || {}).map(([id, arr]) => {
+      const root = pluginRoot(id);
+      return [id, {
+        version: arr[0]?.version, scope: arr[0]?.scope || 'user', enabled: settings.enabledPlugins?.[id] ?? true,
+        // local customisations of the plugin: which agents/commands/skills were kept, which skills are manual-only
+        overlay: root ? captureOverlay(id, root) : null,
+      }];
+    })),
   };
+  const ov = Object.values(plugins.plugins).filter(p => p.overlay);
+  log(`  plugin overlays: ${ov.length} plugins, ${ov.reduce((n, p) => n + p.overlay.manual.length, 0)} manual-only skills, ${ov.reduce((n, p) => n + Object.values(p.overlay.remove).flat().length, 0)} plugin agents/commands/skills removed`);
   fs.writeFileSync(path.join(out, 'plugins.json'), templatize(JSON.stringify(plugins, null, 2)) + '\n');
 
   // file trees: skills, agents, commands, hooks, rules...
@@ -394,6 +401,7 @@ function doInstall(from, { dry, skipTools, skipPlugins, secrets }) {
       if (p.enabled === false) run(`claude plugin disable "${id}"`, dry);
     }
   }
+  if (!skipPlugins) reapplyOverlays(pj, dry, report);
 
   // summary
   log('\n==== Xenon summary ====');
@@ -423,9 +431,102 @@ function doVerify(from) {
     if (!inst[id]) diffs.push(`missing plugin ${id}`);
     else if ((enabled[id] ?? true) !== p.enabled) diffs.push(`plugin ${id} enabled=${enabled[id] ?? true} (want ${p.enabled})`);
   }
+  for (const [id, p] of Object.entries(pj.plugins || {})) {
+    if (!p.overlay || !inst[id]) continue;
+    const r = applyOverlay(id, p.overlay, true);
+    if (r && (r.removed || r.manualized)) diffs.push(`plugin ${id}: ${r.removed} extra agents/commands/skills, ${r.manualized} skills not manual-only — run: node xenon.mjs reapply`);
+  }
   for (const t of m.tools) { const def = TOOLS.find(x => x.name === t.name); if (t.version && def && !toolPresent(def)) diffs.push(`missing tool ${t.name}`); }
   log(diffs.length ? diffs.map(d => '  ✗ ' + d).join('\n') + `\n${diffs.length} difference(s).` : '  ✓ this machine matches the snapshot.');
   process.exit(diffs.length ? 1 : 0);
+}
+
+// ======================= PLUGIN OVERLAYS =======================
+// A plugin install gives the pristine plugin. The source setup may have trimmed it (e.g. ECC agents cut
+// from 71 to 25) or switched skills to manual-only (`disable-model-invocation: true`). The overlay records
+// that state and re-applies it — also needed after every plugin update, via `xenon.mjs reapply`.
+const PLUGIN_PARTS = ['agents', 'commands', 'skills'];
+const MANUAL_RE = /^disable-model-invocation:\s*true\s*$/m;
+function pluginRoot(id) {
+  const e = readJson(path.join(CLAUDE_DIR, 'plugins', 'installed_plugins.json')).plugins?.[id]?.[0];
+  return e?.installPath && fs.existsSync(e.installPath) ? e.installPath : null;
+}
+function skillFiles(root) {
+  const out = [];
+  const walk = (p) => {
+    for (const d of fs.readdirSync(p, { withFileTypes: true })) {
+      if (SKIP_NAMES.has(d.name)) continue;
+      const f = path.join(p, d.name);
+      if (d.isDirectory()) walk(f);
+      else if (d.name === 'SKILL.md') out.push(path.relative(root, f).replace(/\\/g, '/'));
+    }
+  };
+  walk(root);
+  return out.sort();
+}
+const frontmatter = (t) => t.match(/^﻿?---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? ''; // tolerate BOM (PowerShell-written files)
+// The untouched copy of a plugin lives in its marketplace clone when the marketplace lists it by relative path.
+function pristineRoot(id) {
+  const [name, mk] = id.split('@');
+  const mroot = path.join(CLAUDE_DIR, 'plugins', 'marketplaces', mk);
+  const entry = readJson(path.join(mroot, '.claude-plugin', 'marketplace.json')).plugins?.find(p => p.name === name);
+  if (typeof entry?.source !== 'string') return null;
+  const r = path.resolve(mroot, entry.source);
+  return fs.existsSync(r) ? r : null;
+}
+// Record what was REMOVED (not what was kept), so agents/skills added by newer plugin versions survive.
+function captureOverlay(id, root) {
+  const remove = {};
+  const pristine = pristineRoot(id);
+  if (pristine) for (const part of PLUGIN_PARTS) {
+    const orig = path.join(pristine, part), mine = path.join(root, part);
+    if (!fs.existsSync(orig)) continue;
+    const have = new Set(fs.existsSync(mine) ? fs.readdirSync(mine) : []);
+    const gone = fs.readdirSync(orig).filter(n => !have.has(n)).sort();
+    if (gone.length) remove[part] = gone;
+  }
+  const manual = skillFiles(root).filter(rel => MANUAL_RE.test(frontmatter(fs.readFileSync(path.join(root, rel), 'utf8'))));
+  return { remove, manual };
+}
+function applyOverlay(id, ov, dry) {
+  const root = pluginRoot(id);
+  if (!root) return null;
+  let removed = 0, manualized = 0;
+  const bk = path.join(CLAUDE_DIR, 'backups', 'xenon-trimmed', id.replace(/[^\w.@-]/g, '_'));
+  for (const [part, names] of Object.entries(ov.remove || {})) {
+    const dir = path.join(root, part);
+    for (const n of names) {
+      if (!fs.existsSync(path.join(dir, n))) continue;
+      removed++;
+      if (dry) continue;
+      fs.mkdirSync(path.join(bk, part), { recursive: true });
+      fs.rmSync(path.join(bk, part, n), { recursive: true, force: true });
+      fs.renameSync(path.join(dir, n), path.join(bk, part, n));
+    }
+  }
+  for (const rel of ov.manual || []) {
+    const f = path.join(root, rel);
+    if (!fs.existsSync(f)) continue;
+    const t = fs.readFileSync(f, 'utf8');
+    if (MANUAL_RE.test(frontmatter(t)) || !/^﻿?---\r?\n/.test(t)) continue;
+    manualized++;
+    if (dry) continue;
+    const eol = t.includes('\r\n') ? '\r\n' : '\n';
+    const fixed = /^disable-model-invocation:.*$/m.test(frontmatter(t))
+      ? t.replace(/^disable-model-invocation:.*$/m, 'disable-model-invocation: true')
+      : t.replace(/^﻿?---\r?\n/, (m) => m + 'disable-model-invocation: true' + eol);
+    fs.writeFileSync(f, fixed);
+  }
+  return { removed, manualized };
+}
+function reapplyOverlays(pj, dry, report) {
+  log('\n  plugin overlays (trims + manual-only skills)');
+  for (const [id, p] of Object.entries(pj.plugins || {})) {
+    if (!p.overlay) continue;
+    const r = applyOverlay(id, p.overlay, dry);
+    if (!r) { if (!dry) report.warn.push(`plugin ${id}: not installed, overlay not applied`); continue; }
+    if (r.removed || r.manualized) log(`  ✓ ${id}: ${r.removed} removed, ${r.manualized} set manual-only`);
+  }
 }
 
 // ======================= CLI =======================
@@ -436,4 +537,5 @@ const snap = path.resolve(opt('--from') || opt('--out') || DEFAULT_SNAPSHOT);
 if (cmd === 'export') doExport(snap);
 else if (cmd === 'install') doInstall(snap, { dry: flag('--dry-run'), skipTools: flag('--skip-tools'), skipPlugins: flag('--skip-plugins'), secrets: opt('--secrets') && path.resolve(opt('--secrets')) });
 else if (cmd === 'verify') doVerify(snap);
+else if (cmd === 'reapply') { const report = { warn: [] }; reapplyOverlays(readJson(path.join(snap, 'plugins.json')), flag('--dry-run'), report); report.warn.forEach(w => warn(w)); }
 else log('usage: node xenon.mjs <export|install|verify> [--from|--out dir] [--dry-run] [--skip-tools] [--skip-plugins] [--secrets file]');

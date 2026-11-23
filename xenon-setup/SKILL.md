@@ -12,6 +12,7 @@ The snapshot is plain files committed to this repo, so the setup is versioned, d
 node xenon-setup/scripts/xenon.mjs export     # source machine: refresh snapshot/ from ~/.claude
 node xenon-setup/scripts/xenon.mjs install    # target machine: make ~/.claude match snapshot/
 node xenon-setup/scripts/xenon.mjs verify     # either machine: list every difference (exit 1 if any)
+node xenon-setup/scripts/xenon.mjs reapply    # after any plugin update: re-trim + re-set manual-only skills
 ```
 
 Requirements on the target: Node 18+, git, and Claude Code installed (`claude` on PATH, for plugins).
@@ -27,6 +28,7 @@ Python + pip are needed only for the pip-based tools (headroom, scrapling, uv).
 | settings.json | everything: hooks, permissions, env, model, effort, enabledPlugins, extraKnownMarketplaces, skillOverrides, theme… | Written whole; absolute hook commands that don't exist on the target are re-resolved on PATH |
 | User MCP servers | `mcpServers` in `~/.claude.json` | Merged into the target's `~/.claude.json` (nothing else in that file is touched) |
 | Plugin marketplaces + plugins | `plugins/known_marketplaces.json`, `installed_plugins.json` | `claude plugin marketplace add` → `claude plugin install` → `claude plugin disable` for the ones that were off |
+| Your plugin customisations ("overlays") | per plugin: agents/commands/skills you deleted (compared with the marketplace's untouched copy — e.g. ECC 71 → 25 agents) and every skill you switched to manual-only (`disable-model-invocation: true`) | Plugins install at their **latest** version, then the overlay is re-applied: the same items are removed (moved to `~/.claude/backups/xenon-trimmed/`) and the same skills set manual-only. New agents/skills from newer versions are kept. ECC/other skill on/off state comes from `skillOverrides` in settings.json |
 | External tools | detected versions of rtk, tokensave, headroom, scrapling, uv, python, node, git | Installed with the hint commands in `TOOLS` (pip ones pinned to the captured version) |
 
 Not captured, on purpose: history, sessions, projects, caches, telemetry, file-history, backups, and
