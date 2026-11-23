@@ -1,0 +1,23 @@
+{
+  "_comment": "Pattern descriptor for an ASP.NET WebForms login gated by Cloudflare Turnstile. Copy this file per portal and only change the values.",
+  "login_url": "https://ums.lpu.in/lpuums/LoginNew.aspx",
+  "form_selector": "#form1",
+  "user_selector": "#txtU",
+  "password_selector": "input[type=password]",
+  "submit_selector": "input[type=submit]",
+  "token_selector": "input[name='cf-turnstile-response']",
+  "success_url_contains": "StudentDashboard.aspx",
+  "success_body_contains": [],
+  "failure_markers": [
+    "Invalid User ID",
+    "Captcha verification failed",
+    "Please complete the verification",
+    "Invalid Password",
+    "Server Error in"
+  ],
+  "settle_ms": 6000,
+  "notes": [
+    "The User ID field fires an onchange __doPostBack that reloads the page and renames the password and submit inputs. Never type into it with keyboard emulation between minting the token and submitting.",
+    "The submit input has a randomised name. ASP.NET only treats the request as a click when that name is present in the body, so form.submit() without it silently re-renders the login page."
+  ]
+}

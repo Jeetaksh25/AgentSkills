@@ -1,0 +1,147 @@
+{
+  "skill_name": "beyond-ui",
+  "notes": "Realistic prompts a user would actually send. Run each with the skill and without it, then compare: does the with-skill run bootstrap the upstream skills, open real galleries, produce a scout file with named references and a library map, and use shadcn primitives instead of raw HTML?",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build me a landing page for a CLI tool that turns Postgres queries into shareable charts. Next.js, Tailwind. Make it look like a real design studio made it.",
+      "expected_output": "A Next.js page using shadcn primitives; a .beyond-ui/scout.md naming real gallery URLs and a library map with install commands; an explicit direction contract (type, colour, motion); no 3-equal-cards row, no purple gradient hero, no emoji.",
+      "assertions": [
+        "Bootstrap ran or its absence is recorded in state.json skills.missing with a reason",
+        ".beyond-ui/scout.md exists and cites 6+ distinct source URLs with what was taken from each",
+        "Library map lists at least one shadcn registry install command and the base shadcn components",
+        "No raw <button>/<input> where a shadcn primitive exists",
+        "A design contract section names the type faces, the accent colour value, and the motion easing set",
+        "No gradient text headline, no three-equal-column feature row, no emoji icons",
+        "Screenshots or a rendered check at 390/768/1440 recorded as evidence"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "our dashboard looks like every other AI-generated SaaS admin. redesign the billing overview page with actual polish and some taste. it's a vite react app with tailwind v3 and shadcn already set up",
+      "expected_output": "A restrained redesign inside the existing v3 token system: no new Tailwind v4 snippets, no second motion library, borders reduced, hierarchy fixed, all states designed, contrast verified in both themes.",
+      "assertions": [
+        "Tailwind v3 confirmed before any component/library is added; no v4-only syntax",
+        "No new motion library installed when framer-motion/motion already present",
+        "Existing tokens extended rather than a parallel token set created",
+        "Loading, empty and error states present for the table/chart surface",
+        "Contrast measured for new colour pairs in both light and dark",
+        "Critique recorded with hard fails found and fixed, plus a gate mean"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "add a nice animated pricing toggle to my pricing page, with monthly/yearly and a saving badge",
+      "expected_output": "A small, scoped change: scout 3 references minimum, one registry component adapted (or shadcn Tabs animated), keyboard accessible, reduced-motion handled, no layout shift.",
+      "assertions": [
+        "Scout performed even though the task is one component (3+ references)",
+        "Component built on an accessible primitive (Tabs/radio group) with keyboard support",
+        "prefers-reduced-motion handled and verified",
+        "No layout shift when the toggle changes; card height stable",
+        "Price values are real DOM text, not canvas/SVG-only"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "build a 3D product page for a configurable sneaker — react three fiber, next.js. user should be able to rotate it and pick colourways",
+      "expected_output": "A justified 3D implementation: THREEJS.md consulted, R3F + drei scene lazy-loaded with a static poster as the LCP element, optimised GLB (gltfjsx --transform / Draco + KTX2), colourways driven by state, keyboard-operable controls, reduced-motion freeze, payload and FPS recorded.",
+      "assertions": [
+        "references/THREEJS.md followed: justification for 3D stated, not just assumed",
+        "Canvas lazy-loaded (dynamic/React.lazy) with a static poster as the LCP element",
+        "Model pipeline recorded: gltfjsx --transform or gltf-transform with Draco/KTX2; asset bytes reported",
+        "dpr capped, frameloop demand or off-screen pause, instancing/reuse where applicable",
+        "Colourway switching works without a full scene reload (material swap on the existing scene)",
+        "prefers-reduced-motion freezes auto-rotation; poster shown when WebGL unavailable",
+        "Keyboard-operable rotate/variant controls when the 3D is the product content",
+        "Asset licences recorded in scout.md; page remains readable without JS (poster + text)"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "make me a landing page that looks like the best developer-tool sites out there - linear, vercel, stripe quality. next.js + tailwind v4",
+      "expected_output": "A run that executes the full pipeline: tool layer self-installed with no API key (playwright+chromium, skillui, scrapling), exactly 5 references selected from verified galleries with the weighted rubric, per-site teardowns producing tokens/keyframes/interaction/contrast evidence, ONE condensed .beyond-ui/DESIGN-SKILL.md, a hand-picked build plan embedded as §10, and a build that installs exactly what BLOCK-MAP names and cites both the synthesized skill and the upstream rules. scripts/verify-run.mjs exits 0 (G1-G19).",
+      "assertions": [
+        "Tool layer installed or its absence recorded: state.json tools.playwright.chromium true and tools.scrapling.engine != 'none'",
+        "references-selection.json lists 10 selected with scores and >=3 award signals",
+        "At least 6 teardown dirs under .beyond-ui/teardown/ with tokens/ or capture.json",
+        "DESIGN-SKILL.md exists with all 12 sections including 'HAND-PICKED BUILD PLAN' and 'Contrast'",
+        "DESIGN-SKILL.md §1/§2/§4 carry REAL extracted values (colour values with owner slugs, a type scale, keyframe names, durations) rather than adjectives",
+        "PLAN.json exists with an archetype, a motion grammar and >=4 sections; every section has build rules and a primary block or sources",
+        "DESIGN-SKILL.md embeds the build sheet ('**Primary block**') and real 'npx shadcn@latest add @<ns>/<item>' commands",
+        "The install commands used match BLOCK-MAP.md primaries, and only 2-3 registry namespaces appear",
+        "state.composedSections (or state.components) names the planned sections that were built",
+        "state.json ruleCitations >= 5, each with decision + source + appliedIn",
+        "At least one citation sources a teardown artifact that exists on disk",
+        "node scripts/verify-run.mjs exits 0 (G1-G19)"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "redesign our fintech mobile app onboarding screens, it currently looks generic. react native + expo",
+      "expected_output": "A mobile-app-first run: selection from mobile-capable sources (Mobbin llms.txt / Page Flows / Refero), teardown evidence from real shipped app screens, a DESIGN-SKILL.md whose motion/type/colour sections cite mobile evidence, and an RN build using react-native-reusables + Reanimated idioms.",
+      "assertions": [
+        "selection.frame.platform is mobile-app and selected references include mobile evidence",
+        "Teardown ran on mobile-relevant URLs (app landing pages or recorded-flow sources)",
+        "DESIGN-SKILL.md type/motion sections cite the teardown contributors",
+        "Build uses react-native-reusables (shadcn RN port), not web shadcn primitives",
+        "Motion on the UI thread via Reanimated; no web motion library in the RN bundle",
+        "verify-run.mjs exit 0 with screenshots at mobile viewports"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "our marketing site is live and gets traffic; do NOT change the brand or copy, just make it feel as polished as the awwwards winners in our category",
+      "expected_output": "A craft-only pass: teardown of category winners extracts motion/interaction evidence; brand palette and copy untouched; upgrades confined to motion grammar, state polish, rhythm and micro-interactions; every change cites teardown or upstream-rule evidence.",
+      "assertions": [
+        "Brand colours and existing copy byte-identical after the run",
+        "DESIGN-SKILL.md consulted for motion grammar; changes cite teardown/<slug> sources",
+        "prefers-reduced-motion honoured for every added animation",
+        "No new heavy deps added where a CSS/light solution existed (perf gate)",
+        "ruleCitations include at least one a11y constraint from A11Y-PERF.md",
+        "verify-run.mjs exit 0"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "landing page for an AI note app",
+      "expected_output": "An unattended run that picks a lane (premium consumer product), invokes the phase specialists that are present, sources sections from shadcn + 2-3 registries, builds a choreographed marketing page (scroll-timeline sections, overhang-padded reveals, page curtain, Lenis) with a static gradient on phones, freezes the design, hardens and ships it with per-page metadata, an OG route, sitemap, robots, headers and a designed 404, and passes G1-G19 without asking the user anything except for real proof it cannot invent.",
+      "assertions": [
+        "No clarifying question about stack, theme, motion level or viewports; defaults from PLAYBOOK.md §7 recorded in state.json",
+        "state.skills.lane names exactly one lane skill with a reason; state.skills.invoked lists the phase specialists used, each cited at least once",
+        "scout.md has a ## Prompts section with 3+ template/prompt sources (URL | structure adopted | content rewritten how)",
+        "At least one scroll-timeline section built from named windows in vh (CRAFT R1) and line reveals with em overhang padding (CRAFT R2)",
+        "No WebGL on a 390px viewport; the static gradient fallback renders instead",
+        "No invented user counts, ratings or customer logos; a labelled gap where proof is missing",
+        "parity.mjs baseline taken before the harden/ship passes; parity-report.json pass === true after them",
+        "craft-check.mjs, production-check.mjs <url> and verify-run.mjs exit 0 (G17, G18, G19 pass)"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "an app to monitor my ML models",
+      "expected_output": "No questions about the UI. A complete brief with an ML domain inventory; references and templates fetched with Scrapling and images viewed; a dashboard anchor from Dribbble/Refero-class sources; fonts picked from a specimen; shadcn + Tailwind + registry components imported; accuracy/precision/recall/F1, loss curves, confusion matrix, parameters, hyperparameters, runs and datasets all on screen; G1-G21 pass.",
+      "assertions": [
+        "The agent did not ask the user which sites to use or how the UI should look",
+        ".beyond-ui/brief.md lists a domain inventory incl. accuracy, curves, confusion matrix, parameters, hyperparameters, runs",
+        ".beyond-ui/fetch-log.json shows >= 8 successful fetches via scrapling across >= 4 categories; >= 8 images recorded in state.scout.imagesViewed",
+        "references-selection.json marks exactly one anchor; fidelity-report.json pass with >= 80% borrowed sections",
+        ".beyond-ui/fonts/choice.json pass; neither face is in the overused/banned list; no all-caps monospace labels in the UI",
+        "Every domain inventory item is visible in the rendered dashboard",
+        "verify-run.mjs exits 0 (G1-G21)"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "build a habit tracker mobile app",
+      "expected_output": "Expo + NativeWind + React Native Reusables + Reanimated; mobile references (Mobbin, Screensdesign, Dribbble mobile) fetched and viewed; anchor chosen; native navigation, safe areas, dynamic type, reduced motion; web preview used for the Playwright gates plus device screenshots; store checklist prepared.",
+      "assertions": [
+        "sources.mjs detect/brief report platform mobile and framework expo",
+        "fetch-plan.json references are mobile-tagged sources",
+        "No Lenis, hover states or custom cursor in the app",
+        "Reanimated used for motion with reduced-motion handling",
+        "QA ran against Expo web and device screenshots exist",
+        ".beyond-ui/store-checklist.json or PRODUCTION.md store section completed"
+      ]
+    }
+  ]
+}

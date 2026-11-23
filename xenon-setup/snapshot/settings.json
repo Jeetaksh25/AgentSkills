@@ -1,0 +1,768 @@
+{
+  "skillListingMaxDescChars": 180,
+  "skillListingBudgetFraction": 0.004,
+  "env": {
+    "HOME": "{{HOME}}",
+    "ENABLE_TOOL_SEARCH": "true",
+    "GATEGUARD_BASH_ROUTINE_DISABLED": "1",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Get-ChildItem \"D:/Small projects/Grind On/Grind On/\" -Filter \"*.md\" -Depth 1)",
+      "Bash(Get-ChildItem -Path \"D:/Small projects/Grind On/Grind On/GrindOn/android/app/src/main/java/\" -Recurse -Force)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Select-Object FullName)",
+      "Bash(Select-Object FullName, PSIsContainer)",
+      "Bash(Sort-Object FullName)",
+      "Bash(cd \"/d/Small projects/Grind On/Grind On/GrindOn\" && find . -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" -o -name \"*.js\" \\\\\\) ! -path \"./node_modules/*\" ! -path \"./.expo/*\" | head -50)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('expo:', p.dependencies.expo\\); console.log\\('react-native:', p.dependencies['react-native']\\); console.log\\('react-native-worklets:', p.dependencies['react-native-worklets'] || p.dependencies['react-native-worklets-core']\\); console.log\\('react-native-svg:', p.dependencies['react-native-svg']\\)\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); const libs = ['react-native-gesture-handler','react-native-reanimated','react-native-screens','react-native-safe-area-context','@react-native-async-storage/async-storage','react-native-svg']; libs.forEach\\(l => console.log\\(l + ':', p.dependencies[l] || p.devDependencies?.[l] || 'not found'\\)\\)\")",
+      "Bash(node -e \"const path = require\\('path'\\); const result = require\\('child_process'\\).execSync\\('npx expo-modules-autolinking resolve -p android --json', {encoding:'utf8'}\\); console.log\\(result\\);\")",
+      "Bash(node node_modules/expo/bin/cli config --json --full)",
+      "Bash(node node_modules/expo/bin/cli config --json)",
+      "Bash(npm install *)",
+      "Bash(npm list *)",
+      "Bash(python -c \"import json; d=json.load\\(open\\('d:/Small projects/Grind On/Grind On/GrindOn/android/build/generated/autolinking/autolinking.json'\\)\\); print\\(json.dumps\\(d.get\\('project', {}\\), indent=2\\)\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('packageName:', d.get\\('project',{}\\).get\\('android',{}\\).get\\('packageName','NOT FOUND'\\)\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('types:', d.get\\('types','none'\\)\\); print\\('main:', d.get\\('main','none'\\)\\)\")",
+      "Bash(rtk du *)",
+      "Bash(rtk find *)",
+      "Bash(rtk git *)",
+      "Bash(rtk npx *)",
+      "Bash(xargs cat)",
+      "Bash(xargs grep -l \"AppBlocker\\\\|appblocker\")",
+      "Bash(xargs grep -l \"IS_NEW_ARCHITECTURE\\\\|EntryPoint\\\\|autolinking\")",
+      "Bash(xargs grep -l \"app-blocker\\\\|appblocker\")",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\" -Directory -Force | Where-Object { $_.Name -match \"^\\(android|ios\\)$\" } | ForEach-Object { \"- $_\" })",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\" -Force | Format-Table -Property Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}} -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\\" -Force | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}} | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\app\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName -replace [regex]::Escape\\(\"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\\"\\), \"\"}} | Sort-Object Path | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\components\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName -replace [regex]::Escape\\(\"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\\"\\), \"\"}} | Sort-Object Path | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\hooks\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName -replace [regex]::Escape\\(\"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\\"\\), \"\"}} | Sort-Object Path | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\store\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName -replace [regex]::Escape\\(\"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\\"\\), \"\"}} | Sort-Object Path | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1)",
+      "PowerShell(if \\(Test-Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\android\\\\app\\\\src\\\\main\\\\java\"\\) { Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\android\\\\app\\\\src\\\\main\\\\java\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName -replace [regex]::Escape\\(\"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\\"\\), \"\"}} | Sort-Object Path | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 } else { Write-Output \"android/app/src/main/java folder does not exist\" })",
+      "PowerShell(if \\(Test-Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\modules\"\\) { Get-ChildItem -Path \"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\modules\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName -replace [regex]::Escape\\(\"D:\\\\Small projects\\\\Grind On\\\\Grind On\\\\GrindOn\\\\\"\\), \"\"}} | Sort-Object Path | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 } else { Write-Output \"modules folder does not exist\" })",
+      "Read(//d/d/Small projects/Grind On/Grind On/**)",
+      "WebFetch(domain:docs.expo.dev)",
+      "WebFetch(domain:supabase.com)",
+      "WebSearch",
+      "mcp__Claude_Browser",
+      "mcp__claude-in-chrome",
+      "mcp__plugin_ecc_chrome-devtools",
+      "mcp__tokensave__tokensave_affected",
+      "mcp__tokensave__tokensave_annotations",
+      "mcp__tokensave__tokensave_ast_grep_rewrite",
+      "mcp__tokensave__tokensave_blame",
+      "mcp__tokensave__tokensave_body",
+      "mcp__tokensave__tokensave_branch_diff",
+      "mcp__tokensave__tokensave_branch_list",
+      "mcp__tokensave__tokensave_branch_search",
+      "mcp__tokensave__tokensave_by_qualified_name",
+      "mcp__tokensave__tokensave_call_chain",
+      "mcp__tokensave__tokensave_callees",
+      "mcp__tokensave__tokensave_callers",
+      "mcp__tokensave__tokensave_callers_for",
+      "mcp__tokensave__tokensave_changelog",
+      "mcp__tokensave__tokensave_circular",
+      "mcp__tokensave__tokensave_commit_context",
+      "mcp__tokensave__tokensave_complexity",
+      "mcp__tokensave__tokensave_config",
+      "mcp__tokensave__tokensave_constructors",
+      "mcp__tokensave__tokensave_context",
+      "mcp__tokensave__tokensave_coupling",
+      "mcp__tokensave__tokensave_dead_code",
+      "mcp__tokensave__tokensave_dependencies",
+      "mcp__tokensave__tokensave_dependency_depth",
+      "mcp__tokensave__tokensave_derives",
+      "mcp__tokensave__tokensave_diagnose",
+      "mcp__tokensave__tokensave_diagnostics",
+      "mcp__tokensave__tokensave_diff",
+      "mcp__tokensave__tokensave_diff_context",
+      "mcp__tokensave__tokensave_distribution",
+      "mcp__tokensave__tokensave_doc_coverage",
+      "mcp__tokensave__tokensave_dsm",
+      "mcp__tokensave__tokensave_entities",
+      "mcp__tokensave__tokensave_field_sites",
+      "mcp__tokensave__tokensave_file_dependents",
+      "mcp__tokensave__tokensave_files",
+      "mcp__tokensave__tokensave_find_exact_symbol",
+      "mcp__tokensave__tokensave_gini",
+      "mcp__tokensave__tokensave_god_class",
+      "mcp__tokensave__tokensave_health",
+      "mcp__tokensave__tokensave_hotspots",
+      "mcp__tokensave__tokensave_impact",
+      "mcp__tokensave__tokensave_implementations",
+      "mcp__tokensave__tokensave_impls",
+      "mcp__tokensave__tokensave_inheritance_depth",
+      "mcp__tokensave__tokensave_insert_at",
+      "mcp__tokensave__tokensave_insert_at_symbol",
+      "mcp__tokensave__tokensave_largest",
+      "mcp__tokensave__tokensave_log",
+      "mcp__tokensave__tokensave_module_api",
+      "mcp__tokensave__tokensave_multi_str_replace",
+      "mcp__tokensave__tokensave_node",
+      "mcp__tokensave__tokensave_port_order",
+      "mcp__tokensave__tokensave_port_status",
+      "mcp__tokensave__tokensave_pr_context",
+      "mcp__tokensave__tokensave_rank",
+      "mcp__tokensave__tokensave_read",
+      "mcp__tokensave__tokensave_record_code_area",
+      "mcp__tokensave__tokensave_record_decision",
+      "mcp__tokensave__tokensave_recursion",
+      "mcp__tokensave__tokensave_redundancy",
+      "mcp__tokensave__tokensave_rename_preview",
+      "mcp__tokensave__tokensave_replace_symbol",
+      "mcp__tokensave__tokensave_run_affected_tests",
+      "mcp__tokensave__tokensave_runtime",
+      "mcp__tokensave__tokensave_search",
+      "mcp__tokensave__tokensave_session_end",
+      "mcp__tokensave__tokensave_session_recall",
+      "mcp__tokensave__tokensave_session_start",
+      "mcp__tokensave__tokensave_signature",
+      "mcp__tokensave__tokensave_signature_search",
+      "mcp__tokensave__tokensave_similar",
+      "mcp__tokensave__tokensave_simplify_scan",
+      "mcp__tokensave__tokensave_status",
+      "mcp__tokensave__tokensave_str_replace",
+      "mcp__tokensave__tokensave_test_coverage",
+      "mcp__tokensave__tokensave_test_map",
+      "mcp__tokensave__tokensave_test_risk",
+      "mcp__tokensave__tokensave_todos",
+      "mcp__tokensave__tokensave_type_hierarchy",
+      "mcp__tokensave__tokensave_unsafe_patterns",
+      "mcp__tokensave__tokensave_unused_imports"
+    ]
+  },
+  "model": "opus[1m]",
+  "skillOverrides": {
+    "ponytail:ponytail": "user-invocable-only",
+    "ponytail:ponytail-review": "user-invocable-only",
+    "ponytail:ponytail-debt": "user-invocable-only",
+    "ponytail:ponytail-help": "user-invocable-only",
+    "ponytail:ponytail-audit": "user-invocable-only",
+    "ponytail:ponytail-gain": "user-invocable-only",
+    "understand-anything:understand-domain": "user-invocable-only",
+    "understand-anything:understand-dashboard": "user-invocable-only",
+    "understand-anything:understand-figma": "user-invocable-only",
+    "understand-anything:understand-explain": "user-invocable-only",
+    "understand-anything:understand": "user-invocable-only",
+    "understand-anything:understand-knowledge": "user-invocable-only",
+    "understand-anything:understand-onboard": "user-invocable-only",
+    "understand-anything:understand-chat": "user-invocable-only",
+    "understand-anything:understand-diff": "user-invocable-only",
+    "firecrawl:firecrawl": "off",
+    "firecrawl:firecrawl-developer-index": "off",
+    "firecrawl:firecrawl-research-index": "off",
+    "anthropic-skills:skill-creator": "off",
+    "ecc:README": "off",
+    "ecc:agent-architecture-audit": "off",
+    "ecc:agent-eval": "off",
+    "ecc:agent-harness-construction": "off",
+    "ecc:agent-introspection-debugging": "off",
+    "ecc:agent-payment-x402": "off",
+    "ecc:agent-runtime-gateway-smoke-test": "off",
+    "ecc:agent-security-hardening": "off",
+    "ecc:agent-self-evaluation": "off",
+    "ecc:agent-sort": "off",
+    "ecc:agentic-os": "off",
+    "ecc:ai-first-engineering": "off",
+    "ecc:angular-developer": "off",
+    "ecc:api-connector-builder": "off",
+    "ecc:article-writing": "off",
+    "ecc:aside": "off",
+    "ecc:astra-review": "off",
+    "ecc:auto-update": "off",
+    "ecc:automation-audit-ops": "off",
+    "ecc:autonomous-agent-harness": "off",
+    "ecc:autonomous-loops": "off",
+    "ecc:benchmark": "off",
+    "ecc:benchmark-methodology": "off",
+    "ecc:benchmark-optimization-loop": "off",
+    "ecc:bengali-nlp": "off",
+    "ecc:blender-motion-state-inspection": "off",
+    "ecc:blueprint": "off",
+    "ecc:brand-discovery": "off",
+    "ecc:brand-voice": "off",
+    "ecc:brownfield-retrospective": "off",
+    "ecc:bun-runtime": "off",
+    "ecc:canary-watch": "off",
+    "ecc:carrier-relationship-management": "off",
+    "ecc:change-impact": "off",
+    "ecc:checkpoint": "off",
+    "ecc:cisco-ios-patterns": "off",
+    "ecc:ck": "off",
+    "ecc:claude-devfleet": "off",
+    "ecc:claw": "off",
+    "ecc:click-path-audit": "off",
+    "ecc:clickhouse-io": "off",
+    "ecc:code-review": "off",
+    "ecc:code-tour": "off",
+    "ecc:codehealth-mcp": "off",
+    "ecc:competitive-platform-analysis": "off",
+    "ecc:competitive-report-structure": "off",
+    "ecc:config-gc": "off",
+    "ecc:configure-ecc": "off",
+    "ecc:connections-optimizer": "off",
+    "ecc:content-engine": "off",
+    "ecc:content-hash-cache-pattern": "off",
+    "ecc:context-and-decisions": "off",
+    "ecc:continuous-agent-loop": "off",
+    "ecc:continuous-learning": "off",
+    "ecc:contract-first": "off",
+    "ecc:conventional-commit-review": "off",
+    "ecc:cost-aware-llm-pipeline": "off",
+    "ecc:cost-report": "off",
+    "ecc:cost-tracking": "off",
+    "ecc:council": "off",
+    "ecc:council-multi-model": "off",
+    "ecc:counterparty-channel-discipline": "off",
+    "ecc:cpp-build": "off",
+    "ecc:cpp-coding-standards": "off",
+    "ecc:cpp-review": "off",
+    "ecc:cpp-test": "off",
+    "ecc:cpp-testing": "off",
+    "ecc:crosspost": "off",
+    "ecc:csharp-testing": "off",
+    "ecc:customer-billing-ops": "off",
+    "ecc:customs-trade-compliance": "off",
+    "ecc:dart-flutter-patterns": "off",
+    "ecc:dashboard-builder": "off",
+    "ecc:data-scraper-agent": "off",
+    "ecc:data-throughput-accelerator": "off",
+    "ecc:deep-research": "off",
+    "ecc:deepseek-harness-setup": "off",
+    "ecc:defi-amm-security": "off",
+    "ecc:delivery-gate": "off",
+    "ecc:design-system": "off",
+    "ecc:dev-team": "off",
+    "ecc:devfleet": "off",
+    "ecc:django-celery": "off",
+    "ecc:django-patterns": "off",
+    "ecc:django-security": "off",
+    "ecc:django-tdd": "off",
+    "ecc:django-verification": "off",
+    "ecc:dmux-workflows": "off",
+    "ecc:docs": "off",
+    "ecc:docs-governance": "off",
+    "ecc:dotnet-patterns": "off",
+    "ecc:dynamic-workflow-mode": "off",
+    "ecc:e2e": "off",
+    "ecc:ecc-council": "off",
+    "ecc:ecc-guide": "off",
+    "ecc:ecc-recipes": "off",
+    "ecc:ecc-tools-cost-audit": "off",
+    "ecc:email-ops": "off",
+    "ecc:energy-procurement": "off",
+    "ecc:enterprise-agent-ops": "off",
+    "ecc:epic-claim": "off",
+    "ecc:epic-decompose": "off",
+    "ecc:epic-publish": "off",
+    "ecc:epic-review": "off",
+    "ecc:epic-sync": "off",
+    "ecc:epic-unblock": "off",
+    "ecc:epic-validate": "off",
+    "ecc:esign-field-placement": "off",
+    "ecc:eval": "off",
+    "ecc:eval-harness": "off",
+    "ecc:evm-token-decimals": "off",
+    "ecc:evolve": "off",
+    "ecc:exa-search": "off",
+    "ecc:fal-ai-media": "off",
+    "ecc:fastapi-patterns": "off",
+    "ecc:fastapi-review": "off",
+    "ecc:feature-dev": "off",
+    "ecc:finance-billing-ops": "off",
+    "ecc:flox-environments": "off",
+    "ecc:flutter-build": "off",
+    "ecc:flutter-dart-code-review": "off",
+    "ecc:flutter-review": "off",
+    "ecc:flutter-test": "off",
+    "ecc:foundation-models-on-device": "off",
+    "ecc:frontend-a11y": "off",
+    "ecc:frontend-slides": "off",
+    "ecc:fsharp-testing": "off",
+    "ecc:gan-build": "off",
+    "ecc:gan-design": "off",
+    "ecc:gan-style-harness": "off",
+    "ecc:gateguard": "off",
+    "ecc:generating-python-installer": "off",
+    "ecc:go-build": "off",
+    "ecc:go-review": "off",
+    "ecc:go-test": "off",
+    "ecc:golang-patterns": "off",
+    "ecc:golang-testing": "off",
+    "ecc:google-workspace-ops": "off",
+    "ecc:growth-log": "off",
+    "ecc:harness-audit": "off",
+    "ecc:healthcare-cdss-patterns": "off",
+    "ecc:healthcare-emr-patterns": "off",
+    "ecc:healthcare-eval-harness": "off",
+    "ecc:healthcare-phi-compliance": "off",
+    "ecc:hermes-imports": "off",
+    "ecc:hipaa-compliance": "off",
+    "ecc:homelab-network-readiness": "off",
+    "ecc:homelab-network-setup": "off",
+    "ecc:homelab-pihole-dns": "off",
+    "ecc:homelab-vlan-segmentation": "off",
+    "ecc:homelab-wireguard-vpn": "off",
+    "ecc:hookify-configure": "off",
+    "ecc:hookify-help": "off",
+    "ecc:hookify-list": "off",
+    "ecc:hookify-rules": "off",
+    "ecc:i18n-sync": "off",
+    "ecc:inherit-legacy-style": "off",
+    "ecc:instinct-export": "off",
+    "ecc:instinct-import": "off",
+    "ecc:intent-driven-development": "off",
+    "ecc:inventory-demand-planning": "off",
+    "ecc:investor-materials": "off",
+    "ecc:investor-outreach": "off",
+    "ecc:ios-icon-gen": "off",
+    "ecc:issue-review": "off",
+    "ecc:iterative-retrieval": "off",
+    "ecc:ito-baskets": "off",
+    "ecc:ito-compute": "off",
+    "ecc:ito-inference": "off",
+    "ecc:ito-training": "off",
+    "ecc:java-coding-standards": "off",
+    "ecc:jira": "off",
+    "ecc:jira-integration": "off",
+    "ecc:jpa-patterns": "off",
+    "ecc:knowledge-ops": "off",
+    "ecc:kotlin-exposed-patterns": "off",
+    "ecc:kotlin-ktor-patterns": "off",
+    "ecc:kubernetes-patterns": "off",
+    "ecc:laravel-patterns": "off",
+    "ecc:laravel-plugin-discovery": "off",
+    "ecc:laravel-security": "off",
+    "ecc:laravel-tdd": "off",
+    "ecc:laravel-verification": "off",
+    "ecc:latency-critical-systems": "off",
+    "ecc:lead-intelligence": "off",
+    "ecc:learn-eval": "off",
+    "ecc:liquid-glass-design": "off",
+    "ecc:living-docs-governance": "off",
+    "ecc:llm-trading-agent-security": "off",
+    "ecc:logistics-exception-management": "off",
+    "ecc:loop-design-check": "off",
+    "ecc:loop-start": "off",
+    "ecc:loop-status": "off",
+    "ecc:mailtrap-email-integration": "off",
+    "ecc:manim-video": "off",
+    "ecc:market-research": "off",
+    "ecc:marketing-campaign": "off",
+    "ecc:master-agreement-generator": "off",
+    "ecc:mcp-dependency-review": "off",
+    "ecc:messages-ops": "off",
+    "ecc:ml-adoption-playbook": "off",
+    "ecc:mle-workflow": "off",
+    "ecc:model-route": "off",
+    "ecc:module-governance": "off",
+    "ecc:module-regression": "off",
+    "ecc:multi-backend": "off",
+    "ecc:multi-execute": "off",
+    "ecc:multi-frontend": "off",
+    "ecc:multi-plan": "off",
+    "ecc:multi-workflow": "off",
+    "ecc:mybatis-patterns": "off",
+    "ecc:mysql-patterns": "off",
+    "ecc:nanoclaw-repl": "off",
+    "ecc:nasiko-control-plane": "off",
+    "ecc:nestjs-patterns": "off",
+    "ecc:netmiko-ssh-automation": "off",
+    "ecc:network-bgp-diagnostics": "off",
+    "ecc:network-config-validation": "off",
+    "ecc:network-interface-health": "off",
+    "ecc:nodejs-keccak256": "off",
+    "ecc:nutrient-document-processing": "off",
+    "ecc:nuxt4-patterns": "off",
+    "ecc:openclaw-persona-forge": "off",
+    "ecc:opensource-pipeline": "off",
+    "ecc:operator-approval-loop": "off",
+    "ecc:orch-add-feature": "off",
+    "ecc:orch-build-mvp": "off",
+    "ecc:orch-change-feature": "off",
+    "ecc:orch-fix-defect": "off",
+    "ecc:orch-pipeline": "off",
+    "ecc:orch-refine-code": "off",
+    "ecc:orch-review": "off",
+    "ecc:orchestrate": "off",
+    "ecc:osint-investigation": "off",
+    "ecc:parallel-execution-optimizer": "off",
+    "ecc:perl-patterns": "off",
+    "ecc:perl-security": "off",
+    "ecc:perl-testing": "off",
+    "ecc:plan": "off",
+    "ecc:plan-canvas": "off",
+    "ecc:plan-orchestrate": "off",
+    "ecc:plan-prd": "off",
+    "ecc:plankton-code-quality": "off",
+    "ecc:pm2": "off",
+    "ecc:pr": "off",
+    "ecc:prediction-market-oracle-research": "off",
+    "ecc:prediction-market-risk-review": "off",
+    "ecc:product-capability": "off",
+    "ecc:product-lens": "off",
+    "ecc:production-audit": "off",
+    "ecc:production-scheduling": "off",
+    "ecc:project-flow-ops": "off",
+    "ecc:project-guidelines-example": "off",
+    "ecc:project-init": "off",
+    "ecc:projects": "off",
+    "ecc:promote": "off",
+    "ecc:prompt-caching-strategy": "off",
+    "ecc:prompt-optimize": "off",
+    "ecc:prp-commit": "off",
+    "ecc:prp-implement": "off",
+    "ecc:prp-plan": "off",
+    "ecc:prp-pr": "off",
+    "ecc:prp-prd": "off",
+    "ecc:prune": "off",
+    "ecc:pytorch-patterns": "off",
+    "ecc:quality-gate": "off",
+    "ecc:quality-nonconformance": "off",
+    "ecc:quarkus-patterns": "off",
+    "ecc:quarkus-security": "off",
+    "ecc:quarkus-tdd": "off",
+    "ecc:quarkus-verification": "off",
+    "ecc:rails-patterns": "off",
+    "ecc:ralphinho-rfc-pipeline": "off",
+    "ecc:recsys-pipeline-architect": "off",
+    "ecc:recursive-decision-ledger": "off",
+    "ecc:redis-patterns": "off",
+    "ecc:regex-vs-llm-structured-text": "off",
+    "ecc:remotion-video-creation": "off",
+    "ecc:repo-scan": "off",
+    "ecc:research-ops": "off",
+    "ecc:resume-session": "off",
+    "ecc:returns-reverse-logistics": "off",
+    "ecc:review-pr": "off",
+    "ecc:rules-distill": "off",
+    "ecc:safety-guard": "off",
+    "ecc:santa-loop": "off",
+    "ecc:santa-method": "off",
+    "ecc:save-session": "off",
+    "ecc:scientific-db-pubmed-database": "off",
+    "ecc:scientific-db-uspto-database": "off",
+    "ecc:scientific-pkg-gget": "off",
+    "ecc:scientific-thinking-literature-review": "off",
+    "ecc:scientific-thinking-scholar-evaluation": "off",
+    "ecc:security-bounty-hunter": "off",
+    "ecc:seo": "off",
+    "ecc:sessions": "off",
+    "ecc:setup-pm": "off",
+    "ecc:skill-comply": "off",
+    "ecc:skill-create": "off",
+    "ecc:skill-health": "off",
+    "ecc:skill-host-compat": "off",
+    "ecc:skill-scout": "off",
+    "ecc:skill-stocktake": "off",
+    "ecc:social-graph-ranker": "off",
+    "ecc:social-publisher": "off",
+    "ecc:springboot-patterns": "off",
+    "ecc:springboot-security": "off",
+    "ecc:springboot-tdd": "off",
+    "ecc:springboot-verification": "off",
+    "ecc:story-lifecycle": "off",
+    "ecc:swift-actor-persistence": "off",
+    "ecc:swift-concurrency-6-2": "off",
+    "ecc:swift-protocol-di-testing": "off",
+    "ecc:swiftui-patterns": "off",
+    "ecc:taste": "off",
+    "ecc:taste-application": "off",
+    "ecc:taste-distillation": "off",
+    "ecc:tasteforge-video": "off",
+    "ecc:tdd": "off",
+    "ecc:tdd-workflow": "off",
+    "ecc:team-agent-orchestration": "off",
+    "ecc:team-builder": "off",
+    "ecc:terminal-opener": "off",
+    "ecc:terminal-ops": "off",
+    "ecc:test-collaboration": "off",
+    "ecc:tinystruct-patterns": "off",
+    "ecc:token-card": "off",
+    "ecc:ui-demo": "off",
+    "ecc:ui-to-vue": "off",
+    "ecc:uncloud": "off",
+    "ecc:unified-memory": "off",
+    "ecc:unified-notifications-ops": "off",
+    "ecc:verify": "off",
+    "ecc:video-editing": "off",
+    "ecc:videodb": "off",
+    "ecc:visa-doc-translate": "off",
+    "ecc:vue-patterns": "off",
+    "ecc:vue-review": "off",
+    "ecc:windows-desktop-e2e": "off",
+    "ecc:workspace-surface-audit": "off",
+    "ecc:x-api": "off"
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$PASEO_TERMINAL_ID\" ]; then \"${PASEO_HOOK_CLI:-paseo}\" hooks claude UserPromptSubmit; fi",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{HOME}}/.local/bin/tokensave.exe",
+            "args": [
+              "hook-prompt-submit"
+            ]
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$PASEO_TERMINAL_ID\" ]; then \"${PASEO_HOOK_CLI:-paseo}\" hooks claude Stop; fi",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{HOME}}/.local/bin/tokensave.exe",
+            "args": [
+              "hook-stop"
+            ]
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$PASEO_TERMINAL_ID\" ]; then \"${PASEO_HOOK_CLI:-paseo}\" hooks claude StopFailure; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$PASEO_TERMINAL_ID\" ]; then \"${PASEO_HOOK_CLI:-paseo}\" hooks claude SessionEnd; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$PASEO_TERMINAL_ID\" ]; then \"${PASEO_HOOK_CLI:-paseo}\" hooks claude Notification; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/Python310/Scripts/headroom.EXE\" init hook ensure --profile init-user --marker headroom-init-claude",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{HOME}}/.local/bin/tokensave.exe",
+            "args": [
+              "hook-pre-tool-use"
+            ]
+          }
+        ],
+        "matcher": "Agent|Grep|Bash"
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/Python310/Scripts/headroom.EXE\" init hook ensure --profile init-user --marker headroom-init-claude",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"{{HOME}}/.claude/hooks/tokensave-autoinit.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "enableWorkflows": true,
+  "enabledPlugins": {
+    "engineering-skills@claude-code-skills": true,
+    "engineering-advanced-skills@claude-code-skills": true,
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "agentmemory@agentmemory": false,
+    "skill-creator@claude-plugins-official": true,
+    "kotlin-lsp@claude-plugins-official": true,
+    "expo@claude-plugins-official": false,
+    "context7@claude-plugins-official": false,
+    "supabase@claude-plugins-official": false,
+    "firecrawl@claude-plugins-official": true,
+    "firebase@claude-plugins-official": false,
+    "playwright@claude-plugins-official": false,
+    "firebase@firebase": false,
+    "claude-code-setup@claude-plugins-official": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "n8n-skills@n8n-io": false,
+    "paper-desktop@paper": true,
+    "understand-anything@understand-anything": true,
+    "ecc@ecc": true,
+    "headroom@headroom-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-skills": {
+      "source": {
+        "source": "github",
+        "repo": "alirezarezvani/claude-skills"
+      }
+    },
+    "fullstack-dev-skills": {
+      "source": {
+        "source": "github",
+        "repo": "jeffallan/claude-skills"
+      }
+    },
+    "chrome-devtools-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "ChromeDevTools/chrome-devtools-mcp"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/DietrichGebert/ponytail.git"
+      }
+    },
+    "agentmemory": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/rohitg00/agentmemory.git"
+      }
+    },
+    "firebase": {
+      "source": {
+        "source": "github",
+        "repo": "firebase/firebase-tools"
+      }
+    },
+    "zai-coding-plugins": {
+      "source": {
+        "source": "directory",
+        "path": "{{HOME}}\\AppData\\Roaming\\nvm\\v22.17.1\\node_modules\\@z_ai\\coding-helper\\zai-coding-plugins"
+      }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "source": "github",
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+      }
+    },
+    "n8n-io": {
+      "source": {
+        "source": "github",
+        "repo": "n8n-io/skills"
+      }
+    },
+    "paper": {
+      "source": {
+        "source": "github",
+        "repo": "paper-design/agent-plugins"
+      }
+    },
+    "understand-anything": {
+      "source": {
+        "source": "github",
+        "repo": "Egonex-AI/Understand-Anything"
+      }
+    },
+    "ecc": {
+      "source": {
+        "source": "github",
+        "repo": "affaan-m/ECC"
+      }
+    },
+    "headroom-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "headroomlabs-ai/headroom"
+      }
+    }
+  },
+  "effortLevel": "high",
+  "modelSettings": {
+    "glm-5.3-flash:cloud": {
+      "effortLevel": "high"
+    },
+    "deepseek-v4.1-flash:cloud": {
+      "effortLevel": "high"
+    }
+  },
+  "pluginConfigs": {
+    "n8n-skills@n8n-io": {
+      "options": {
+        "n8n_url": "https://example.app.n8n.cloud"
+      }
+    }
+  },
+  "autoUpdatesChannel": "latest",
+  "tui": "default",
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark",
+  "autoCompactEnabled": true
+}

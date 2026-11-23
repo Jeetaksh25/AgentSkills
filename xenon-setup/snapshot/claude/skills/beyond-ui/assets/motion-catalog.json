@@ -1,0 +1,170 @@
+{
+ "version": 1,
+ "grammars": [
+  {
+   "id": "grammar-type-reveal",
+   "name": "Type reveal (one orchestrated moment)",
+   "whenPageTypes": [
+    "landing",
+    "marketing",
+    "home"
+   ],
+   "easing": {
+    "css": "cubic-bezier(0.16,1,0.3,1)",
+    "js": [
+     0.16,
+     1,
+     0.3,
+     1
+    ],
+    "label": "expo-out"
+   },
+   "durations": {
+    "micro": 120,
+    "ui": 200,
+    "surface": 320,
+    "hero": 700
+   },
+   "recipe": [
+    "split the h1 into words or lines (registry primitive or GSAP SplitText) - never hand-roll char splitting",
+    "container variant with staggerChildren 0.06; child: y 12 -> 0, opacity 0 -> 1",
+    "run ONCE per session, no re-trigger on scroll direction change",
+    "reduced motion: opacity fade only, duration 200ms, no transform"
+   ],
+   "budget": "<=1.2s total; adds 0 long tasks; the h1 must be paintable without JS (text is in the DOM, only the transform is animated)",
+   "engine": "motion/react (MotionConfig reducedMotion='user') or CSS keyframes; GSAP SplitText only if the page already uses GSAP",
+   "evidence": "hero motion grammar observed in the reference teardowns (keyframes/transitions in capture.json)"
+  },
+  {
+   "id": "grammar-scroll-reveal",
+   "name": "Scroll reveal (one grammar for the whole page)",
+   "whenPageTypes": [
+    "landing",
+    "marketing",
+    "pricing",
+    "product",
+    "about",
+    "content"
+   ],
+   "easing": {
+    "css": "cubic-bezier(0.16,1,0.3,1)",
+    "js": [
+     0.16,
+     1,
+     0.3,
+     1
+    ],
+    "label": "expo-out"
+   },
+   "durations": {
+    "micro": 120,
+    "ui": 200,
+    "surface": 320,
+    "stagger": 60
+   },
+   "recipe": [
+    "IntersectionObserver / whileInView, threshold ~0.2, once: true",
+    "reveal = y 12 -> 0 + opacity, 320ms, stagger 60ms within a group",
+    "the SAME grammar for every section; varying it per section is the 'scroll reveal template' hard fail",
+    "reduced motion: instant, or a single 200ms fade with no transform"
+   ],
+   "budget": "no long tasks; never animate layout properties; never on the LCP element",
+   "engine": "motion/react whileInView, or CSS scroll-driven animations where supported with a fallback",
+   "evidence": "entrance grammar must be ONE; captured transition/easing evidence in the teardowns narrows the curve"
+  },
+  {
+   "id": "grammar-dashboard-none",
+   "name": "No entrance motion (data surfaces)",
+   "whenPageTypes": [
+    "dashboard",
+    "admin",
+    "docs"
+   ],
+   "easing": {
+    "css": "cubic-bezier(0.65,0,0.35,1)",
+    "js": [
+     0.65,
+     0,
+     0.35,
+     1
+    ],
+    "label": "ease-in-out"
+   },
+   "durations": {
+    "micro": 120,
+    "ui": 200,
+    "surface": 320,
+    "hero": 0
+   },
+   "recipe": [
+    "NO entrance animation on a data view - it delays reading and is a documented defect (Example B)",
+    "state transitions only: skeleton -> loaded with matching geometry, 200ms cross-fade",
+    "row reorder: @formkit/auto-animate (one line) if reorder exists",
+    "reduced motion: nothing to disable; already static"
+   ],
+   "budget": "0 ms of entrance motion; INP untouched by animation (nothing animates on the interaction path)",
+   "engine": "CSS transitions + optional auto-animate; no motion library needed for a dashboard",
+   "evidence": "the absence is a decision too - record it so it is not 'fixed' later into a fade-in"
+  },
+  {
+   "id": "grammar-interaction-spring",
+   "name": "Interactive spring (thumbs, toggles, panels)",
+   "whenPageTypes": [
+    "landing",
+    "pricing",
+    "app",
+    "component",
+    "dashboard",
+    "mobile-app"
+   ],
+   "easing": {
+    "spring": {
+     "type": "spring",
+     "stiffness": 300,
+     "damping": 30
+    },
+    "label": "spring"
+   },
+   "durations": {
+    "micro": 120,
+    "ui": 200,
+    "surface": 320
+   },
+   "recipe": [
+    "interaction feedback <=150ms - hover/press/focus never feel slow",
+    "one spring for the moving indicator (layoutId / layout animation), never bounce/elastic easing",
+    "hover = ONE transform axis + ONE shadow step; never scale+rotate+translate+blur together",
+    "panel open/close animates the panel, never the container's height in a list"
+   ],
+   "budget": "INP: no interaction-path animation over ~50ms added",
+   "engine": "motion/react layout animations (layoutId) or CSS transitions on transform",
+   "evidence": "hover/focus diffs extracted from the reference teardowns (capture.json interactions)"
+  },
+  {
+   "id": "grammar-pinned-narrative",
+   "name": "Pinned scroll narrative (used at most once)",
+   "whenPageTypes": [
+    "landing",
+    "product",
+    "about"
+   ],
+   "easing": {
+    "css": "none (scroll-linked)",
+    "js": "none (scroll-linked)"
+   },
+   "durations": {
+    "hero": 700
+   },
+   "recipe": [
+    "scroll-LINKED, never scroll-JACKING: track the user, do not drive them",
+    "never hijack the wheel; never pin the marketing body",
+    "GSAP ScrollTrigger + Lenis, wired via lenis.on('scroll', ScrollTrigger.update)",
+    "one pinned moment per page, and only when the content is genuinely sequential",
+    "reduced motion: unpin entirely, render the sections stacked with no transform"
+   ],
+   "budget": "60fps on a mid-range laptop at 4x CPU throttle; never blocks the LCP element",
+   "engine": "gsap + ScrollTrigger + lenis (all free plugins); read references/MOTION.md before adding",
+   "evidence": "reference sites that pin successfully: capture the section grammar and the pin length, not the pixels"
+  }
+ ]
+}

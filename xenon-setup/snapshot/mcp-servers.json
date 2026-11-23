@@ -1,0 +1,49 @@
+{
+  "web-search-prime": {
+    "type": "http",
+    "url": "https://api.z.ai/api/mcp/web_search_prime/mcp",
+    "headers": {
+      "Authorization": "Bearer ${XENON_MCP_WEB_SEARCH_PRIME_AUTHORIZATION}"
+    }
+  },
+  "web-reader": {
+    "type": "http",
+    "url": "https://api.z.ai/api/mcp/web_reader/mcp",
+    "headers": {
+      "Authorization": "Bearer ${XENON_MCP_WEB_READER_AUTHORIZATION}"
+    }
+  },
+  "zread": {
+    "type": "http",
+    "url": "https://api.z.ai/api/mcp/zread/mcp",
+    "headers": {
+      "Authorization": "Bearer ${XENON_MCP_ZREAD_AUTHORIZATION}"
+    }
+  },
+  "headroom": {
+    "type": "stdio",
+    "command": "{{HOME}}/.claude/venvs/headroom/Scripts/headroom.exe",
+    "args": [
+      "mcp",
+      "serve"
+    ],
+    "env": {}
+  },
+  "tokensave": {
+    "command": "{{HOME}}/.local/bin/tokensave.exe",
+    "args": [
+      "serve"
+    ]
+  },
+  "context7": {
+    "type": "http",
+    "url": "https://mcp.context7.com/mcp",
+    "headers": {
+      "CONTEXT7_API_KEY": "${XENON_MCP_CONTEXT7_CONTEXT7_API_KEY}"
+    }
+  },
+  "scrapling": {
+    "command": "scrapling-mcp",
+    "args": []
+  }
+}

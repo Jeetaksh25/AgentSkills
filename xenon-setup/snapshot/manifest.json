@@ -1,0 +1,97 @@
+{
+  "xenon": 1,
+  "exportedAt": "2026-11-23T06:10:32.307Z",
+  "platform": "win32",
+  "claudeVersion": "2.1.286 (Claude Code)",
+  "tools": [
+    {
+      "name": "node",
+      "version": "v24.20.0",
+      "pip": null,
+      "pipVersion": null
+    },
+    {
+      "name": "git",
+      "version": "git version 2.52.0.windows.1",
+      "pip": null,
+      "pipVersion": null
+    },
+    {
+      "name": "python",
+      "version": "Python 3.10.10",
+      "pip": null,
+      "pipVersion": null
+    },
+    {
+      "name": "uv",
+      "version": "uv 0.11.26 (396ef7ce4 2026-06-30 x86_64-pc-windows-msvc)",
+      "pip": null,
+      "pipVersion": null
+    },
+    {
+      "name": "rtk",
+      "version": "rtk 1.2.1",
+      "pip": null,
+      "pipVersion": null
+    },
+    {
+      "name": "tokensave",
+      "version": "tokensave 7.0.2",
+      "pip": null,
+      "pipVersion": null
+    },
+    {
+      "name": "headroom",
+      "version": "headroom, version 0.42.0",
+      "pip": "headroom-ai",
+      "pipVersion": "0.42.0"
+    },
+    {
+      "name": "scrapling-mcp",
+      "version": "Scrapling, version 0.4.15",
+      "pip": "scrapling",
+      "pipVersion": "0.4.15"
+    }
+  ],
+  "links": {
+    "skills/academic-pptx-skill": {
+      "git": "https://github.com/Gabberflast/academic-pptx-skill"
+    },
+    "skills/browser-use": {
+      "git": "https://github.com/bmaltais/browser-use-skill"
+    },
+    "skills/claude-android-skill": {
+      "git": "https://github.com/dpconde/claude-android-skill.git"
+    }
+  },
+  "secrets": {
+    "XENON_MCP_WEB_SEARCH_PRIME_AUTHORIZATION": {
+      "where": "mcpServers.web-search-prime.headers.Authorization",
+      "prefix": "Bearer "
+    },
+    "XENON_MCP_WEB_READER_AUTHORIZATION": {
+      "where": "mcpServers.web-reader.headers.Authorization",
+      "prefix": "Bearer "
+    },
+    "XENON_MCP_ZREAD_AUTHORIZATION": {
+      "where": "mcpServers.zread.headers.Authorization",
+      "prefix": "Bearer "
+    },
+    "XENON_MCP_CONTEXT7_CONTEXT7_API_KEY": {
+      "where": "mcpServers.context7.headers.CONTEXT7_API_KEY",
+      "prefix": ""
+    }
+  },
+  "redactedFiles": [],
+  "counts": {
+    "skills": 182,
+    "agents": 11,
+    "commands": 1,
+    "hooks": 1,
+    "rules": 1,
+    "output-styles": 0,
+    "mcpServers": 7,
+    "marketplaces": 14,
+    "plugins": 23
+  }
+}

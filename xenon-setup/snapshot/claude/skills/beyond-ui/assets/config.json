@@ -1,0 +1,88 @@
+{
+  "_comment": "beyond-ui run config. Copy to <project>/.beyond-ui/config.json and edit. Resolution order for every key: process env > project .beyond-ui/config.json > this file.",
+
+  "teardown": {
+    "targetSites": 5,
+    "_targetSites_note": "FIVE references, not 10 — the condensed-skill rule. scripts/skills-router.mjs verify fails a run that selected more.",
+    "screens": 5,
+    "timeoutSeconds": 240,
+    "skilluiVersion": "skillui@1.3.4",
+    "retries": 1
+  },
+
+  "browserUse": {
+    "_note": "Human-like QA layer: surf the built app like a person (click, type, scroll, judge) and record the journey. scripts/qa.mjs journey runs the same checks through Playwright when browser-use is absent, so the QA gate is never silently skipped.",
+    "python": "",
+    "_python_note": "Absolute path to the interpreter that has browser-use installed. Empty = try python/python3/py. BEYOND_UI_PYTHON env overrides this.",
+    "autoInstall": true,
+    "_autoInstall_note": "true = `pip install -U browser-use` during the tool-layer install when absent. Set false to only report.",
+    "mcp": {
+      "server": "browser-use",
+      "_server_note": "Run `uvx browser-use --mcp` (or `python -m browser_use.mcp`) and register it as an MCP server in your agent to drive the browser directly. Optional: qa.mjs covers the same journey without it."
+    },
+    "journeys": ["hero-to-cta", "form-submit", "nav-to-detail"],
+    "_journeys_note": "Journeys scripts/qa.mjs journey walks by default; edit per project."
+  },
+
+  "playwright": {
+    "viewports": [390, 768, 1440],
+    "scrollSteps": 7,
+    "settleMs": 700,
+    "gotoTimeoutMs": 60000
+  },
+
+  "scrapling": {
+    "_note": "The keyless acquisition engine. No API key, no account, no LLM, no quota — it replaces firecrawl AND browser-use. PREFERRED path is the Scrapling-Plugin MCP server (agent calls the tools directly, no shell). CLI fallback resolution: `scrapling` on PATH -> <python> -m scrapling.cli -> docker pyd4vinci/scrapling (only with --docker).",
+    "mcp": {
+      "_note": "Scrapling-Plugin (github.com/Jeetaksh25/Scrapling-Plugin) — installs 13 MCP tools + the scrapling skill + the /scrape command into every detected agent. Run `npx -y github:Jeetaksh25/Scrapling-Plugin`.",
+      "prefer": true,
+      "_prefer_note": "true = when the MCP server is registered, the agent calls the tools (make_request -> fetch -> stealthy_fetch) and scripts/scrapling.mjs is only the fallback. false = always go through the CLI bridge.",
+      "autoInstall": true,
+      "_autoInstall_note": "true = `npx -y github:Jeetaksh25/Scrapling-Plugin` during bootstrap when the server is not already registered. Set false to only report.",
+      "server": "scrapling",
+      "_server_note": "MCP server name as it appears in the agent's MCP tool list; tools are exposed as mcp__scrapling__<tool>.",
+      "timeoutMs": 90000
+    },
+    "python": "",
+    "_python_note": "Absolute path to the interpreter that has scrapling installed. Empty = try python/python3/py. BEYOND_UI_PYTHON env overrides this.",
+    "autoInstall": true,
+    "_autoInstall_note": "true = `pip install \"scrapling[all]>=0.4.15\"` when no engine resolves. Set false to only report.",
+    "installBrowser": true,
+    "_installBrowser_note": "true = run `scrapling install --force` so fetch/stealthy-fetch/screenshot work. `get` needs no browser.",
+    "escalation": ["get", "fetch", "stealthy-fetch"],
+    "_escalation_note": "Tier order per URL. `get` is impersonated plain HTTP; `fetch` renders JS; `stealthy-fetch` adds stealth and solves Cloudflare. Escalation costs stealth, never speed.",
+    "solveCloudflare": true,
+    "timeoutMs": 60000,
+    "pagesPerSite": 3,
+    "_pagesPerSite_note": "Same-origin pages pulled per reference as markdown (real copy structure).",
+    "proxy": "",
+    "_proxy_note": "Optional. Forwarded to scraping via --proxy / SCRAPLING proxy args. Never ship a proxy you are not licensed to use."
+  },
+
+  "plan": {
+    "maxSections": 14,
+    "_note": "Upper bound on sections the deterministic planner may select from assets/block-catalog.json."
+  },
+
+  "galleries": {
+    "web": [
+      { "name": "awwwards", "url": "https://www.awwwards.com/websites/?text={query}", "kind": "award", "signal": "SOTD/HM/DEV badges + date in HTML" },
+      { "name": "land-book", "url": "https://land-book.com/design/{pageType}?sort=featured", "kind": "directory", "signal": "sort=featured|recommended|like|view" },
+      { "name": "saaspo", "url": "https://www.saaspo.com/industry/{industry}", "kind": "saas", "signal": "page-type + industry counts in HTML" },
+      { "name": "minimal-gallery", "url": "https://minimal.gallery/tag/{tag}/", "kind": "directory", "signal": "age labels (today, N days ago)" },
+      { "name": "cssdesignawards", "url": "https://www.cssdesignawards.com/wotd-award-winners", "kind": "award", "signal": "numeric UI/UX/INN scores" },
+      { "name": "httpster", "url": "https://httpster.net/", "kind": "directory", "signal": "curated chronological" },
+      { "name": "landingfolio", "url": "https://www.landingfolio.com/inspiration/landing-page/{industry}", "kind": "directory", "signal": "industry facet + date" },
+      { "name": "lapa-ninja", "url": "https://www.lapa.ninja/category/{tag}/", "kind": "directory", "signal": "category counts" },
+      { "name": "recent", "url": "https://recent.design/", "kind": "award", "signal": "curated; web/interface/motion/3D mix" },
+      { "name": "typewolf", "url": "https://www.typewolf.com/site-of-the-day", "kind": "type", "signal": "named fonts per site" }
+    ],
+    "mobileApp": [
+      { "name": "mobbin", "url": "https://mobbin.com/llms.txt", "kind": "agent-native", "signal": "llms.txt + MCP (api.mobbin.com/mcp) + /index.md; REST/MCP paid" },
+      { "name": "pageflows", "url": "https://pageflows.com/ios/", "kind": "flows", "signal": "recorded real-user flows; listing free, content paywalled" },
+      { "name": "refero", "url": "https://refero.design/", "kind": "screens", "signal": "web + iOS screenshots; JS-rendered — Playwright capture" }
+    ],
+    "jsOnly": ["thefwa.com", "dribbble.com", "behance.net", "dark.design", "refero.design", "siteinspire.com (429 — retry with backoff)"],
+    "_fetch_note": "Fetch every gallery through scripts/scrapling.mjs. It escalates get -> fetch -> stealthy-fetch automatically and handles the 429/JS-only cases above without a key."
+  }
+}

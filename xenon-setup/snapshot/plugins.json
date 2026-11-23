@@ -1,0 +1,177 @@
+{
+  "marketplaces": {
+    "claude-plugins-official": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "claude-code-skills": {
+      "source": "github",
+      "repo": "alirezarezvani/claude-skills"
+    },
+    "fullstack-dev-skills": {
+      "source": "github",
+      "repo": "jeffallan/claude-skills"
+    },
+    "chrome-devtools-plugins": {
+      "source": "github",
+      "repo": "ChromeDevTools/chrome-devtools-mcp"
+    },
+    "ponytail": {
+      "source": "git",
+      "url": "https://github.com/DietrichGebert/ponytail.git"
+    },
+    "agentmemory": {
+      "source": "git",
+      "url": "https://github.com/rohitg00/agentmemory.git"
+    },
+    "firebase": {
+      "source": "github",
+      "repo": "firebase/firebase-tools"
+    },
+    "zai-coding-plugins": {
+      "source": "directory",
+      "path": "{{HOME}}\\AppData\\Roaming\\nvm\\v22.17.1\\node_modules\\@z_ai\\coding-helper\\zai-coding-plugins"
+    },
+    "ui-ux-pro-max-skill": {
+      "source": "github",
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+    },
+    "n8n-io": {
+      "source": "github",
+      "repo": "n8n-io/skills"
+    },
+    "paper": {
+      "source": "github",
+      "repo": "paper-design/agent-plugins"
+    },
+    "understand-anything": {
+      "source": "github",
+      "repo": "Egonex-AI/Understand-Anything"
+    },
+    "ecc": {
+      "source": "github",
+      "repo": "affaan-m/ECC"
+    },
+    "headroom-marketplace": {
+      "source": "github",
+      "repo": "headroomlabs-ai/headroom"
+    }
+  },
+  "plugins": {
+    "engineering-skills@claude-code-skills": {
+      "version": "2.2.0",
+      "scope": "user",
+      "enabled": true
+    },
+    "engineering-advanced-skills@claude-code-skills": {
+      "version": "2.3.0",
+      "scope": "user",
+      "enabled": true
+    },
+    "frontend-design@claude-plugins-official": {
+      "version": "1.1.1",
+      "scope": "user",
+      "enabled": true
+    },
+    "superpowers@claude-plugins-official": {
+      "version": "7.0.2",
+      "scope": "user",
+      "enabled": true
+    },
+    "ponytail@ponytail": {
+      "version": "4.8.4",
+      "scope": "user",
+      "enabled": true
+    },
+    "agentmemory@agentmemory": {
+      "version": "0.9.27",
+      "scope": "user",
+      "enabled": false
+    },
+    "skill-creator@claude-plugins-official": {
+      "version": "73c8cf3ea7e2",
+      "scope": "user",
+      "enabled": true
+    },
+    "kotlin-lsp@claude-plugins-official": {
+      "version": "1.0.0",
+      "scope": "user",
+      "enabled": true
+    },
+    "expo@claude-plugins-official": {
+      "version": "1.13.9",
+      "scope": "user",
+      "enabled": false
+    },
+    "context7@claude-plugins-official": {
+      "version": "73c8cf3ea7e2",
+      "scope": "user",
+      "enabled": false
+    },
+    "supabase@claude-plugins-official": {
+      "version": "0.1.16",
+      "scope": "user",
+      "enabled": false
+    },
+    "firecrawl@claude-plugins-official": {
+      "version": "2.0.0",
+      "scope": "user",
+      "enabled": true
+    },
+    "firebase@claude-plugins-official": {
+      "version": "73c8cf3ea7e2",
+      "scope": "user",
+      "enabled": false
+    },
+    "playwright@claude-plugins-official": {
+      "version": "73c8cf3ea7e2",
+      "scope": "user",
+      "enabled": false
+    },
+    "firebase@firebase": {
+      "version": "1.0.0",
+      "scope": "user",
+      "enabled": false
+    },
+    "claude-code-setup@claude-plugins-official": {
+      "version": "1.0.0",
+      "scope": "user",
+      "enabled": true
+    },
+    "ui-ux-pro-max@ui-ux-pro-max-skill": {
+      "version": "2.11.0",
+      "scope": "user",
+      "enabled": true
+    },
+    "rust-analyzer-lsp@claude-plugins-official": {
+      "version": "1.0.0",
+      "scope": "user",
+      "enabled": true
+    },
+    "n8n-skills@n8n-io": {
+      "version": "1.2.0",
+      "scope": "user",
+      "enabled": false
+    },
+    "paper-desktop@paper": {
+      "version": "0.2.1",
+      "scope": "user",
+      "enabled": true
+    },
+    "understand-anything@understand-anything": {
+      "version": "2.9.8",
+      "scope": "user",
+      "enabled": true
+    },
+    "ecc@ecc": {
+      "version": "2.2.3",
+      "scope": "user",
+      "enabled": true
+    },
+    "headroom@headroom-marketplace": {
+      "version": "0.45.0",
+      "scope": "user",
+      "enabled": true
+    }
+  }
+}

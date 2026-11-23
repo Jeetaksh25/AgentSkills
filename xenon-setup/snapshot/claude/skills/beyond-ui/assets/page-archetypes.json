@@ -1,0 +1,167 @@
+{
+ "version": 1,
+ "archetypes": {
+  "landing": {
+   "label": "Marketing landing",
+   "platform": "web",
+   "sequence": [
+    "nav",
+    "hero",
+    "social-proof",
+    "features",
+    "proof",
+    "integrations",
+    "process",
+    "pricing",
+    "faq",
+    "cta",
+    "footer"
+   ],
+   "rules": [
+    "first viewport: nav + hero only",
+    "max ONE layout family per page (Part 1b)",
+    "one CTA intent repeated verbatim",
+    "social-proof and proof sections are OMITTED when the user supplied no real names/numbers"
+   ]
+  },
+  "saas-marketing": {
+   "label": "SaaS product marketing page",
+   "platform": "web",
+   "sequence": [
+    "nav",
+    "hero",
+    "social-proof",
+    "features",
+    "proof",
+    "integrations",
+    "faq",
+    "cta",
+    "footer"
+   ],
+   "rules": [
+    "honest comparison table replaces three feature cards",
+    "pricing lives on its own route unless it is a differentiator"
+   ]
+  },
+  "pricing": {
+   "label": "Pricing page",
+   "platform": "web",
+   "sequence": [
+    "nav",
+    "hero",
+    "pricing",
+    "features",
+    "faq",
+    "cta",
+    "footer"
+   ],
+   "rules": [
+    "the toggle is an accessible Tabs/radio group",
+    "no layout shift on billing change",
+    "one recommended tier with a stated reason"
+   ]
+  },
+  "dashboard": {
+   "label": "Product dashboard / admin",
+   "platform": "web",
+   "sequence": [
+    "shell",
+    "overview",
+    "chart",
+    "table",
+    "states"
+   ],
+   "rules": [
+    "no entrance motion",
+    "group KPIs by decision",
+    "remove 60% of card borders on the first pass"
+   ]
+  },
+  "docs": {
+   "label": "Documentation",
+   "platform": "web",
+   "sequence": [
+    "nav",
+    "docs",
+    "footer"
+   ],
+   "rules": [
+    "no placeholder API names - remove the page instead",
+    "on-this-page from real headings"
+   ]
+  },
+  "onboarding": {
+   "label": "Onboarding flow",
+   "platform": "web",
+   "sequence": [
+    "nav",
+    "flow"
+   ],
+   "rules": [
+    "back is always possible",
+    "state persists across reload"
+   ]
+  },
+  "component": {
+   "label": "Single component delivery",
+   "platform": "web",
+   "sequence": [
+    "component"
+   ],
+   "rules": [
+    "all 8 states shipped",
+    "built on the accessible primitive"
+   ]
+  },
+  "content": {
+   "label": "Blog / changelog",
+   "platform": "web",
+   "sequence": [
+    "nav",
+    "content",
+    "cta",
+    "footer"
+   ],
+   "rules": [
+    "real dates and real excerpts, or neither"
+   ]
+  },
+  "auth": {
+   "label": "Auth screens",
+   "platform": "web",
+   "sequence": [
+    "auth"
+   ],
+   "rules": [
+    "no marketing on an auth screen",
+    "error copy never reveals account existence"
+   ]
+  },
+  "error": {
+   "label": "Error / 404",
+   "platform": "web",
+   "sequence": [
+    "error"
+   ],
+   "rules": [
+    "the 404 offers real paths back; a 500 keeps the user's work"
+   ]
+  },
+  "mobile-app": {
+   "label": "Mobile app screens",
+   "platform": "mobile-app",
+   "sequence": [
+    "mobile",
+    "states",
+    "form"
+   ],
+   "rules": [
+    "Reanimated on the UI thread; animate transform/opacity only",
+    "44pt minimum targets; safe areas honoured top and bottom",
+    "no web motion library in the RN bundle",
+    "native stack and native tabs - no JS tab bars"
+   ]
+  }
+ },
+ "_resolutionNote": "Page types resolve to an archetype by exact/normalized match against these keys first, then by keyword family: dash|admin|analytics|console|panel -> dashboard; doc -> docs; price -> pricing; component -> component; blog|article|changelog|news|post -> content; login|signin|signup|auth -> auth; 404|error -> error; land|market|home|saas|product -> landing."
+}

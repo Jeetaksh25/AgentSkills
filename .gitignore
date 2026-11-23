@@ -7,3 +7,6 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+.tokensave
+secrets.env
+*.xenon-backup-*
