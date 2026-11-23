@@ -15,6 +15,12 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_SNAPSHOT = path.resolve(HERE, '..', 'snapshot');
+// The AgentSkills repo this skill ships in: every skill in it is part of the setup too.
+const REPO_ROOT = path.resolve(HERE, '..', '..');
+const repoSkills = () => fs.readdirSync(REPO_ROOT, { withFileTypes: true })
+  .filter(d => d.isDirectory() && !d.name.startsWith('.') && fs.existsSync(path.join(REPO_ROOT, d.name, 'SKILL.md')))
+  .map(d => d.name);
+const inRepo = (p) => { try { const r = path.relative(REPO_ROOT, fs.realpathSync(p)); return !!r && !r.startsWith('..') && !path.isAbsolute(r); } catch { return false; } };
 const HOME = os.homedir();
 const CLAUDE_DIR = path.join(HOME, '.claude');
 const CLAUDE_JSON = path.join(HOME, '.claude.json');
@@ -194,6 +200,8 @@ function doExport(out) {
     for (const name of fs.readdirSync(src)) {
       const p = path.join(src, name);
       if (SKIP_NAMES.has(name) || /backup|\$base/i.test(name)) continue;
+      // skills that live in this repo are installed from the repo itself, not duplicated in the snapshot
+      if (inRepo(p)) { links[`${d}/${name}`] = { repo: path.relative(REPO_ROOT, fs.realpathSync(p)).replace(/\\/g, '/') }; continue; }
       // git-cloned skills: remember the remote so install clones them fresh
       const remote = fs.existsSync(path.join(p, '.git')) ? sh(`git -C "${p}" remote get-url origin`) : null;
       if (remote) links[`${d}/${name}`] = { git: remote };
@@ -292,7 +300,7 @@ function doInstall(from, { dry, skipTools, skipPlugins, secrets }) {
   const report = { ok: [], warn: [] };
 
   // 1. external tools
-  log('\n[1/5] tools');
+  log('\n[1/6] tools');
   if (skipTools) log('  skipped (--skip-tools)');
   else for (const t of TOOLS) {
     const want = m.tools.find(x => x.name === t.name);
@@ -308,7 +316,7 @@ function doInstall(from, { dry, skipTools, skipPlugins, secrets }) {
   }
 
   // 2. files: skills, agents, commands, hooks, rules, CLAUDE.md ...
-  log('\n[2/5] skills, agents, commands, hooks, rules, memory files');
+  log('\n[2/6] skills, agents, commands, hooks, rules, memory files');
   const src = path.join(from, 'claude');
   const fix = (buf) => isText(buf) ? Buffer.from(detemplatize(buf.toString('utf8'))) : buf;
   if (fs.existsSync(src)) for (const entry of fs.readdirSync(src)) {
@@ -331,8 +339,18 @@ function doInstall(from, { dry, skipTools, skipPlugins, secrets }) {
     }
   }
 
+  // 2b. every skill in this AgentSkills repo (symlinked, so `git pull` keeps them current), plus Nexus's own installer
+  log('\n[3/6] AgentSkills repo skills: ' + repoSkills().join(', '));
+  const installer = path.join(REPO_ROOT, 'scripts', 'install-skills.mjs');
+  if (fs.existsSync(installer)) {
+    if (!dry) for (const s of repoSkills()) { const d = path.join(CLAUDE_DIR, 'skills', s); if (fs.existsSync(d) && !inRepo(d)) { backup(d); fs.rmSync(d, { recursive: true, force: true }); } }
+    if (!run(`node "${installer}" --target "${path.join(CLAUDE_DIR, 'skills')}"`, dry)) report.warn.push('repo skills: install-skills.mjs failed');
+    const nexus = path.join(REPO_ROOT, 'nexus', 'scripts', 'nexus.mjs');
+    if (fs.existsSync(nexus) && !run(`node "${nexus}" install --link`, dry)) report.warn.push('nexus: installer failed');
+  } else report.warn.push(`repo skills: ${installer} not found — run install from a full clone of AgentSkills`);
+
   // 3. settings.json (hooks, permissions, env, model, enabledPlugins, marketplaces...)
-  log('\n[3/5] settings.json');
+  log('\n[4/6] settings.json');
   const settings = JSON.parse(fillSecrets(detemplatize(fs.readFileSync(path.join(from, 'settings.json'), 'utf8')), vals, missing));
   if (settings.env?.HOME) settings.env.HOME = HOME.replace(/\\/g, '/');
   for (const groups of Object.values(settings.hooks || {})) for (const g of groups) for (const h of g.hooks || []) {
@@ -343,7 +361,7 @@ function doInstall(from, { dry, skipTools, skipPlugins, secrets }) {
   log(`  ✓ settings.json (${Object.keys(settings).length} keys, ${Object.keys(settings.hooks || {}).length} hook events)`);
 
   // 4. MCP servers into ~/.claude.json (user scope) — merged, nothing else in that file is touched
-  log('\n[4/5] MCP servers');
+  log('\n[5/6] MCP servers');
   const mcp = JSON.parse(fillSecrets(detemplatize(fs.readFileSync(path.join(from, 'mcp-servers.json'), 'utf8')), vals, missing));
   for (const c of Object.values(mcp)) if (c.command) c.command = relocateCommand(c.command);
   if (!dry) {
@@ -359,7 +377,7 @@ function doInstall(from, { dry, skipTools, skipPlugins, secrets }) {
   }
 
   // 5. plugins (via the claude CLI)
-  log('\n[5/5] plugins');
+  log('\n[6/6] plugins');
   const pj = readJson(path.join(from, 'plugins.json'));
   const localDirMissing = (s) => s?.source === 'directory' && !fs.existsSync(detemplatize(s.path || ''));
   if (skipPlugins) log('  skipped (--skip-plugins)');
@@ -395,6 +413,7 @@ function doVerify(from) {
     const have = new Set(fs.existsSync(path.join(CLAUDE_DIR, d)) ? fs.readdirSync(path.join(CLAUDE_DIR, d)) : []);
     for (const n of want) if (!have.has(n)) diffs.push(`missing ${d}/${n}`);
   }
+  for (const s of repoSkills()) if (!fs.existsSync(path.join(CLAUDE_DIR, 'skills', s, 'SKILL.md'))) diffs.push(`missing repo skill ${s}`);
   const haveMcp = readJson(CLAUDE_JSON).mcpServers || {};
   for (const n of Object.keys(readJson(path.join(from, 'mcp-servers.json')))) if (!haveMcp[n]) diffs.push(`missing MCP server ${n}`);
   const pj = readJson(path.join(from, 'plugins.json'));

@@ -22,6 +22,7 @@ Python + pip are needed only for the pip-based tools (headroom, scrapling, uv).
 | Piece | Source | How it is restored |
 |---|---|---|
 | Skills, agents, commands, hooks, rules, output styles | `~/.claude/<dir>/` (symlinks resolved, `node_modules`/`.git`/venvs skipped) | Copied; skills that were git clones are re-cloned from their remote, copy as fallback |
+| Every skill in this AgentSkills repo (beyond-ui, nexus, showcase-slides, xenon-setup…) | the repo clone itself — not duplicated in `snapshot/` | `scripts/install-skills.mjs` symlinks them all into `~/.claude/skills` (so `git pull` keeps them current), then `nexus.mjs install --link` adds the Nexus agents and profile |
 | CLAUDE.md, RTK.md, nexus.json, keybindings, statusline | `~/.claude/` | Copied |
 | settings.json | everything: hooks, permissions, env, model, effort, enabledPlugins, extraKnownMarketplaces, skillOverrides, theme… | Written whole; absolute hook commands that don't exist on the target are re-resolved on PATH |
 | User MCP servers | `mcpServers` in `~/.claude.json` | Merged into the target's `~/.claude.json` (nothing else in that file is touched) |

@@ -1,6 +1,6 @@
 {
   "xenon": 1,
-  "exportedAt": "2026-11-23T06:10:32.307Z",
+  "exportedAt": "2026-11-23T06:17:20.261Z",
   "platform": "win32",
   "claudeVersion": "2.1.286 (Claude Code)",
   "tools": [
@@ -57,11 +57,26 @@
     "skills/academic-pptx-skill": {
       "git": "https://github.com/Gabberflast/academic-pptx-skill"
     },
+    "skills/beyond-ui": {
+      "repo": "beyond-ui"
+    },
     "skills/browser-use": {
       "git": "https://github.com/bmaltais/browser-use-skill"
     },
     "skills/claude-android-skill": {
       "git": "https://github.com/dpconde/claude-android-skill.git"
+    },
+    "skills/nexus": {
+      "repo": "nexus"
+    },
+    "skills/production-suite-completion": {
+      "repo": "production-suite-completion"
+    },
+    "skills/secure-portal-access": {
+      "repo": "secure-portal-access"
+    },
+    "skills/showcase-slides": {
+      "repo": "showcase-slides"
     }
   },
   "secrets": {
@@ -84,7 +99,7 @@
   },
   "redactedFiles": [],
   "counts": {
-    "skills": 182,
+    "skills": 177,
     "agents": 11,
     "commands": 1,
     "hooks": 1,
