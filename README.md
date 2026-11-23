@@ -22,7 +22,15 @@ exists to prevent.
 
 ## Installation
 
-The default is **every detected harness at once** — a machine usually has Claude Code, OMP and the
+**Whole setup in one line** (every skill, agent, hook, MCP server, plugin and tool, via [`xenon-setup`](./xenon-setup); works in bash, zsh and PowerShell):
+
+```bash
+git clone https://github.com/Jeetaksh25/AgentSkills.git; node AgentSkills/xenon-setup/scripts/xenon.mjs install
+```
+
+API keys are left as placeholders; fill in `AgentSkills/xenon-setup/snapshot/secrets.example.env` and re-run with `--secrets <file>` to add them.
+
+**Only the skills in this repo:** the default is **every detected harness at once** — a machine usually has Claude Code, OMP and the is **every detected harness at once** — a machine usually has Claude Code, OMP and the
 cross-tool `.agents/` layout together, and installing into only one of them is how a skill silently
 goes stale in the others:
 
