@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "checked": "2026-11-25",
+  "about": "Every provider here must expose an Anthropic Messages-compatible endpoint, because a worker is a headless Claude Code session pointed at it with ANTHROPIC_BASE_URL (Claude Code appends /v1/messages). status: verified = a full worker run succeeded; endpoint-checked = URL and auth shape confirmed with an invalid key plus the provider docs, no worker run; documented = provider docs only.",
+  "providers": {
+    "ollama-cloud": {
+      "label": "Ollama Cloud (ollama.com)",
+      "status": "verified",
+      "base_url": "https://ollama.com",
+      "base_url_env": "OLLAMA_HOST",
+      "key_env": "OLLAMA_API_KEY",
+      "default_model": "deepseek-v4.1-flash:1017",
+      "notes": "Build, test and review workers ran end to end on the Nebula project. Pick a cloud model that supports tools."
+    },
+    "ollama-local": {
+      "label": "Ollama on this machine",
+      "status": "documented",
+      "base_url": "http://localhost:11434",
+      "base_url_env": "OLLAMA_HOST",
+      "key_env": null,
+      "static_key": "ollama",
+      "default_model": null,
+      "notes": "No key, no per-token cost, code never leaves the machine. Set model to a locally pulled model that supports tools; quality is whatever that model gives."
+    },
+    "openrouter": {
+      "label": "OpenRouter",
+      "status": "endpoint-checked",
+      "base_url": "https://openrouter.ai/api",
+      "key_env": "OPENROUTER_API_KEY",
+      "default_model": "deepseek/deepseek-v4.1-flash-1017",
+      "notes": "The base URL has no /v1 (that path is the OpenAI-style API). The Anthropic endpoint reads the key from x-api-key or Authorization. Catalog price on 2026-11-25 for the default model: about 0.15 USD in and 0.60 USD out per million tokens; other cheap models: deepseek/deepseek-v4-flash, z-ai/glm-5.3-flash, qwen/qwen3-coder-flash."
+    },
+    "deepseek": {
+      "label": "DeepSeek API (direct)",
+      "status": "endpoint-checked",
+      "base_url": "https://api.deepseek.com/anthropic",
+      "key_env": "DEEPSEEK_API_KEY",
+      "default_model": "deepseek-flash",
+      "notes": "Model names must be DeepSeek's own (deepseek-flash, deepseek-v4-pro, optionally with a [1m] suffix); names that do not start with claude and are unknown return 400. Both x-api-key and Authorization are accepted."
+    },
+    "zai": {
+      "label": "Z.ai (GLM)",
+      "status": "endpoint-checked",
+      "base_url": "https://api.z.ai/api/anthropic",
+      "key_env": "ZAI_API_KEY",
+      "default_model": null,
+      "notes": "Endpoint answers 401 on an invalid key. Set model to a GLM model from the Z.ai docs."
+    },
+    "moonshot": {
+      "label": "Moonshot (Kimi)",
+      "status": "endpoint-checked",
+      "base_url": "https://api.moonshot.ai/anthropic",
+      "key_env": "MOONSHOT_API_KEY",
+      "default_model": null,
+      "notes": "Endpoint answers 401 on an invalid key. Set model to a Kimi model from the Moonshot docs."
+    },
+    "custom": {
+      "label": "Any Anthropic-compatible gateway",
+      "status": "documented",
+      "base_url": null,
+      "key_env": null,
+      "default_model": null,
+      "notes": "LiteLLM, claude-code-router, a company proxy, or any provider that speaks the Anthropic Messages API. Set base_url, key_env and model in .crew/config.json."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "provider": "ollama-cloud",
+  "model": "deepseek-v4.1-flash:1017",
+  "base_branch": "main",
+  "allowed_executables": ["cargo", "rustc", "pnpm", "npm", "npx", "node"],
+  "autodetect_gates": true,
+  "gates": [
+    { "name": "policy tests", "command": "node --test scripts/ci/*.test.mjs" }
+  ],
+  "max_parallel_workers": 6,
+  "max_fix_rounds": 2,
+  "worktree_root": null,
+  "commit_trailer": null,
+  "pricing": {
+    "deepseek-v4.1-flash:1017": { "in_per_million": 0.15, "out_per_million": 0.60 }
+  }
+}

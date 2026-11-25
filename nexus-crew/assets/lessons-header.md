@@ -1,0 +1,1 @@
+<!-- Hard rules learnt from Claude reviews. One line each: the rule, then why. Injected into every worker prompt and review pack. Keep it short; merge duplicates. -->
