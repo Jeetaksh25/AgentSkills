@@ -16,6 +16,8 @@ Created by `scripts/init.ps1`; a full example is `assets/config.example.json`. E
 | `gates` | `[]` | extra Gate 1 commands: strings, or `{ "name": "...", "command": "..." }` |
 | `max_parallel_workers` | `6` | how many workers to run at once |
 | `max_fix_rounds` | `3` | worker fix rounds `loop.ps1` runs before it escalates a unit |
+| `profile` | `balanced` | `premium`, `balanced` or `economy` (aliases such as quality or cheap): the model and effort for every kind of work, review style, default fix rounds and worker budgets (`assets/profiles.json`; `route.ps1` shows and sets it; `CREW_PROFILE` overrides it for one shell) |
+| `routing` | `{}` | per-kind overrides of the profile, e.g. `{ "build_ui": { "who": "opus", "effort": "medium" } }`; security and tier 3 kinds never go below opus |
 | `setup` | lockfile detection | command `unit.ps1 -Action start` runs in a new worktree (pnpm/npm/yarn install from the lockfile when null); `""` turns it off |
 | `gate_lock` | `true` | one gate run at a time per project, so parallel loops never run test suites concurrently (waits up to 60 min) |
 | `retry_failed_gates` | `1` | re-runs of a failed gate before it counts as failed; a pass on re-run is reported as flaky |

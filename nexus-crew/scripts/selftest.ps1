@@ -33,7 +33,8 @@ $root = Join-Path ([IO.Path]::GetTempPath()) ('nexus-crew-selftest-' + [guid]::N
 $proj = Join-Path $root 'proj'
 New-Item -ItemType Directory -Force $proj | Out-Null
 $oldLoc = Get-Location
-$saved = @{ CREW_PROJECT = $env:CREW_PROJECT; NEXUS_CREW_CLAUDE = $env:NEXUS_CREW_CLAUDE; FAKE_LEAK = $env:FAKE_LEAK }
+$saved = @{ CREW_PROJECT = $env:CREW_PROJECT; NEXUS_CREW_CLAUDE = $env:NEXUS_CREW_CLAUDE; FAKE_LEAK = $env:FAKE_LEAK; CREW_PROFILE = $env:CREW_PROFILE }
+$env:CREW_PROFILE = $null
 try {
     Set-Location $proj
     git init -q -b main 2>&1 | Out-Null
@@ -129,6 +130,25 @@ try {
     & "$scripts\claude-log.ps1" -Unit ALL -Role orchestrator -Model opus -Tokens 1000 *>&1 | Out-Null
     $o = & "$scripts\report.ps1" *>&1 | Out-String
     Check 'the report counts the orchestrator in the Claude share' (($o -match 'orchestrator 1000') -and ($o -notmatch 'WARNING: the orchestrator')) $o
+
+    # 8. profiles: aliases, per-kind routes, the opus floor, profile worker budgets, -Set
+    $o = & "$scripts\route.ps1" -Kind build_ui *>&1 | Out-String
+    Check 'no profile set means balanced (UI screens built by sonnet)' ($o -match 'who=sonnet effort=medium profile=balanced') $o
+    $o = & "$scripts\route.ps1" -Set cheap *>&1 | Out-String
+    $saved2 = (Get-Content -Raw -LiteralPath "$proj\.crew\config.json" | ConvertFrom-Json).profile
+    Check 'route.ps1 -Set resolves an alias and writes it (cheap -> economy)' (($o -match 'profile: economy') -and ($saved2 -eq 'economy')) $o
+    $o = & "$scripts\route.ps1" -Kind build_ui *>&1 | Out-String
+    Check 'economy routes UI screens to the worker' ($o -match 'who=worker effort=medium profile=economy') $o
+    $config = Get-Content -Raw -LiteralPath "$proj\.crew\config.json" | ConvertFrom-Json
+    $config | Add-Member -NotePropertyName routing -NotePropertyValue ([pscustomobject]@{ security = [pscustomobject]@{ who = 'haiku'; effort = 'low' } }) -Force
+    Put "$proj\.crew\config.json" ($config | ConvertTo-Json -Depth 6)
+    $o = & "$scripts\route.ps1" -Kind security *>&1 | Out-String
+    Check 'security is never routed below opus, even by a config override' (($o -match 'who=opus') -and ($o -match 'never downgraded')) $o
+    $b = & { . "$scripts\_common.ps1"; $env:CREW_PROFILE = 'premium'; Get-WorkerBudget 'build' }
+    $env:CREW_PROFILE = $null
+    Check 'the premium profile raises the worker build budget' (($b.max_turns -eq 80) -and ($b.effort -eq 'medium')) ("max_turns=$($b.max_turns) effort=$($b.effort)")
+    $threw = $false; try { & "$scripts\route.ps1" -Set turbo *>&1 | Out-Null } catch { $threw = $true }
+    Check 'an unknown profile name is rejected' $threw
 }
 finally {
     Set-Location $oldLoc

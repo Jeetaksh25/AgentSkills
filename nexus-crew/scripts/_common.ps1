@@ -243,12 +243,56 @@ $DefaultBudget = @{
     brief  = @{ effort = 'medium'; max_turns = 20; timeout_min = 8;  thinking_tokens = 4000 }
 }
 function Get-WorkerBudget([string]$Mode) {
+    # Layers: built-in defaults, then the active profile's worker_budget, then the config's worker_budget.
     $b = @{} + $DefaultBudget[$Mode]
-    $cfg = Get-Cfg 'worker_budget' $null
-    if ($cfg -and $cfg.PSObject.Properties[$Mode]) {
-        foreach ($p in $cfg.PSObject.Properties[$Mode].Value.PSObject.Properties) { $b[$p.Name] = $p.Value }
+    $prof = Get-CrewProfile
+    foreach ($src in @($prof.Spec.worker_budget, (Get-Cfg 'worker_budget' $null))) {
+        if ($src -and $src.PSObject.Properties[$Mode]) {
+            foreach ($p in $src.PSObject.Properties[$Mode].Value.PSObject.Properties) { $b[$p.Name] = $p.Value }
+        }
     }
     return $b
+}
+
+# ---- profiles: which model and effort does each kind of work (assets\profiles.json) ----
+# .crew\profiles.json, when present, replaces the bundled file. The active profile comes from CREW_PROFILE,
+# then "profile" in the config, then the file's default; aliases (quality, cheap, ...) resolve to a profile.
+function Get-ProfileCatalog {
+    $src = Join-Path $CrewDir 'profiles.json'
+    if (-not (Test-Path -LiteralPath $src)) { $src = Join-Path $SkillRoot 'assets\profiles.json' }
+    return (Get-Content -Raw -Encoding UTF8 -LiteralPath $src | ConvertFrom-Json)
+}
+function Resolve-ProfileName([string]$Name) {
+    $cat = Get-ProfileCatalog
+    $key = ("$Name").Trim().ToLowerInvariant()
+    if (-not $key) { return [string]$cat.default }
+    $hit = $cat.aliases.PSObject.Properties[$key]
+    if (-not $hit) { throw "Unknown crew profile '$Name'. Use premium, balanced or economy (aliases: $(($cat.aliases.PSObject.Properties.Name) -join ', '))." }
+    return [string]$hit.Value
+}
+function Get-CrewProfile {
+    $cat = Get-ProfileCatalog
+    $raw = $env:CREW_PROFILE
+    if (-not $raw) { $raw = Get-Cfg 'profile' '' }
+    $name = Resolve-ProfileName $raw
+    return [pscustomobject]@{ Name = $name; Spec = $cat.profiles.PSObject.Properties[$name].Value; Catalog = $cat }
+}
+# Kinds that are never routed below opus, whatever the profile or override says.
+$OpusFloor = @('security', 'build_t3', 'review_t3')
+function Get-Route([string]$Kind) {
+    $prof = Get-CrewProfile
+    $r = $prof.Spec.routes.PSObject.Properties[$Kind]
+    if (-not $r) { throw "Unknown kind '$Kind'. Kinds: $(($prof.Catalog.kinds.PSObject.Properties.Name) -join ', ')" }
+    $who = [string]$r.Value.who; $effort = [string]$r.Value.effort; $src = "profile $($prof.Name)"
+    $ov = Get-Cfg 'routing' $null
+    if ($ov -and $ov.PSObject.Properties[$Kind]) {
+        $o = $ov.PSObject.Properties[$Kind].Value
+        if ($o.who) { $who = [string]$o.who }
+        if ($o.effort) { $effort = [string]$o.effort }
+        $src = 'config routing'
+    }
+    if ($OpusFloor -contains $Kind -and $who -ne 'opus') { $who = 'opus'; $src = "$src (raised to opus: never downgraded)" }
+    return [pscustomobject]@{ Kind = $Kind; Who = $who; Effort = $effort; Source = $src; Profile = $prof.Name }
 }
 
 # Run a native program with a wall-clock limit; the child gets this process's environment.

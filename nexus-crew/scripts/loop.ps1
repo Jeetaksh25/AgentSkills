@@ -32,7 +32,7 @@ param(
     [string]$Skip = ''
 )
 . "$PSScriptRoot\_common.ps1"
-if ($Rounds -lt 0) { $Rounds = [int](Get-Cfg 'max_fix_rounds' 3) }
+if ($Rounds -lt 0) { $Rounds = [int](Get-Cfg 'max_fix_rounds' ((Get-CrewProfile).Spec.max_fix_rounds)) }
 $name = Get-UnitName $Unit $Variant
 $run  = Get-RunDir $Unit
 $dig  = Join-Path $run "gates-$name.txt"

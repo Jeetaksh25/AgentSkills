@@ -6,9 +6,13 @@
   unless -Force. It never writes an API key: put the key in the environment or in the project's .env.
 .EXAMPLE  & "$HOME\.claude\skills\nexus-crew\scripts\init.ps1" -Provider openrouter
 .EXAMPLE  & "$HOME\.claude\skills\nexus-crew\scripts\init.ps1" -Provider custom   # then edit base_url, key_env, model
+.EXAMPLE  & "$HOME\.claude\skills\nexus-crew\scripts\init.ps1" -Provider ollama-cloud -Profile economy
 #>
 param(
     [string]$Provider = '',
+    # premium | balanced | economy (aliases: quality, cheap, ...). Which model and effort does each kind of
+    # work; see assets\profiles.json and route.ps1. Change later with route.ps1 -Set <profile>.
+    [string]$Profile = 'balanced',
     [string]$Model = '',
     [string]$BaseBranch = '',
     [string[]]$AllowedExecutables = @(),
@@ -46,7 +50,9 @@ function Put-File([string]$Path, [string]$Text) {
 }
 function Read-Asset([string]$Rel) { return (Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $SkillRoot $Rel)) }
 
+$profileName = Resolve-ProfileName $Profile
 $cfg = [ordered]@{
+    profile              = $profileName
     provider             = $Provider
     model                = $Model
     base_branch          = $BaseBranch
@@ -54,7 +60,6 @@ $cfg = [ordered]@{
     autodetect_gates     = $true
     gates                = @()
     max_parallel_workers = 6
-    max_fix_rounds       = 3
     worktree_root        = $null
     commit_trailer       = $null
     # Edit to your real prices. Claude rows are logged as one total, so their in_per_million is a blended rate.

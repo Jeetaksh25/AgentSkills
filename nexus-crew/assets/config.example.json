@@ -1,4 +1,6 @@
 {
+  "profile": "balanced",
+  "routing": {},
   "provider": "ollama-cloud",
   "model": "deepseek-v4.1-flash:1017",
   "base_branch": "main",

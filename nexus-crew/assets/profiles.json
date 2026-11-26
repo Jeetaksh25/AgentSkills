@@ -1,0 +1,132 @@
+{
+  "_doc": "Crew profiles: which model and effort does each kind of work. Pick one with \"profile\" in .crew\\config.json (or CREW_PROFILE, or route.ps1 -Set). Override single entries with \"routing\": { \"<kind>\": { \"who\": \"sonnet\", \"effort\": \"high\" } }. who = worker (the cheap API model) | haiku | sonnet | opus. Security and tier 3 work are never routed below opus.",
+  "default": "balanced",
+  "aliases": {
+    "premium": "premium", "quality": "premium", "best": "premium", "max": "premium", "careful": "premium", "flagship": "premium",
+    "balanced": "balanced", "default": "balanced", "standard": "balanced", "normal": "balanced",
+    "economy": "economy", "cheap": "economy", "budget": "economy", "thrift": "economy", "save": "economy", "frugal": "economy", "lean": "economy"
+  },
+  "models": {
+    "worker": "Fast and cheap (DeepSeek V4.x by default). Strong at clear-spec code, tests, mechanical fixes and reading diffs. Weak at open design decisions and visual taste: every vague word in a brief becomes a guess.",
+    "haiku": "Fast, cheapest Claude. Good for small, clear reviews, scouting and summaries. Not for design or security judgement.",
+    "sonnet": "The workhorse. Strong implementation, UI and visual polish, debugging and thorough code review at a fraction of opus cost.",
+    "opus": "The deepest reasoning. Architecture and planning, security, money and auth code, hard bugs, final review of critical or key work."
+  },
+  "kinds": {
+    "orchestrator": "the main session: briefs, dispatch, merges (a recommendation; set it in the host)",
+    "plan": "decompose a feature into units (Full mode)",
+    "brief_check": "goldfish review of each brief before dispatch (brief-check.ps1)",
+    "scout": "map files and call sites before planning",
+    "build_t0": "trivial: boilerplate, config, renames, docs",
+    "build_t1": "standard clear-spec features",
+    "build_t2": "complex: algorithms, concurrency, performance paths, heavy logic",
+    "build_t3": "critical: auth, crypto, money, FFI, security boundaries (tests first by the worker)",
+    "build_ui": "a new or redesigned screen whose look matters (tests first by the worker)",
+    "tests": "writing done-tests (worker -Mode test)",
+    "fix": "gate and review fix rounds (loop.ps1)",
+    "cross_review": "worker cross-review inside the loop",
+    "review_t0": "Gate 3 for tier 0",
+    "review_t1": "Gate 3 for tier 1",
+    "review_t2": "Gate 3 for tier 2",
+    "review_t3": "Gate 3 for tier 3 (plus security)",
+    "review_ui": "Gate 3 for a UI unit, with the screenshot",
+    "security": "nexus-sentinel on anything touching auth, secrets, input handling, payments",
+    "debug": "a failure whose cause is unknown, or a unit that escalated twice"
+  },
+  "profiles": {
+    "premium": {
+      "summary": "Best result first. Claude builds the hard and visible parts, every unit gets a deep review, workers get more room to think. Highest cost, fewest regressions.",
+      "max_fix_rounds": 3,
+      "review_style": "per-unit",
+      "visual_check": "every UI unit, before Gate 3",
+      "routes": {
+        "orchestrator": { "who": "opus", "effort": "high" },
+        "plan": { "who": "opus", "effort": "high" },
+        "brief_check": { "who": "worker", "effort": "high" },
+        "scout": { "who": "haiku", "effort": "medium" },
+        "build_t0": { "who": "worker", "effort": "low" },
+        "build_t1": { "who": "worker", "effort": "medium" },
+        "build_t2": { "who": "sonnet", "effort": "medium" },
+        "build_t3": { "who": "opus", "effort": "high" },
+        "build_ui": { "who": "opus", "effort": "medium" },
+        "tests": { "who": "worker", "effort": "medium" },
+        "fix": { "who": "worker", "effort": "medium" },
+        "cross_review": { "who": "worker", "effort": "high" },
+        "review_t0": { "who": "sonnet", "effort": "medium" },
+        "review_t1": { "who": "sonnet", "effort": "high" },
+        "review_t2": { "who": "opus", "effort": "medium" },
+        "review_t3": { "who": "opus", "effort": "high" },
+        "review_ui": { "who": "opus", "effort": "medium" },
+        "security": { "who": "opus", "effort": "high" },
+        "debug": { "who": "opus", "effort": "high" }
+      },
+      "worker_budget": {
+        "build": { "effort": "medium", "max_turns": 80, "timeout_min": 25, "thinking_tokens": 6000 },
+        "test": { "effort": "medium", "max_turns": 50, "timeout_min": 15, "thinking_tokens": 4000 },
+        "fix": { "effort": "medium", "max_turns": 40, "timeout_min": 12, "thinking_tokens": 3000 },
+        "review": { "effort": "high", "max_turns": 30, "timeout_min": 12, "thinking_tokens": 8000 },
+        "brief": { "effort": "high", "max_turns": 25, "timeout_min": 10, "thinking_tokens": 6000 }
+      }
+    },
+    "balanced": {
+      "summary": "The default. Workers build everything with a clear spec, Claude builds screens people look at and critical code, and reviews scale with the tier.",
+      "max_fix_rounds": 3,
+      "review_style": "per-unit",
+      "visual_check": "every UI unit, before Gate 3",
+      "routes": {
+        "orchestrator": { "who": "opus", "effort": "medium" },
+        "plan": { "who": "opus", "effort": "high" },
+        "brief_check": { "who": "worker", "effort": "medium" },
+        "scout": { "who": "haiku", "effort": "medium" },
+        "build_t0": { "who": "worker", "effort": "low" },
+        "build_t1": { "who": "worker", "effort": "low" },
+        "build_t2": { "who": "worker", "effort": "low" },
+        "build_t3": { "who": "opus", "effort": "medium" },
+        "build_ui": { "who": "sonnet", "effort": "medium" },
+        "tests": { "who": "worker", "effort": "low" },
+        "fix": { "who": "worker", "effort": "low" },
+        "cross_review": { "who": "worker", "effort": "medium" },
+        "review_t0": { "who": "haiku", "effort": "high" },
+        "review_t1": { "who": "sonnet", "effort": "high" },
+        "review_t2": { "who": "opus", "effort": "medium" },
+        "review_t3": { "who": "opus", "effort": "high" },
+        "review_ui": { "who": "sonnet", "effort": "high" },
+        "security": { "who": "opus", "effort": "high" },
+        "debug": { "who": "sonnet", "effort": "high" }
+      },
+      "worker_budget": {}
+    },
+    "economy": {
+      "summary": "Lowest cost. Workers build all non-critical work including UI (with a visual check), Claude reviews low tiers in one batched pass, and Opus is kept for critical and security work only.",
+      "max_fix_rounds": 2,
+      "review_style": "one batched review for tier 0-1 units, per-unit from tier 2",
+      "visual_check": "UI units, before Gate 3; a rejected screen moves up to sonnet/medium",
+      "routes": {
+        "orchestrator": { "who": "sonnet", "effort": "medium" },
+        "plan": { "who": "sonnet", "effort": "high" },
+        "brief_check": { "who": "worker", "effort": "medium" },
+        "scout": { "who": "haiku", "effort": "low" },
+        "build_t0": { "who": "worker", "effort": "low" },
+        "build_t1": { "who": "worker", "effort": "low" },
+        "build_t2": { "who": "worker", "effort": "low" },
+        "build_t3": { "who": "opus", "effort": "medium" },
+        "build_ui": { "who": "worker", "effort": "medium" },
+        "tests": { "who": "worker", "effort": "low" },
+        "fix": { "who": "worker", "effort": "low" },
+        "cross_review": { "who": "worker", "effort": "medium" },
+        "review_t0": { "who": "haiku", "effort": "medium" },
+        "review_t1": { "who": "haiku", "effort": "high" },
+        "review_t2": { "who": "sonnet", "effort": "high" },
+        "review_t3": { "who": "opus", "effort": "high" },
+        "review_ui": { "who": "sonnet", "effort": "medium" },
+        "security": { "who": "opus", "effort": "high" },
+        "debug": { "who": "sonnet", "effort": "medium" }
+      },
+      "worker_budget": {
+        "build": { "max_turns": 45, "timeout_min": 15 },
+        "fix": { "max_turns": 25, "timeout_min": 8 },
+        "review": { "effort": "medium", "max_turns": 20, "timeout_min": 8 }
+      }
+    }
+  }
+}
