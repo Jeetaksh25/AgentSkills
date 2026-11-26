@@ -40,10 +40,12 @@ A key saved with `setx` is found even by shells opened before it was saved (the 
 |---|---|---|---|
 | 0 trivial | boilerplate, config, renames, docs, simple components | worker loop | `nexus-reviewer` haiku/high |
 | 1 standard | clear-spec features | worker loop | `nexus-reviewer` sonnet/high |
-| 2 complex | algorithms, concurrency, performance paths, heavy UI | worker loop with a detailed brief (interfaces, edge cases, the tricky part spelled out) | `nexus-reviewer` opus/medium |
+| 2 complex | algorithms, concurrency, performance paths, heavy UI (new screens: see the UI bias below) | worker loop with a detailed brief (interfaces, edge cases, the tricky part spelled out) | `nexus-reviewer` opus/medium |
 | 3 critical | auth, crypto, money, FFI/unsafe, IPC and security boundaries | worker `-Mode test` writes the tests, then `nexus-builder` opus/medium | `nexus-reviewer` opus/high + `nexus-sentinel` |
 
 A tier 2 unit that escalates goes to `nexus-builder` sonnet/medium, then the loop runs with `-SkipBuild`. When unsure of a tier, pick the higher one.
+
+**Lean toward Claude for screens people look at** (a soft bias, not a rule). A worker builds UI that is logically right but often looks rough, and code reviews never see it: in a real run a DeepSeek-built picker screen passed every gate and the Sonnet review, and the user called it ugly. So when a unit's main output is a new or redesigned screen whose look matters, prefer `nexus-builder` sonnet/medium (opus/medium for a key screen), with the worker writing the tests first (`-Mode test`, then `loop.ps1 -SkipBuild`). Small UI edits to an existing screen (a label, a prop, wiring) stay with the worker. Either way, look at the result before Gate 3: if there is no emulator, run the web build (`npx expo start --web`, or the project's web target) and screenshot the screen, and give the reviewer the screenshot with the pack.
 
 ## 3. Procedure
 
