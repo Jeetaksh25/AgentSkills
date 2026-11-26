@@ -36,7 +36,9 @@ Build and test workers end with exactly: `STATUS: DONE | BLOCKED`, `FILES:`, `TE
 
 ## Fix loop and escalation
 
-At most two worker rounds per unit. A round is: append `## Fix round N` to the brief with the exact findings, re-run `worker.ps1 -Mode build`, then Gate 1 again. After the second failed round the unit goes to a Claude builder one tier up; if that fails too, re-plan with the planner and tell the user. Fixes you can place exactly and that are under about 20 lines are faster inline.
+`loop.ps1` runs the fix loop on the worker: Gate 1 fails, `fix-round.ps1 -FromGates` appends `## Fix round N` (numbered, UTF-8 without BOM), `worker.ps1 -Mode fix` gets only that round plus the digest, and Gate 1 runs again. That repeats up to `max_fix_rounds` (default 3). The loop stops early when a round leaves exactly the same failures ("no progress") or a worker reports BLOCKED, TIMEOUT or TURN_LIMIT. After Gate 1 passes, one worker cross-review runs, and its FIXES get one more fix round. An ESCALATE goes to a Claude builder one tier up, then `loop.ps1 -SkipBuild`; if that fails too, re-plan with the planner and tell the user.
+
+Claude review fixes: write them to a file as an exact numbered list, run `fix-round.ps1 -File <list> -Title 'Claude review'`, then `loop.ps1 -SkipBuild -FixFirst -NoCrossReview`. Fixes you can place exactly and that are under about 20 lines are faster inline. Never append to a brief with Add-Content, Set-Content or Out-File.
 
 ## Parallelism and machine load
 

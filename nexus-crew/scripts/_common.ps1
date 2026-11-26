@@ -42,6 +42,14 @@ function Get-Setting([string]$Name) {
     $v = [Environment]::GetEnvironmentVariable($Name)
     if ($v) { return $v }
     if ($DotEnv.ContainsKey($Name)) { return $DotEnv[$Name] }
+    # A key saved with setx (or System > Environment Variables) is invisible to shells opened before it was
+    # saved. Read the persisted User and Machine scopes too, so an already-open session still finds it.
+    if ($IsWin) {
+        foreach ($scope in 'User', 'Machine') {
+            $v = [Environment]::GetEnvironmentVariable($Name, $scope)
+            if ($v) { return $v }
+        }
+    }
     return $null
 }
 
@@ -160,11 +168,11 @@ function Invoke-CrewShell([string]$CommandLine) {
 function Add-LedgerRow([string]$Unit, [string]$Mode, [int]$Variant, [string]$ProviderId, [string]$Model, [int]$Seconds, $Turns, $Ok, $InTok, $OutTok) {
     $ledger = Join-Path $CrewDir 'ledger.csv'
     $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-    if (-not (Test-Path -LiteralPath $ledger)) { Set-Content -LiteralPath $ledger -Value 'timestamp,unit,mode,variant,provider,model,seconds,turns,ok,input_tokens,output_tokens' -Encoding UTF8 }
+    if (-not (Test-Path -LiteralPath $ledger)) { [IO.File]::WriteAllText($ledger, "timestamp,unit,mode,variant,provider,model,seconds,turns,ok,input_tokens,output_tokens`n", (New-Object Text.UTF8Encoding $false)) }
     $first = Get-Content -LiteralPath $ledger -TotalCount 1 -Encoding UTF8
     if ($first -like '*provider*') { $row = "$stamp,$Unit,$Mode,$Variant,$ProviderId,$Model,$Seconds,$Turns,$Ok,$InTok,$OutTok" }
     else { $row = "$stamp,$Unit,$Mode,$Variant,$Model,$Seconds,$Turns,$Ok,$InTok,$OutTok" }
-    Add-Content -LiteralPath $ledger -Value $row -Encoding UTF8
+    [IO.File]::AppendAllText($ledger, $row + "`n", (New-Object Text.UTF8Encoding $false))
 }
 
 # ---- worker launch pieces (shared by worker.ps1 and check-provider.ps1) ----
@@ -221,4 +229,58 @@ $CrewHook = Join-Path $CrewDir 'env.ps1'
 if (Test-Path -LiteralPath $CrewHook) { . $CrewHook }
 function Set-CrewUnitEnv([string]$Work) {
     if (Get-Command Initialize-CrewUnit -ErrorAction SilentlyContinue) { Initialize-CrewUnit $Work }
+}
+
+# ---- worker budgets (anti-overthinking) ----
+# Fast reasoning models (DeepSeek V4.x and friends) loop on re-reading and re-planning when nothing stops
+# them. Every worker run gets three hard stops: an effort level (caps thinking), a turn cap and a wall clock.
+# Defaults per mode; override any of them in .crewconfig.json "worker_budget": { "build": { ... } }.
+$DefaultBudget = @{
+    build  = @{ effort = 'low';    max_turns = 60; timeout_min = 20; thinking_tokens = 4000 }
+    test   = @{ effort = 'low';    max_turns = 40; timeout_min = 12; thinking_tokens = 3000 }
+    fix    = @{ effort = 'low';    max_turns = 30; timeout_min = 10; thinking_tokens = 2000 }
+    review = @{ effort = 'medium'; max_turns = 25; timeout_min = 10; thinking_tokens = 6000 }
+}
+function Get-WorkerBudget([string]$Mode) {
+    $b = @{} + $DefaultBudget[$Mode]
+    $cfg = Get-Cfg 'worker_budget' $null
+    if ($cfg -and $cfg.PSObject.Properties[$Mode]) {
+        foreach ($p in $cfg.PSObject.Properties[$Mode].Value.PSObject.Properties) { $b[$p.Name] = $p.Value }
+    }
+    return $b
+}
+
+# Run a native program with a wall-clock limit; the child gets this process's environment.
+# Returns @{ Out; Err; TimedOut; Code; Seconds }. Arguments are quoted for CommandLineToArgvW.
+function Invoke-Bounded([string]$Exe, [string[]]$ArgList, [string]$WorkDir, [int]$TimeoutSec) {
+    $psi = New-Object Diagnostics.ProcessStartInfo
+    $psi.FileName = $Exe
+    $psi.Arguments = (($ArgList | ForEach-Object {
+        if ($_ -eq '') { '""' } elseif ($_ -match '[\s"]') { '"' + ($_ -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"' } else { $_ }
+    }) -join ' ')
+    $psi.UseShellExecute = $false; $psi.RedirectStandardOutput = $true; $psi.RedirectStandardError = $true; $psi.RedirectStandardInput = $true
+    $psi.StandardOutputEncoding = New-Object Text.UTF8Encoding $false
+    $psi.WorkingDirectory = $WorkDir
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    $proc = [Diagnostics.Process]::Start($psi)
+    $proc.StandardInput.Close()
+    $so = $proc.StandardOutput.ReadToEndAsync(); $se = $proc.StandardError.ReadToEndAsync()
+    $done = $proc.WaitForExit($TimeoutSec * 1000)
+    if (-not $done) {
+        # Kill the whole tree: claude may have started node or test processes.
+        if ($IsWin) { & taskkill /PID $proc.Id /T /F 2>$null | Out-Null } else { try { $proc.Kill() } catch { } }
+        [void]$proc.WaitForExit(5000)
+    }
+    $out = ''; $err = ''
+    try { $out = $so.Result } catch { }
+    try { $err = $se.Result } catch { }
+    $code = -1; if ($done) { $code = $proc.ExitCode }
+    return [pscustomobject]@{ Out = $out; Err = $err; TimedOut = (-not $done); Code = $code; Seconds = [int]$sw.Elapsed.TotalSeconds }
+}
+
+# UTF-8 without BOM, always. Never use Add-Content/Set-Content/Out-File on briefs: Windows PowerShell 5.1
+# writes them in the ANSI codepage or with a BOM, which corrupted briefs in a real run.
+function Write-Utf8([string]$Path, [string]$Text, [switch]$Append) {
+    $enc = New-Object Text.UTF8Encoding $false
+    if ($Append) { [IO.File]::AppendAllText($Path, $Text, $enc) } else { [IO.File]::WriteAllText($Path, $Text, $enc) }
 }

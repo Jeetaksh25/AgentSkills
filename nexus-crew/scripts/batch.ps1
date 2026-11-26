@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS  Unattended worker batch: use it while the Claude budget is spent or you are away.
 .DESCRIPTION
-  For each unit in -Build:    worker build, Gate 1, WIP checkpoint commit, review pack, worker cross-review.
-  For each unit in -GateOnly: the same without the build (units that are already built).
+  For each unit in -Build:    loop.ps1 (worker build, Gate 1, worker fix rounds, cross-review, fix), then a WIP checkpoint.
+  For each unit in -GateOnly: the same with -SkipBuild (units that are already built).
   The checkpoint commit happens only when the secret scan passed; -Push also pushes the crew branch.
   Units run one after another (several batches in separate shells give parallelism, see references/pipeline.md).
   Nothing is merged: merging needs the Claude Gate 3 review. Results are appended to .crew\STATUS.md.
@@ -13,7 +13,7 @@ param([string[]]$Build = @(), [string[]]$GateOnly = @(), [switch]$Push)
 if (-not ($Build.Count + $GateOnly.Count)) { throw 'Pass -Build and/or -GateOnly with unit ids.' }
 $log = Join-Path $CrewDir ("runs\batch-" + (Get-Date -Format 'yyyyMMdd-HHmmss') + ".log")
 New-Item -ItemType Directory -Force (Split-Path $log -Parent) | Out-Null
-function Write-Log($m) { Add-Content -LiteralPath $log -Value "$(Get-Date -Format 'HH:mm:ss') $m" -Encoding UTF8 }
+function Write-Log($m) { Write-Utf8 $log ("$(Get-Date -Format 'HH:mm:ss') $m`n") -Append }
 
 function Save-Checkpoint($u, $note) {
     $w = Join-Path $WtRoot $u
@@ -32,31 +32,21 @@ function Save-Checkpoint($u, $note) {
 $results = @()
 foreach ($u in ($Build + $GateOnly)) {
     try {
-        if ($Build -contains $u) {
-            Write-Log "$u : worker build"
-            $out = & (Join-Path $PSScriptRoot 'worker.ps1') -Unit $u -Mode build 2>&1 | Out-String
-            $status = ([regex]::Match($out, 'STATUS:\s*(\S+)')).Groups[1].Value
-            Write-Log "$u : build status=$status"
-        }
-        $g = & (Join-Path $PSScriptRoot 'gates.ps1') -Unit $u 2>&1 | Out-String
-        $fails = ([regex]::Matches($g, '\[FAIL\][^\r\n]*') | ForEach-Object Value) -join '; '
-        $gate1 = if ($fails) { "FAIL: $fails" } else { 'PASS' }
-        Write-Log "$u : Gate 1 $gate1"
-        Save-Checkpoint $u "built + Gate 1 $(if ($fails) { 'FAIL' } else { 'PASS' })"
-        $gate2 = 'skipped (Gate 1 failed)'
-        if (-not $fails) {
-            & (Join-Path $PSScriptRoot 'review-pack.ps1') -Unit $u 2>$null | Out-Null
-            $r = & (Join-Path $PSScriptRoot 'worker.ps1') -Unit $u -Mode review 2>&1 | Out-String
-            $gate2 = ([regex]::Match($r, 'VERDICT:\s*(\S+)')).Groups[1].Value
-            Write-Log "$u : Gate 2 cross-review $gate2"
-        }
-        $results += "| $u | $gate1 | $gate2 | ``.crew/runs/$u/`` |"
+        $loopArgs = @{ Unit = $u }
+        if ($GateOnly -contains $u) { $loopArgs.SkipBuild = $true }
+        Write-Log "$u : worker loop ($(if ($loopArgs.SkipBuild) { 'gates + fixes + cross-review' } else { 'build + gates + fixes + cross-review' }))"
+        $out = & (Join-Path $PSScriptRoot 'loop.ps1') @loopArgs 2>&1 | Out-String
+        $final = (($out -split "`r?`n") | Where-Object { $_ -match '^LOOP ' } | Select-Object -Last 1)
+        if (-not $final) { $final = 'LOOP ERROR (no summary line; see the run folder)' }
+        Write-Log "$u : $final"
+        Save-Checkpoint $u ($final -replace '^LOOP ([A-Z]+).*', 'worker loop $1')
+        $results += "| $u | $final | ``.crew/runs/$u/`` |"
     } catch {
         Write-Log "$u : ERROR $($_.Exception.Message)"
-        $results += "| $u | ERROR | - | see the batch log |"
+        $results += "| $u | ERROR | see the batch log |"
     }
 }
-$section = "`n## Unattended worker batch ($(Get-Date -Format 'yyyy-MM-dd HH:mm'))`nNo Claude usage. Nothing merged: each unit still needs Gate 3 (Claude review) and the cross-review fixes.`n`n| Unit | Gate 1 | Gate 2 (worker cross-review) | Logs |`n|---|---|---|---|`n" + ($results -join "`n") + "`n`nBatch log: ``$log``.`n"
-Add-Content -LiteralPath (Join-Path $CrewDir 'STATUS.md') -Value $section -Encoding UTF8
+$section = "`n## Unattended worker batch ($(Get-Date -Format 'yyyy-MM-dd HH:mm'))`nNo Claude usage. Nothing merged: each READY unit still needs Gate 3 (Claude review); ESCALATE units need a Claude builder or a re-plan.`n`n| Unit | Loop result | Logs |`n|---|---|---|`n" + ($results -join "`n") + "`n`nBatch log: ``$log``.`n"
+Write-Utf8 (Join-Path $CrewDir 'STATUS.md') $section -Append
 Write-Log 'batch done'
 $results

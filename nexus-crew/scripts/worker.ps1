@@ -4,18 +4,22 @@
 .DESCRIPTION
   Modes:  build  = implement the brief (tests first)   -> edits files in the unit worktree
           test   = write the done-tests only           -> edits test files only
+          fix    = apply the brief's LAST "## Fix round" only (plus the gate digest) -> small, focused edits
           review = cross-review the unit's review pack -> writes .crew\runs\<unit>\crossreview-<unit>.md
   The worker runs with --bare (no user hooks, plugins or CLAUDE.md), a clean environment (the parent
   session's CLAUDE_* and ANTHROPIC_* variables would break auth) and the key from the environment or .env.
   The key reaches the worker through apiKeyHelper, so it is sent as both x-api-key and a Bearer token.
   -DryRun prints what would run (the key is never printed) and starts nothing.
+  Anti-overthinking: every run gets --effort, --max-turns, MAX_THINKING_TOKENS and a wall-clock timeout
+  (Get-WorkerBudget in _common.ps1; tune in config "worker_budget"). A run that hits a limit reports
+  STATUS: TIMEOUT or STATUS: TURN_LIMIT instead of hanging, and loop.ps1 treats it as a failed round.
 .EXAMPLE  .\worker.ps1 -Unit U-001 -Mode build
 .EXAMPLE  .\worker.ps1 -Unit U-001 -Mode review -Provider openrouter -Model deepseek/deepseek-v4.1-flash-1017
 .EXAMPLE  .\worker.ps1 -Unit U-001 -DryRun
 #>
 param(
     [Parameter(Mandatory)][string]$Unit,
-    [ValidateSet('build', 'test', 'review')][string]$Mode = 'build',
+    [ValidateSet('build', 'test', 'fix', 'review')][string]$Mode = 'build',
     [int]$Variant = 0,
     [string]$Provider = '',
     [string]$Model = '',
@@ -49,6 +53,8 @@ if ($DryRun) {
     'mode     : ' + $Mode
     'worktree : ' + $work
     'tools    : ' + $tools
+    $b = Get-WorkerBudget $Mode
+    'budget   : effort ' + $b.effort + ', max turns ' + $b.max_turns + ', thinking ' + $b.thinking_tokens + ' tokens, timeout ' + $b.timeout_min + ' min'
     return
 }
 
@@ -62,7 +68,7 @@ function Get-PromptText([string]$m) {
     return (Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $SkillRoot "assets\prompts\worker-$m.md"))
 }
 $sys   = Join-Path $run "$Mode-$name-$stamp.system.md"
-$parts = @(Get-PromptText $Mode)
+$parts = @((Get-PromptText 'discipline'), (Get-PromptText $Mode))
 $proj = Join-Path $CrewDir 'project.md'
 if (Test-Path -LiteralPath $proj) { $parts += "`n# Project conventions (from .crew/project.md)`n" + (Get-Content -Raw -Encoding UTF8 -LiteralPath $proj) }
 $lessons = Join-Path $CrewDir 'lessons.md'
@@ -78,6 +84,18 @@ if ($Mode -eq 'review') {
     if (-not (Test-Path -LiteralPath $pack)) { throw "Missing $pack. Run review-pack.ps1 first." }
     $payload = Get-Content -Raw -Encoding UTF8 -LiteralPath $pack
     $task = "You are cross-reviewing a Nexus Crew unit. First read the review pack with the Read tool: '$inputFile'. Then follow your system instructions exactly."
+} elseif ($Mode -eq 'fix') {
+    # Focused input: only the newest fix round and the latest gate digest. The full brief stays readable
+    # by path for context, but the worker is told not to re-plan the unit.
+    $briefPath = Get-BriefPath $Unit
+    $briefText = Get-Content -Raw -Encoding UTF8 -LiteralPath $briefPath
+    $rounds = [regex]::Matches($briefText, '(?ms)^## Fix round[^\r\n]*\r?\n.*?(?=^## Fix round|\z)')
+    if (-not $rounds.Count) { throw "Mode fix needs a '## Fix round N' section in $briefPath (use fix-round.ps1)." }
+    $payload = $rounds[$rounds.Count - 1].Value
+    $digest = Join-Path $run "gates-$name.txt"
+    $fence = [string][char]96 * 3
+    if (Test-Path -LiteralPath $digest) { $payload += "`n`n## Latest Gate 1 digest`n$fence`n" + (Get-Content -Raw -Encoding UTF8 -LiteralPath $digest) + "`n$fence`n" }
+    $task = "Mode: fix. Read the fix list with the Read tool: '$inputFile'. Apply exactly those fixes in the current directory, re-run only the checks they touch, then reply. The full brief is '$briefPath'; open it only if a fix cannot be placed without it."
 } else {
     $payload = Get-Content -Raw -Encoding UTF8 -LiteralPath (Get-BriefPath $Unit)
     $task = "Mode: $Mode. First read the unit brief with the Read tool: '$inputFile'. Work in the current directory. Follow your system instructions exactly."
@@ -88,17 +106,19 @@ if ($Mode -eq 'review') {
 # process environment; New-WorkerSettingsFile in _common.ps1 explains why both are needed.
 $settingsFile = New-WorkerSettingsFile $P (Join-Path $run "$Mode-$name-$stamp.settings.json")
 Initialize-WorkerEnv $P
+$budget = Get-WorkerBudget $Mode
+$env:MAX_THINKING_TOKENS = [string]$budget.thinking_tokens
 $OutputEncoding = New-Object Text.UTF8Encoding $false
 
 $log = Join-Path $run "$Mode-$name-$stamp.json"
-$sw  = [Diagnostics.Stopwatch]::StartNew()
 $cliArgs = @('-p', $task, '--bare', '--model', $P.Model, '--add-dir', $run, '--settings', $settingsFile,
     '--strict-mcp-config', '--append-system-prompt-file', $sys, '--permission-mode', 'acceptEdits',
+    '--effort', [string]$budget.effort, '--max-turns', [string]$budget.max_turns,
     '--output-format', 'json', '--no-session-persistence', '--allowedTools', $tools)
-Push-Location $work
-try { $raw = & claude @cliArgs 2>&1 | Out-String } finally { Pop-Location }
-$sw.Stop()
-[IO.File]::WriteAllText($log, $raw, (New-Object Text.UTF8Encoding $false))
+$r = Invoke-Bounded (Get-Command claude).Source $cliArgs $work ([int]$budget.timeout_min * 60)
+$raw = $r.Out + $(if ($r.Err) { "`n[stderr]`n" + $r.Err } else { '' })
+$sw = [pscustomobject]@{ Elapsed = [TimeSpan]::FromSeconds($r.Seconds) }
+Write-Utf8 $log $raw
 
 # Parse the JSON result: the last line that is a JSON object (warnings may precede it).
 $j = $null
@@ -107,8 +127,13 @@ if ($jsonLine) { try { $j = $jsonLine | ConvertFrom-Json } catch { $j = $null } 
 $ok = $false; $turns = ''; $inTok = ''; $outTok = ''; $result = ''
 if ($j) {
     $ok = -not $j.is_error; $turns = $j.num_turns; $result = [string]$j.result
-    if ($j.usage) { $inTok = $j.usage.input_tokens; $outTok = $j.usage.output_tokens }
+    if ($j.usage) {
+        $inTok = [long]$j.usage.input_tokens + [long]$j.usage.cache_read_input_tokens + [long]$j.usage.cache_creation_input_tokens
+        $outTok = $j.usage.output_tokens
+    }
+    if ($j.subtype -eq 'error_max_turns') { $ok = $false; $result = "STATUS: TURN_LIMIT`nNOTES: stopped after $turns turns (max_turns $($budget.max_turns)). The brief is probably too big or ambiguous: split it or raise the tier." }
 }
+if ($r.TimedOut) { $ok = $false; $result = "STATUS: TIMEOUT`nNOTES: killed after $($budget.timeout_min) min. Partial edits are left in the worktree; check git status before re-running." }
 if ($Mode -eq 'review' -and $result) {
     [IO.File]::WriteAllText((Join-Path $run "crossreview-$name.md"), $result, (New-Object Text.UTF8Encoding $false))
 }

@@ -2,16 +2,67 @@
   "provider": "ollama-cloud",
   "model": "deepseek-v4.1-flash:1017",
   "base_branch": "main",
-  "allowed_executables": ["cargo", "rustc", "pnpm", "npm", "npx", "node"],
+  "allowed_executables": [
+    "cargo",
+    "rustc",
+    "pnpm",
+    "npm",
+    "npx",
+    "node"
+  ],
   "autodetect_gates": true,
   "gates": [
-    { "name": "policy tests", "command": "node --test scripts/ci/*.test.mjs" }
+    {
+      "name": "policy tests",
+      "command": "node --test scripts/ci/*.test.mjs"
+    }
   ],
   "max_parallel_workers": 6,
-  "max_fix_rounds": 2,
+  "max_fix_rounds": 3,
   "worktree_root": null,
   "commit_trailer": null,
   "pricing": {
-    "deepseek-v4.1-flash:1017": { "in_per_million": 0.15, "out_per_million": 0.60 }
-  }
+    "deepseek-v4.1-flash:1017": {
+      "in_per_million": 0.15,
+      "out_per_million": 0.6
+    },
+    "claude-sonnet": {
+      "in_per_million": 6,
+      "out_per_million": 15
+    },
+    "claude-opus": {
+      "in_per_million": 10,
+      "out_per_million": 25
+    }
+  },
+  "services": [
+    {
+      "name": "postgres",
+      "tcp": "127.0.0.1:5432",
+      "hint": "docker compose -f infra/docker-compose.yml up -d",
+      "gates": "pnpm test",
+      "when_down": "pnpm -r --if-present run test:unit"
+    }
+  ],
+  "worker_budget": {
+    "build": {
+      "effort": "low",
+      "max_turns": 60,
+      "timeout_min": 20,
+      "thinking_tokens": 4000
+    },
+    "fix": {
+      "effort": "low",
+      "max_turns": 30,
+      "timeout_min": 10,
+      "thinking_tokens": 2000
+    },
+    "review": {
+      "effort": "medium",
+      "max_turns": 25,
+      "timeout_min": 10,
+      "thinking_tokens": 6000
+    }
+  },
+  "compare_model": "claude-sonnet"
 }

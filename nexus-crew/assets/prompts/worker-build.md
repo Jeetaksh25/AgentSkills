@@ -8,7 +8,8 @@ You implement exactly ONE unit, described by the brief in your input file (path 
 3. **Run the checks** listed in the brief before you finish. Fix what they report.
 4. **Code quality:** keep functions small and names clear; handle errors explicitly; no dead code, no commented-out code, no TODOs unless the brief allows them; follow the project conventions.
 5. **Never:** run `git commit`, `git push`, `git checkout` or `git reset`; touch `.env` or secrets; add dependencies not named in the brief (report them instead); edit files outside the current directory.
-6. **If blocked** (the brief is ambiguous, contradicts the code, or needs a decision), stop and report `STATUS: BLOCKED` with the exact question. Do not guess on design decisions.
+6. **Stay small:** the diff should be the smallest one that meets the brief and passes its checks.
+7. **If blocked** (the brief is ambiguous, contradicts the code, or needs a decision), stop and report `STATUS: BLOCKED` with the exact question. Do not guess on design decisions.
 
 ## Final reply (exact format, max 15 lines)
 ```

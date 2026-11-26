@@ -54,9 +54,16 @@ $cfg = [ordered]@{
     autodetect_gates     = $true
     gates                = @()
     max_parallel_workers = 6
-    max_fix_rounds       = 2
+    max_fix_rounds       = 3
     worktree_root        = $null
     commit_trailer       = $null
+    # Edit to your real prices. Claude rows are logged as one total, so their in_per_million is a blended rate.
+    pricing              = [ordered]@{
+        $(if ($Model) { $Model } else { 'deepseek-v4.1-flash:1017' }) = [ordered]@{ in_per_million = 0.15; out_per_million = 0.60 }
+        'claude-sonnet' = [ordered]@{ in_per_million = 6.0; out_per_million = 15.0 }
+        'claude-opus'   = [ordered]@{ in_per_million = 10.0; out_per_million = 25.0 }
+    }
+    compare_model        = 'claude-sonnet'
 }
 if ($Provider -eq 'custom') { $cfg['base_url'] = $null; $cfg['key_env'] = $null }
 

@@ -1,128 +1,119 @@
 ---
 name: nexus-crew
-description: Moves the building of a large task onto cheap worker models while Claude only plans and reviews. Workers are headless Claude Code sessions pointed at any Anthropic-compatible API (Ollama Cloud or local, OpenRouter, DeepSeek, Z.ai, Moonshot, or a custom gateway), so it needs a worker API key but no extra Claude usage. Runs a gated pipeline: one git worktree and written brief per unit, a worker that writes the tests and then the code, automatic gates with a secret scan, a cross-review by a second worker, a tier-sized Claude review, and a merge only after that review. Use when the user wants to cut Claude usage on a big build, says "nexus crew", "use the crew", "cheap workers", "DeepSeek workers" or "delegate the building", or when a plan splits into many independent units. A separate skill from nexus, which it complements.
+description: Moves the building of a task onto fast, cheap worker models (DeepSeek V4.x by default) while Claude only plans and reviews. Workers are headless Claude Code sessions pointed at any Anthropic-compatible API (Ollama Cloud or local, OpenRouter, DeepSeek, Z.ai, Moonshot, or a custom gateway), so it needs a worker API key but no extra Claude usage. Each unit runs a self-fixing worker loop (build, gates, fix, cross-review, fix) under hard anti-overthinking budgets, and nothing merges before a tier-sized Claude review. Use when the user wants to cut Claude usage on a build, says "nexus crew", "use the crew", "cheap workers", "DeepSeek workers" or "delegate the building", or when a plan splits into several independent units. A separate skill from nexus, which it complements.
 ---
 
-# Nexus Crew: cheap workers build, Claude plans and reviews
+# Nexus Crew: DeepSeek builds and fixes in a loop, Claude plans and reviews
 
-**Goal: Opus-level quality at a fraction of the Claude usage.** Workers on a cheap API write the tests and most of the code. Claude plans, builds only the hard units, and reviews everything before it merges.
+**Goal: Opus-level quality at a fraction of the Claude usage.** Fast workers write the tests, the code and their own fixes. Claude writes the briefs, builds only tier 3 units, and reviews every unit once before it merges. The orchestrator's job per unit is: write a brief, start one loop, read one line, dispatch one review.
 
-**Nexus Crew is its own skill, separate from `nexus`.** Nexus chooses a Claude model and effort per task. Nexus Crew moves the *building* onto non-Claude workers and wraps it in gates. They fit together: when the Nexus agents are installed, the Claude roles below use them (`nexus-architect`, `nexus-reviewer`, `nexus-builder`, `nexus-sentinel`, `nexus-debugger`); when they are not, the same roles run as plain Agent calls with the model and effort named in the table. Nexus Crew never edits or requires Nexus. Follow Nexus's model rules: never Fable.
+**Nexus Crew is its own skill, separate from `nexus`.** When the Nexus agents are installed, the Claude roles below use them (`nexus-architect`, `nexus-reviewer`, `nexus-builder`, `nexus-sentinel`, `nexus-debugger`); otherwise the same roles run as plain Agent calls with the model and effort in the table. Follow Nexus's model rules: never Fable.
 
-You (the main session, ideally Opus at medium effort) are the **Orchestrator**. You never write tier 0-1 code yourself.
+You (the main session, ideally Opus at medium effort) are the **Orchestrator**. You never write tier 0-2 code yourself.
 
-## 0. Requirements
+## 0. Pick the mode first (this is where most savings are won or lost)
 
-| Need | Why | Check |
+| Job | Mode | Why |
 |---|---|---|
-| A worker API with an Anthropic-compatible endpoint and its key | the workers run on it; this is the only extra cost | `scripts/check-provider.ps1` prints `verdict   : READY` |
-| `claude` CLI, `git`, PowerShell 5.1 or 7, `node` on PATH | a worker is a headless Claude Code session; node runs the key helper and most gates | `Get-Command claude, git, node` |
-| A git repository with a clean base branch | one worktree and branch per unit | `git status --short` is empty |
+| 1 unit, or fixes under ~50 lines | **Direct**: do it yourself, no crew | brief + loop + review costs more than the work |
+| 2-4 units, mostly tier 0-2 | **Lite**: no planner agent (you write the briefs), `loop.ps1` per unit, ONE Claude review over all units at the end | orchestration stays small |
+| 5+ units, or any tier 3 | **Full**: planner, per-unit Gate 3, `nexus-sentinel` for tier 3 | the gates pay for themselves |
+| Claude budget spent, or user away | **Batch**: `batch.ps1` runs the loops unattended, merges nothing | zero Claude usage until review |
 
-Providers (details, prices and troubleshooting in `references/providers.md`; the presets live in `assets/providers.json`):
+Say the chosen mode and the unit table (id, title, tier, builder) to the user before dispatching.
 
-| Provider id | Needs | Cost |
-|---|---|---|
-| `ollama-cloud` | `OLLAMA_API_KEY` | per Ollama plan; verified end to end |
-| `ollama-local` | a pulled model that supports tools | free, code stays on the machine |
-| `openrouter` | `OPENROUTER_API_KEY` | pay per token; DeepSeek V4.1 Flash about 0.15 USD in / 0.60 out per million |
-| `deepseek` | `DEEPSEEK_API_KEY` | pay per token, direct |
-| `zai`, `moonshot` | their key and a model name | pay per token |
-| `custom` | `base_url`, `key_env`, `model` in the config | any Anthropic-compatible gateway (LiteLLM, claude-code-router, a company proxy) |
+## 1. Requirements and one-time setup
 
-**Privacy:** a worker sends the brief and every file it reads to the provider. Use a provider you may share that code with, or `ollama-local`.
-
-## 1. One-time setup per project
+Needs: a worker API key for an Anthropic-compatible endpoint, `claude`, `git`, `node` and PowerShell 5.1 or 7 on PATH, and a git repository with a clean base branch. Providers (presets in `assets/providers.json`, details in `references/providers.md`): `ollama-cloud` (`OLLAMA_API_KEY`, verified end to end), `ollama-local` (free, code stays local), `openrouter`, `deepseek`, `zai`, `moonshot`, `custom`. **Privacy:** a worker sends the brief and every file it reads to the provider.
 
 ```powershell
 $crew = "$HOME\.claude\skills\nexus-crew\scripts"
-& "$crew\init.ps1" -Provider openrouter      # creates .crew\ and git-ignores .env and .crew/runs/
-# put the key in the environment or in <project>\.env  (OPENROUTER_API_KEY=...). Never commit it.
-& "$crew\check-provider.ps1"                 # key, model, tool calling, and the real claude round trip
+& "$crew\init.ps1" -Provider ollama-cloud     # creates .crew\, git-ignores .env and .crew/runs/
+& "$crew\check-provider.ps1"                  # key, model, tool calling, real claude round trip -> READY
 ```
 
-Then edit `.crew/project.md` (stack, commands, conventions, never-touch list) and, if the project needs a native toolchain or a build folder per checkout, add `.crew/env.ps1` (see `references/configuration.md`).
+A key saved with `setx` is found even by shells opened before it was saved (the scripts read the User and Machine scopes). Then fill `.crew/project.md` (stack, commands, conventions, never-touch list). If tests need a local service (Postgres in Docker, Redis), add it to `"services"` in `.crew/config.json` so gates mark those tests `[SKIP]` with a start hint, or swap in a `when_down` command, instead of failing (`references/configuration.md`).
 
-Done when: `check-provider.ps1` ends with `READY` and its `cli trip` line says `OK`. If it says NOT READY, fix that first; do not dispatch workers into a failing provider.
-
-## 2. Roles and routing
+## 2. Routing
 
 | Tier | Work | Builder | Gate 3 reviewer (Claude) |
 |---|---|---|---|
-| 0 trivial | boilerplate, config, renames, docs, simple components | worker (`scripts/worker.ps1 -Mode build`) | `nexus-reviewer`, model haiku, effort high |
-| 1 standard | clear-spec features | worker | `nexus-reviewer`, sonnet, high |
-| 2 complex | algorithms, concurrency, performance paths, heavy UI | `nexus-builder` sonnet/medium, after a worker wrote the tests | `nexus-reviewer`, opus, medium |
-| 3 critical | unsafe or FFI, auth, crypto, money, IPC and security boundaries | `nexus-builder` opus/medium, after a worker wrote the tests | `nexus-reviewer` opus/high, plus `nexus-sentinel` for security |
+| 0 trivial | boilerplate, config, renames, docs, simple components | worker loop | `nexus-reviewer` haiku/high |
+| 1 standard | clear-spec features | worker loop | `nexus-reviewer` sonnet/high |
+| 2 complex | algorithms, concurrency, performance paths, heavy UI | worker loop with a detailed brief (interfaces, edge cases, the tricky part spelled out) | `nexus-reviewer` opus/medium |
+| 3 critical | auth, crypto, money, FFI/unsafe, IPC and security boundaries | worker `-Mode test` writes the tests, then `nexus-builder` opus/medium | `nexus-reviewer` opus/high + `nexus-sentinel` |
 
-Helpers: planning `nexus-architect` (opus/high), file mapping `nexus-scout` (haiku/medium), stuck failures `nexus-debugger` (sonnet/high). Without the Nexus agents, use `Agent` with `subagent_type: general-purpose` and the same model and effort, and tell reviewers to stay read-only. When unsure of a tier, pick the higher one.
+A tier 2 unit that escalates goes to `nexus-builder` sonnet/medium, then the loop runs with `-SkipBuild`. When unsure of a tier, pick the higher one.
 
-## 3. Procedure for a feature or phase
+## 3. Procedure
 
-Set `$crew` as in section 1 and run the scripts from the project root.
+1. **Plan** (Full mode: `nexus-architect` opus/high; Lite: yourself). Units with: id, tier, files, interfaces, done-tests, checks, out-of-scope. Units in one wave must not share files; shared files (manifests, lockfiles, registries) stay with you.
+2. **Briefs** in `.crew/units/<ID>.md` from `_TEMPLATE.md`. A worker brief must leave **no design decision open**: exact signatures, exact strings, exact file list. Every vague word becomes a worker thinking loop. Verify each brief is on disk before dispatching (never edit a brief and launch its worker in the same parallel batch).
+3. **Start** `& "$crew\unit.ps1" -Action start -Unit <ID>` per unit.
+4. **Loop**: `& "$crew\loop.ps1" -Unit <ID>` in the background, up to `max_parallel_workers` at once. It runs worker build, Gate 1, worker fix rounds (up to `max_fix_rounds`, default 3), a stall check, one worker cross-review and its fix round, then writes a fresh review pack. It prints **one line**:
+   - `LOOP READY unit=... rounds=N gates="PASS" crossreview=FIXED pack=<path>` means go to step 5.
+   - `LOOP ESCALATE unit=... reason="..."` means read the reason: `BLOCKED` gets an answer added to the brief (then re-run the loop); `no progress`, `TURN_LIMIT` or repeated failures mean tier up to a Claude builder, then `loop.ps1 -SkipBuild`.
+   - A `gates="PASS (n SKIPPED, not verified)"` line is not a full pass: report the skipped gates as unverified.
+   Read only that line and, on ESCALATE, the digest it names. Do not open worker logs unless the line is unclear.
+5. **Gate 3**: dispatch the tier's Claude reviewer with only the pack path: "Review `<pack>`. Read worktree files only if the diff is truncated. Return VERDICT PASS or FIXES with exact, numbered fixes (file, change, verbatim strings)." In Lite mode, one reviewer gets all packs. Then **log it**: `& "$crew\claude-log.ps1" -Unit <ID> -Role review -Model <model> -Tokens <total_tokens>` (from the Agent result's usage line). Log every Claude delegation this way.
+6. **Claude fixes**: save the reviewer's fix list to a file, then `& "$crew\fix-round.ps1" -Unit <ID> -File <list> -Title 'Claude review'` and `& "$crew\loop.ps1" -Unit <ID> -SkipBuild -NoCrossReview -FixFirst`. Fixes under ~20 lines that you can place exactly, apply inline instead. **Never append to briefs with Add-Content, Set-Content or Out-File**: Windows PowerShell 5.1 writes the ANSI codepage or a BOM; `fix-round.ps1` always writes UTF-8 without a BOM and numbers the round. A second failed Claude review round means re-plan the unit with the planner and tell the user.
+7. **Merge**: `& "$crew\unit.ps1" -Action finish -Unit <ID> -Message "<type(scope): summary>"` (Conventional Commit; set `commit_trailer` for attribution).
+8. **Learn**: each defect a Claude reviewer found that could recur becomes one line in `.crew/lessons.md` (rule, then why). It is injected into every worker prompt and review pack.
+9. **Report**: `& "$crew\report.ps1"` prints worker and Claude tokens, the split, the cost, and what the worker share would have cost on Claude (`compare_model`). Quote its last two lines in the end-of-batch report, plus: units, loops READY first time, escalations, Claude review fixes, merged.
 
-1. **Plan.** Send the goal and the relevant docs to the planner. Ask for units with: id, tier, files, interfaces, done-tests, checks, out-of-scope. **Show the user the unit table (id, title, tier, builder) before dispatching.**
-2. **Write the briefs** to `.crew/units/<ID>.md` from `.crew/units/_TEMPLATE.md` (source: `assets/unit-template.md`). A tier 0-1 brief must leave no design decision open; if it cannot, raise the tier. **Check each brief is saved before dispatching anything that reads it**; never send the edit and the worker launch in the same parallel batch (a blocked edit left a worker running on the old brief).
-3. **Start worktrees:** `& "$crew\unit.ps1" -Action start -Unit <ID>`, one per unit. Units that run in parallel must not share files; shared files (manifests, lockfiles, registries) stay with you, done before or after the wave.
-4. **Build.**
-   - Tier 0-1: `& "$crew\worker.ps1" -Unit <ID> -Mode build`, in the background, up to `max_parallel_workers` at once.
-   - Tier 2-3: `-Mode test` first (the worker writes failing tests), then dispatch the Claude builder with the brief and worktree path, told to make the tests pass, stay in the worktree and not commit.
-   - Hard or new tier 1: best-of-3 with `-Variant 1..3`; the reviewer picks one, abort the others.
-5. **Gate 1:** `& "$crew\gates.ps1" -Unit <ID>`. On FAIL, append a `## Fix round N` section with the digest (`.crew/runs/<ID>/gates-<ID>.txt`) to the brief and re-run the worker. Run **one gate at a time** on a busy machine.
-6. **Gate 2 (tier 0-1):** `& "$crew\review-pack.ps1" -Unit <ID>`, then `& "$crew\worker.ps1" -Unit <ID> -Mode review`. Fix `FIXES` findings in a worker round, then re-run Gate 1.
-7. **Gate 3:** regenerate the pack, then dispatch the tier's Claude reviewer with only the pack path: "Review `.crew/runs/<ID>/review-pack-<ID>.md`. Read worktree files only if the diff is truncated or context is needed. Return VERDICT PASS or FIXES with exact fixes." Before each Claude dispatch, if the user set a usage ceiling, check the host's usage view.
-8. **Fix loop: at most `max_fix_rounds` (default 2) per builder.** Fixes under about 20 lines that you can place exactly, apply inline in the worktree; bigger fixes go back to the same builder as an exact list. After the second failed worker round, escalate the unit to a Claude builder (tier up). If a Claude builder still fails, re-plan with the planner and tell the user.
-9. **Merge:** `& "$crew\unit.ps1" -Action finish -Unit <ID> -Message "<type(scope): summary>"` (a Conventional Commit; add your attribution trailer, or set `commit_trailer` in the config). Then tick your checklist, and push if the user asked for checkpoints.
-10. **Learn.** Every defect a Claude reviewer found that could recur becomes one line in `.crew/lessons.md`: the rule, then why. It is injected into every worker prompt and review pack.
+Unattended: `& "$crew\batch.ps1" -Build U-002,U-003 -GateOnly U-001 -Push` runs the loops, checkpoints and pushes, merges nothing, and appends to `.crew/STATUS.md`.
 
-Unattended work (the Claude budget is spent, or the user is away): `& "$crew\batch.ps1" -Build U-002,U-003 -GateOnly U-001 -Push` builds, gates, checkpoints and cross-reviews, merges nothing, and writes `.crew/STATUS.md`.
+## 4. Anti-overthinking (DeepSeek and other reasoning workers)
 
-End-of-batch report: `& "$crew\report.ps1"` for worker runs, minutes, tokens and an estimated cost; add the Claude delegations from your own count. Example: `Crew: 9 units, 6 worker-built, 2 Sonnet, 1 Opus. Gates 9/9. Cross-review fixes 3. Claude review fixes 2. Escalations 1. Merged U-001..U-009.`
+Fast reasoning models loop: they re-read files, restate the plan, and try a fourth variant of a failing fix. The crew stops this at three levels:
 
-## 4. Hard rules
+- **Prompt**: every worker gets `assets/prompts/worker-discipline.md` first. It allows one plan of at most 8 lines, then short thoughts that each end in a tool call. It bans re-reading files and restating the brief, and it says to stop with `STATUS: BLOCKED` after the same check fails 3 times.
+- **Hard budgets** per mode (`worker_budget` in the config): `--effort`, `--max-turns`, `MAX_THINKING_TOKENS` and a wall-clock timeout that kills the process tree. Defaults: build low/60 turns/20 min, test low/40/12, fix low/30/10, review medium/25/10. A run that hits a limit reports `STATUS: TURN_LIMIT` or `STATUS: TIMEOUT`, and the loop escalates instead of retrying.
+- **Loop**: fix mode feeds only the newest fix round and the gate digest, not the whole brief again. A fix round that leaves exactly the same failures ends the loop ("no progress"). There is only one cross-review cycle, so two workers never ping-pong.
 
-- **Nothing merges without a Claude review (Gate 3)**, for every tier.
+The main lever is still yours: **a brief with no open decisions**. If loops keep hitting TURN_LIMIT, the brief is too big or vague. Split it or spell out the tricky part; don't raise the budget.
+
+## 5. Hard rules
+
+- **Nothing merges without a Claude review (Gate 3)**, for every tier and mode.
 - Claude reviewers read the review pack, not the codebase, unless the pack says it is truncated.
-- Never pass `.env` contents or secrets into briefs or prompts. Workers cannot read `.env` (deny rules) and the gates scan the diff and every commit since the base for configured keys.
+- Never pass `.env` contents or secrets into briefs or prompts. Workers cannot read `.env` (deny rules), and the gates scan the diff and every commit since the base.
 - Workers never commit or push. Only `unit.ps1 -Action finish` commits, plus you for shared files and batch checkpoints.
-- One writer per file per wave. Workers that return `STATUS: BLOCKED` get an answer from the docs or an escalation; never let them guess design.
-- If the worker launcher fails twice (auth, network, provider outage), stop dispatching and report the exact error. Do not loop.
-- Before reporting done: gates PASS, Claude review PASS, merged. Report anything unverified as unverified.
+- One writer per file per wave. A `BLOCKED` worker gets an answer from the docs or an escalation; never let it guess a design.
+- If the worker launcher fails twice (auth, network, provider outage), stop dispatching and report the exact error.
+- Before reporting done: loop READY, Claude review PASS, merged. Report SKIPPED gates and anything else unverified as unverified.
 
-## 5. Failure modes this skill prevents
+## 6. Failure modes this skill prevents
 
-Each one happened in a real run; the scripts and rules above exist because of them.
-
-| Failure | Defence |
+| Failure (each happened in a real run) | Defence |
 |---|---|
-| Every worker failed with `Invalid API key` and then ran for minutes: a settings `env` block in the user's `~/.claude/settings.json` set `ANTHROPIC_BASE_URL` to a local proxy, and settings env beats the process environment even with `--bare`, so the provider key went to the wrong host | the worker writes base URL, model and key helper into its own `--settings` file (which outranks user settings); `check-provider.ps1` ends with a real CLI round trip that catches it |
-| `apiKeyHelper` written as `cmd /c echo %KEY%` hangs under Git Bash | helper is `node -p "process.env.NEXUS_CREW_KEY"`, which behaves the same in cmd and bash |
-| A review pack and secret scan built from `git diff HEAD` were empty once WIP was committed | diffs are taken against the merge base with the base branch, and the scan also walks every commit since it |
-| Worktrees sharing one build folder let a gate test another unit's code | `.crew/env.ps1` defines `Initialize-CrewUnit` to give each checkout its own build folder |
-| Timing-sensitive tests failed when several gates ran at once | one gate at a time; never loosen the assertion |
-| A worker launched in the same batch as a blocked brief edit ran on the old brief | verify the brief on disk before dispatch |
-| Weak tests passed for a wrong implementation | the cross-review prompt demands a mutation check per test; lessons accumulate |
-| Unbounded fix loops | two worker rounds, then a Claude builder |
+| Every worker failed with `Invalid API key`: a settings `env` block in `~/.claude/settings.json` redirected `ANTHROPIC_BASE_URL` | connection details go into the worker's own `--settings` file; `check-provider.ps1` does a real CLI round trip |
+| A key saved with `setx` was invisible to an already-open shell | `Get-Setting` also reads the persisted User and Machine scopes |
+| `Add-Content` wrote a brief in the ANSI codepage, then with a BOM | `fix-round.ps1` and `Write-Utf8`; every script writes UTF-8 without a BOM and is pure ASCII itself |
+| Docker was down, so the Postgres tests "failed", and the orchestrator had to narrow the gates by hand | `services` probing: `[SKIP]` with a start hint or a `when_down` command; the digest header counts skips; `-Only` and `-Skip` |
+| A worker re-read and re-planned for many minutes | discipline prompt, effort, turn cap, thinking cap, timeout |
+| The orchestrator spent as much effort driving fix rounds as building | `loop.ps1` does build, gates, fixes and cross-review, then returns one line |
+| Savings were estimated, not measured | `claude-log.ps1` + `report.ps1` measure both sides and price the difference |
+| Review pack and secret scan were empty once WIP was committed | diffs come from the merge base, and the scan walks every commit since |
+| Worktrees sharing one build folder tested each other's code | `.crew/env.ps1` `Initialize-CrewUnit` gives each checkout its own folder |
+| Timing-sensitive tests failed when gates ran in parallel | one gate run at a time; never loosen an assertion |
+| Weak tests passed a wrong implementation | the cross-review demands a mutation check per test; lessons accumulate |
 
-## 6. Files
+## 7. Files
 
 | Path | Purpose |
 |---|---|
-| `scripts/_common.ps1` | shared helpers: project root, config, provider resolution, worker settings, ledger |
-| `scripts/init.ps1` | creates `.crew/` in a project and the ignore rules |
-| `scripts/check-provider.ps1` | preflight: key, model, tool calling, real CLI round trip |
-| `scripts/unit.ps1` | start, path, finish and abort a unit worktree |
-| `scripts/worker.ps1` | one worker run (build, test or review) on the chosen provider; `-DryRun` shows it without running |
-| `scripts/gates.ps1` | Gate 1 digest: detected checks, config gates, brief checks, change check, secret scan |
+| `scripts/loop.ps1` | **the main entry point per unit**: build, gates, fix rounds, cross-review, pack, one-line verdict |
+| `scripts/worker.ps1` | one worker run: `build`, `test`, `fix` or `review`, with budgets; `-DryRun` shows it |
+| `scripts/gates.ps1` | Gate 1: detected checks, config gates, brief checks, services, change check, secret scan; `-Only`, `-Skip` |
+| `scripts/fix-round.ps1` | appends the next numbered fix round (`-FromGates`, `-FromCrossReview`, `-File`, `-Text`), UTF-8 safe |
 | `scripts/review-pack.ps1` | compact pack for reviewers |
-| `scripts/batch.ps1` | unattended build, gate, checkpoint and cross-review |
-| `scripts/report.ps1` | ledger summary: runs, minutes, tokens, estimated cost |
-| `assets/providers.json` | provider presets and their verification status |
-| `assets/config.example.json` | every config key, filled in |
-| `assets/worker-settings.json` | deny rules every worker gets |
-| `assets/unit-template.md`, `assets/project-template.md`, `assets/lessons-header.md` | templates copied by `init.ps1` |
-| `assets/prompts` | worker prompts for build, test and review; copy to `.crew/prompts` to customise |
-| `references/providers.md` | per-provider setup, auth, prices, troubleshooting |
-| `references/pipeline.md` | briefs, tiers, fix loop, parallelism, Windows notes |
-| `references/configuration.md` | config keys, environment variables, the `env.ps1` hook, ledger columns |
-
-In the project: `.crew/config.json`, `project.md`, `lessons.md`, `ledger.csv`, `units/`, `runs/` (git-ignored), optional `env.ps1`, `prompts/`, `worker-settings.json`.
+| `scripts/claude-log.ps1` | records a Claude delegation's tokens in the ledger |
+| `scripts/report.ps1` | worker vs Claude tokens, cost and saving |
+| `scripts/batch.ps1` | unattended loops, checkpoints and STATUS.md |
+| `scripts/unit.ps1` | start, path, finish and abort a unit worktree |
+| `scripts/init.ps1`, `scripts/check-provider.ps1` | setup and preflight |
+| `scripts/_common.ps1` | shared helpers: config, provider, budgets, bounded process runner, UTF-8 writer, ledger |
+| `assets/prompts/` | `worker-discipline.md` (prepended to every worker), `worker-build`, `-test`, `-fix`, `-review`; copy to `.crew/prompts/` to customise |
+| `assets/providers.json`, `assets/config.example.json`, `assets/worker-settings.json`, templates | presets, every config key, worker deny rules, brief/project/lessons templates |
+| `references/pipeline.md`, `references/configuration.md`, `references/providers.md` | briefs and tiers in depth, config keys and services, provider setup |
