@@ -80,10 +80,32 @@ function Invoke-Gate([string]$Label, [string]$CommandLine) {
     Push-Location $work
     try { $out = Invoke-CrewShell $CommandLine; $code = $LASTEXITCODE } finally { Pop-Location }
     Write-Utf8 $full ("===== $Label :: $CommandLine (exit $code)`n$out`n") -Append
+    # One re-run of a failed gate (retry_failed_gates, default 1). A timeout in a test the unit never
+    # touched sent workers chasing unrelated files until TURN_LIMIT in a real run.
+    $retries = [int](Get-Cfg 'retry_failed_gates' 1); $flaky = $false
+    for ($i = 0; $code -ne 0 -and $i -lt $retries; $i++) {
+        Push-Location $work
+        try { $out2 = Invoke-CrewShell $CommandLine; $code2 = $LASTEXITCODE } finally { Pop-Location }
+        Write-Utf8 $full ("===== $Label :: retry $($i + 1) (exit $code2)`n$out2`n") -Append
+        if ($code2 -eq 0) { $code = 0; $flaky = $true } else { $out = $out2; $code = $code2 }
+    }
     $detail = ''
     if ($code -ne 0) { $detail = (($out -split "`r?`n") | Where-Object { $_ -match '\S' } | Select-Object -Last 25) -join "`n" }
+    if ($flaky) { $detail = 'failed once, passed on re-run (flaky; see the gate log)' }
     $status = 'FAIL'; if ($code -eq 0) { $status = 'PASS' }
     [void]$results.Add([pscustomobject]@{ Gate = $Label; Status = $status; Detail = $detail })
+}
+
+# One gate run at a time per project (gate_lock, default on): parallel loops ran the full UI suite
+# four times at once and unrelated timing-sensitive tests timed out. Waits up to 60 minutes.
+$gateLock = $null
+if ([bool](Get-Cfg 'gate_lock' $true)) {
+    $sha = [Security.Cryptography.SHA1]::Create()
+    $key = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($CrewRoot.ToLowerInvariant()))) -replace '-', '').Substring(0, 16)
+    $gateLock = New-Object Threading.Mutex($false, "Local\nexus-crew-gates-$key")
+    $waited = [Diagnostics.Stopwatch]::StartNew()
+    try { [void]$gateLock.WaitOne([TimeSpan]::FromMinutes(60)) } catch [Threading.AbandonedMutexException] { }
+    if ($waited.Elapsed.TotalSeconds -ge 5) { Write-Host "gates: waited $([int]$waited.Elapsed.TotalSeconds)s for another unit's gates" }
 }
 
 $auto = [bool](Get-Cfg 'autodetect_gates' $true)
@@ -125,14 +147,40 @@ if (Test-Path -LiteralPath $brief) {
     }
 }
 
+if ($gateLock) { try { $gateLock.ReleaseMutex() } catch { }; $gateLock.Dispose() }
+
 $base = Get-DiffBase $work -InRepo:$InRepo
 git -C $work add -A -N 2>&1 | Out-Null
 # Changes exist (not for in-repo runs): committed WIP counts.
 if (-not $InRepo) {
-    $changes = git -C $work diff --name-only $base
+    $changes = git -C $work diff --name-only $base 2>&1
+    $gitOk = ($LASTEXITCODE -eq 0)
     $st = 'FAIL'; $dt = 'no changes against the base branch'
-    if ($changes) { $st = 'PASS'; $dt = '' }
+    if (-not $gitOk) { $dt = "git diff failed, so changes could not be read: $(($changes | Out-String).Trim())" }
+    elseif ($changes) { $st = 'PASS'; $dt = '' }
     [void]$results.Add([pscustomobject]@{ Gate = 'has changes'; Status = $st; Detail = $dt })
+    # Scope: every changed file must be listed under the brief's "## Files" (backticked paths; * and **
+    # allowed). A fix worker chasing a flaky unrelated test edited two out-of-scope files in a real run.
+    if ($gitOk -and $changes -and (Test-Path -LiteralPath $brief)) {
+        $allowedFiles = @(); $inFiles = $false
+        foreach ($line in Get-Content -Encoding UTF8 -LiteralPath $brief) {
+            if ($line -match '^##\s') { $inFiles = ($line -match '^##\s+Files'); continue }
+            if ($inFiles -and $line -match '^\s*-\s*`([^`]+)`') { $allowedFiles += ($Matches[1].Trim() -replace '\\', '/') }
+        }
+        if ($allowedFiles.Count -gt 0) {
+            $patterns = foreach ($f in $allowedFiles) {
+                '^' + ([regex]::Escape($f) -replace '\\\*\\\*', '.*' -replace '\\\*', '[^/]*') + '$'
+            }
+            $outside = @($changes | ForEach-Object { "$_".Trim() -replace '\\', '/' } | Where-Object {
+                $p = $_; $_ -and -not ($patterns | Where-Object { $p -match $_ })
+            })
+            if ($outside.Count -gt 0) {
+                [void]$results.Add([pscustomobject]@{ Gate = 'scope'; Status = 'FAIL'; Detail = "changed outside the brief's Files list (revert them, or ask for the brief to be widened): $($outside -join ', ')" })
+            } else {
+                [void]$results.Add([pscustomobject]@{ Gate = 'scope'; Status = 'PASS'; Detail = '' })
+            }
+        }
+    }
 }
 # Secret scan: the working diff plus every commit since the base. Fails closed when git cannot be read.
 $diff = git -C $work diff --text $base | Out-String

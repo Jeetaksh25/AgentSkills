@@ -30,7 +30,25 @@ switch ($Action) {
         New-Item -ItemType Directory -Force $WtRoot | Out-Null
         git -C $CrewRoot worktree add -q -b $branch $path $Base 2>&1 | Out-Null
         if ($LASTEXITCODE -ne 0) { throw "git worktree add failed for $name" }
-        "started $name at $path (branch $branch from $Base)"
+        # A fresh worktree has no dependencies, so every gate would fail. "setup" in the config
+        # overrides the lockfile detection; an empty string turns it off.
+        $setup = Get-Cfg 'setup' $null
+        if ($null -eq $setup) {
+            if (Test-Path -LiteralPath (Join-Path $path 'pnpm-lock.yaml')) { $setup = 'pnpm install --frozen-lockfile --prefer-offline' }
+            elseif (Test-Path -LiteralPath (Join-Path $path 'package-lock.json')) { $setup = 'npm ci --prefer-offline --no-audit --no-fund' }
+            elseif (Test-Path -LiteralPath (Join-Path $path 'yarn.lock')) { $setup = 'yarn install --frozen-lockfile' }
+            else { $setup = '' }
+        }
+        $setupNote = ''
+        if ($setup) {
+            $r = Invoke-Bounded 'cmd.exe' @('/d', '/c', $setup) $path 900
+            if ($r.Code -ne 0) {
+                $tail = (($r.Out + "`n" + $r.Err) -split "`r?`n" | Where-Object { $_ } | Select-Object -Last 5) -join ' | '
+                throw "setup failed for $name ($setup): $tail"
+            }
+            $setupNote = " setup='$setup' $($r.Seconds)s"
+        }
+        "started $name at $path (branch $branch from $Base)$setupNote"
     }
     'finish' {
         if (-not $Message) { throw '-Message is required (a Conventional Commit; add your attribution trailer if your setup requires one)' }

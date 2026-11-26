@@ -49,12 +49,15 @@ A tier 2 unit that escalates goes to `nexus-builder` sonnet/medium, then the loo
 
 1. **Plan** (Full mode: `nexus-architect` opus/high; Lite: yourself). Units with: id, tier, files, interfaces, done-tests, checks, out-of-scope. Units in one wave must not share files; shared files (manifests, lockfiles, registries) stay with you.
 2. **Briefs** in `.crew/units/<ID>.md` from `_TEMPLATE.md`. A worker brief must leave **no design decision open**: exact signatures, exact strings, exact file list. Every vague word becomes a worker thinking loop. Verify each brief is on disk before dispatching (never edit a brief and launch its worker in the same parallel batch).
-3. **Start** `& "$crew\unit.ps1" -Action start -Unit <ID>` per unit.
+3. **Start** `& "$crew\unit.ps1" -Action start -Unit <ID>` per unit. It also installs dependencies in the new worktree (`pnpm install --frozen-lockfile --prefer-offline`, `npm ci` or `yarn` from the lockfile; override with `"setup"` in the config, `""` turns it off). Without that every gate fails.
 4. **Loop**: `& "$crew\loop.ps1" -Unit <ID>` in the background, up to `max_parallel_workers` at once. It runs worker build, Gate 1, worker fix rounds (up to `max_fix_rounds`, default 3), a stall check, one worker cross-review and its fix round, then writes a fresh review pack. It prints **one line**:
    - `LOOP READY unit=... rounds=N gates="PASS" crossreview=FIXED pack=<path>` means go to step 5.
    - `LOOP ESCALATE unit=... reason="..."` means read the reason: `BLOCKED` gets an answer added to the brief (then re-run the loop); `no progress`, `TURN_LIMIT` or repeated failures mean tier up to a Claude builder, then `loop.ps1 -SkipBuild`.
    - A `gates="PASS (n SKIPPED, not verified)"` line is not a full pass: report the skipped gates as unverified.
-   Read only that line and, on ESCALATE, the digest it names. Do not open worker logs unless the line is unclear.
+   - `crossreview=TURN_LIMIT` (or `skipped`) means no worker reviewed the unit: tell the Claude reviewer so it reviews in full.
+   - `LEAK` means the worker wrote into the main checkout instead of its worktree: revert those files in the main checkout (the worktree copy is the real one), then re-run.
+   - A `scope` gate FAIL lists files changed outside the brief's `## Files`: revert them in the worktree, or widen the brief if the change belongs to the unit (and take it out of any later unit's brief).
+   Read only that line and, on ESCALATE, the digest it names. Do not open worker logs unless the line is unclear. Loops can run in parallel: gate runs take a project-wide lock (`gate_lock`), so test suites never run twice at once, and a failed gate is re-run once (`retry_failed_gates`) before a worker is asked to fix it. A test that still fails on the base branch alone is a flaky base test: fix it on the base branch yourself and fast-forward the worktrees (`git -C <worktree> merge --ff-only <base>`); never hand it to a unit worker.
 5. **Gate 3**: dispatch the tier's Claude reviewer with only the pack path: "Review `<pack>`. Read worktree files only if the diff is truncated. Return VERDICT PASS or FIXES with exact, numbered fixes (file, change, verbatim strings)." In Lite mode, one reviewer gets all packs. Then **log it**: `& "$crew\claude-log.ps1" -Unit <ID> -Role review -Model <model> -Tokens <total_tokens>` (from the Agent result's usage line). Log every Claude delegation this way.
 6. **Claude fixes**: save the reviewer's fix list to a file, then `& "$crew\fix-round.ps1" -Unit <ID> -File <list> -Title 'Claude review'` and `& "$crew\loop.ps1" -Unit <ID> -SkipBuild -NoCrossReview -FixFirst`. Fixes under ~20 lines that you can place exactly, apply inline instead. **Never append to briefs with Add-Content, Set-Content or Out-File**: Windows PowerShell 5.1 writes the ANSI codepage or a BOM; `fix-round.ps1` always writes UTF-8 without a BOM and numbers the round. A second failed Claude review round means re-plan the unit with the planner and tell the user.
 7. **Merge**: `& "$crew\unit.ps1" -Action finish -Unit <ID> -Message "<type(scope): summary>"` (Conventional Commit; set `commit_trailer` for attribution).
@@ -98,6 +101,12 @@ The main lever is still yours: **a brief with no open decisions**. If loops keep
 | Worktrees sharing one build folder tested each other's code | `.crew/env.ps1` `Initialize-CrewUnit` gives each checkout its own folder |
 | Timing-sensitive tests failed when gates ran in parallel | one gate run at a time; never loosen an assertion |
 | Weak tests passed a wrong implementation | the cross-review demands a mutation check per test; lessons accumulate |
+| New worktrees had no `node_modules`, so every gate failed | `unit.ps1 -Action start` runs the lockfile's install (`setup`) |
+| Four loops ran the full UI suite at once; unrelated tests timed out and workers spent their whole fix budget on files outside their unit | `gate_lock` serializes gate runs; `retry_failed_gates` re-runs a failure once before a worker sees it |
+| A fix worker chasing a flaky test edited two files outside its unit | `scope` gate: every changed file must be in the brief's `## Files` |
+| Workers wrote copies of their files into the main checkout by absolute path (the brief lives under `.crew\runs` there) | deny rules for the main checkout in the worker settings, plus a before/after status check that reports `STATUS: LEAK` |
+| A worker failed to write a new test file inside the 30-turn fix budget, twice | `worker.ps1 -Mode test` (its own budget) writes missing tests; then `loop.ps1 -SkipBuild` |
+| A hook (e.g. GateGuard) blocked the first write of every brief | add `.crew/**` to the hook's exempt globs, or write all briefs in one reviewed step |
 
 ## 7. Files
 
@@ -105,7 +114,7 @@ The main lever is still yours: **a brief with no open decisions**. If loops keep
 |---|---|
 | `scripts/loop.ps1` | **the main entry point per unit**: build, gates, fix rounds, cross-review, pack, one-line verdict |
 | `scripts/worker.ps1` | one worker run: `build`, `test`, `fix` or `review`, with budgets; `-DryRun` shows it |
-| `scripts/gates.ps1` | Gate 1: detected checks, config gates, brief checks, services, change check, secret scan; `-Only`, `-Skip` |
+| `scripts/gates.ps1` | Gate 1: detected checks, config gates, brief checks, services, change check, scope check, secret scan; project-wide gate lock and one retry; `-Only`, `-Skip` |
 | `scripts/fix-round.ps1` | appends the next numbered fix round (`-FromGates`, `-FromCrossReview`, `-File`, `-Text`), UTF-8 safe |
 | `scripts/review-pack.ps1` | compact pack for reviewers |
 | `scripts/claude-log.ps1` | records a Claude delegation's tokens in the ledger |

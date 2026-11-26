@@ -64,5 +64,8 @@
       "thinking_tokens": 6000
     }
   },
-  "compare_model": "claude-sonnet"
+  "compare_model": "claude-sonnet",
+  "setup": null,
+  "gate_lock": true,
+  "retry_failed_gates": 1
 }

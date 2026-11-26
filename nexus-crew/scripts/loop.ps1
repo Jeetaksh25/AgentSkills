@@ -69,7 +69,7 @@ function Invoke-Gates {
 }
 # Failing gate lines and their output, without the timestamp header: used to spot a fix round that changed nothing.
 function Get-FailPrint { return ((Get-Content -Encoding UTF8 -LiteralPath $dig | Select-Object -Skip 1 | Where-Object { $_ -notmatch '^\[(PASS|SKIP)\]' }) -join "`n") }
-function Test-Fatal($s) { return ($s -in @('BLOCKED', 'TIMEOUT', 'TURN_LIMIT')) -or -not $s }
+function Test-Fatal($s) { return ($s -in @('BLOCKED', 'TIMEOUT', 'TURN_LIMIT', 'LEAK')) -or -not $s }
 # The worker's own NOTES (its question or diagnosis), one line, quotes made safe for the summary line.
 function Get-Notes($w) {
     $q = ([regex]::Match($w.Out, '(?ms)NOTES:\s*(.{0,300})')).Groups[1].Value.Trim()

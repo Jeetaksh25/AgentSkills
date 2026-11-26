@@ -105,6 +105,19 @@ if ($Mode -eq 'review') {
 # Connection details (base URL, model, key helper) go into the worker's own --settings file and into the
 # process environment; New-WorkerSettingsFile in _common.ps1 explains why both are needed.
 $settingsFile = New-WorkerSettingsFile $P (Join-Path $run "$Mode-$name-$stamp.settings.json")
+# The worker must only write in its worktree. The brief lives under the main checkout's .crew\runs, and in a
+# real run workers wrote copies of their files into the main checkout by absolute path. Deny edits there,
+# and detect any change to the main checkout's status (Bash writes slip past permission rules).
+$isolated = ([IO.Path]::GetFullPath($work).TrimEnd('\') -ne [IO.Path]::GetFullPath($CrewRoot).TrimEnd('\'))
+$mainBefore = @()
+if ($isolated) {
+    $s = Get-Content -Raw -Encoding UTF8 -LiteralPath $settingsFile | ConvertFrom-Json
+    $posix = ($CrewRoot -replace '\\', '/')
+    if ($posix -match '^([A-Za-z]):(.*)$') { $posix = '/' + $Matches[1].ToLowerInvariant() + $Matches[2] }
+    $s.permissions.deny = @($s.permissions.deny) + @("Edit(/$posix/**)", "Write(/$posix/**)")
+    [IO.File]::WriteAllText($settingsFile, ($s | ConvertTo-Json -Depth 5), (New-Object Text.UTF8Encoding $false))
+    $mainBefore = @(git -C $CrewRoot status --porcelain --untracked-files=all 2>$null | Where-Object { $_ -notmatch '\.crew/' })
+}
 Initialize-WorkerEnv $P
 $budget = Get-WorkerBudget $Mode
 $env:MAX_THINKING_TOKENS = [string]$budget.thinking_tokens
@@ -134,6 +147,14 @@ if ($j) {
     if ($j.subtype -eq 'error_max_turns') { $ok = $false; $result = "STATUS: TURN_LIMIT`nNOTES: stopped after $turns turns (max_turns $($budget.max_turns)). The brief is probably too big or ambiguous: split it or raise the tier." }
 }
 if ($r.TimedOut) { $ok = $false; $result = "STATUS: TIMEOUT`nNOTES: killed after $($budget.timeout_min) min. Partial edits are left in the worktree; check git status before re-running." }
+if ($isolated) {
+    $mainAfter = @(git -C $CrewRoot status --porcelain --untracked-files=all 2>$null | Where-Object { $_ -notmatch '\.crew/' })
+    $leaked = @($mainAfter | Where-Object { $mainBefore -notcontains $_ })
+    if ($leaked.Count -gt 0) {
+        $ok = $false
+        $result = "STATUS: LEAK`nNOTES: the main checkout changed during this run (the worker must write only in $work): " + (($leaked | ForEach-Object { $_.Trim() }) -join ', ') + ". The worktree copy is the real one: revert these in the main checkout, unless you changed them yourself meanwhile."
+    }
+}
 if ($Mode -eq 'review' -and $result) {
     [IO.File]::WriteAllText((Join-Path $run "crossreview-$name.md"), $result, (New-Object Text.UTF8Encoding $false))
 }
