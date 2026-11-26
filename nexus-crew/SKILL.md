@@ -49,8 +49,9 @@ A tier 2 unit that escalates goes to `nexus-builder` sonnet/medium, then the loo
 
 1. **Plan** (Full mode: `nexus-architect` opus/high; Lite: yourself). Units with: id, tier, files, interfaces, done-tests, checks, out-of-scope. Units in one wave must not share files; shared files (manifests, lockfiles, registries) stay with you.
 2. **Briefs** in `.crew/units/<ID>.md` from `_TEMPLATE.md`. A worker brief must leave **no design decision open**: exact signatures, exact strings, exact file list. Every vague word becomes a worker thinking loop. Verify each brief is on disk before dispatching (never edit a brief and launch its worker in the same parallel batch).
+   **Goldfish check** (from Google's Elephant-Goldfish Model: you are the elephant, too close to your own brief to see its gaps): `& "$crew\brief-check.ps1" -Unit <ID>` for every brief, in parallel. A fresh, read-only worker with no conversation history reads the brief and the files it names, and prints `BRIEF READY` or `BRIEF GAPS blockers=N majors=N file=<findings>`. Fix every Blocker and Major in the brief (each finding carries the exact replacement text), then re-check. It costs about a minute of worker time and no Claude tokens; in its first real run it found 3 blockers in a brief that had cost three escalations.
 3. **Start** `& "$crew\unit.ps1" -Action start -Unit <ID>` per unit. It also installs dependencies in the new worktree (`pnpm install --frozen-lockfile --prefer-offline`, `npm ci` or `yarn` from the lockfile; override with `"setup"` in the config, `""` turns it off). Without that every gate fails.
-4. **Loop**: `& "$crew\loop.ps1" -Unit <ID>` in the background, up to `max_parallel_workers` at once. It runs worker build, Gate 1, worker fix rounds (up to `max_fix_rounds`, default 3), a stall check, one worker cross-review and its fix round, then writes a fresh review pack. It prints **one line**:
+4. **Loop**: `& "$crew\loop.ps1" -Unit <ID>` in the background, up to `max_parallel_workers` at once. It runs worker build, writes any missing or empty new test file the brief requires (a test-mode worker), Gate 1 staged (the brief's Checks first, the full gates once those pass), worker fix rounds (up to `max_fix_rounds`, default 3), a stall check, one worker cross-review and its fix round, then writes a fresh review pack. It prints **one line**:
    - `LOOP READY unit=... rounds=N gates="PASS" crossreview=FIXED pack=<path>` means go to step 5.
    - `LOOP ESCALATE unit=... reason="..."` means read the reason: `BLOCKED` gets an answer added to the brief (then re-run the loop); `no progress`, `TURN_LIMIT` or repeated failures mean tier up to a Claude builder, then `loop.ps1 -SkipBuild`.
    - A `gates="PASS (n SKIPPED, not verified)"` line is not a full pass: report the skipped gates as unverified.
@@ -62,7 +63,7 @@ A tier 2 unit that escalates goes to `nexus-builder` sonnet/medium, then the loo
 6. **Claude fixes**: save the reviewer's fix list to a file, then `& "$crew\fix-round.ps1" -Unit <ID> -File <list> -Title 'Claude review'` and `& "$crew\loop.ps1" -Unit <ID> -SkipBuild -NoCrossReview -FixFirst`. Fixes under ~20 lines that you can place exactly, apply inline instead. **Never append to briefs with Add-Content, Set-Content or Out-File**: Windows PowerShell 5.1 writes the ANSI codepage or a BOM; `fix-round.ps1` always writes UTF-8 without a BOM and numbers the round. A second failed Claude review round means re-plan the unit with the planner and tell the user.
 7. **Merge**: `& "$crew\unit.ps1" -Action finish -Unit <ID> -Message "<type(scope): summary>"` (Conventional Commit; set `commit_trailer` for attribution).
 8. **Learn**: each defect a Claude reviewer found that could recur becomes one line in `.crew/lessons.md` (rule, then why). It is injected into every worker prompt and review pack.
-9. **Report**: `& "$crew\report.ps1"` prints worker and Claude tokens, the split, the cost, and what the worker share would have cost on Claude (`compare_model`). Quote its last two lines in the end-of-batch report, plus: units, loops READY first time, escalations, Claude review fixes, merged.
+9. **Report**: first log your own (orchestrator) tokens for the batch from the host's usage view (`/context`, or the session usage): `& "$crew\claude-log.ps1" -Unit ALL -Role orchestrator -Model <model> -Tokens <n>`. Without it the split leaves out the biggest Claude cost and the report says so. Then `& "$crew\report.ps1"` prints worker and Claude tokens (delegations and orchestrator), the split, the cost, and what the worker share would have cost on Claude (`compare_model`). Quote its last lines in the end-of-batch report, plus: units, briefs READY first check, loops READY first time, escalations, Claude review fixes, merged.
 
 Unattended: `& "$crew\batch.ps1" -Build U-002,U-003 -GateOnly U-001 -Push` runs the loops, checkpoints and pushes, merges nothing, and appends to `.crew/STATUS.md`.
 
@@ -107,6 +108,10 @@ The main lever is still yours: **a brief with no open decisions**. If loops keep
 | Workers wrote copies of their files into the main checkout by absolute path (the brief lives under `.crew\runs` there) | deny rules for the main checkout in the worker settings, plus a before/after status check that reports `STATUS: LEAK` |
 | A worker failed to write a new test file inside the 30-turn fix budget, twice | `worker.ps1 -Mode test` (its own budget) writes missing tests; then `loop.ps1 -SkipBuild` |
 | A hook (e.g. GateGuard) blocked the first write of every brief | add `.crew/**` to the hook's exempt globs, or write all briefs in one reviewed step |
+| Briefs left decisions open that only showed up as escalations (wrong fixture shape, a test that could never pass) | `brief-check.ps1`: a goldfish reviews each brief before dispatch |
+| Fix rounds waited minutes for a full-suite gate run they were going to fail anyway | staged gates (`staged_gates`): brief checks first, full gates only once those pass |
+| The report counted delegations but not the orchestrator, so the saving looked bigger than it was | `-Role orchestrator` row and a report warning when it is missing |
+| A script change silently broke a defence (stderr parsed as file names; a quoted setup command dropped) | `selftest.ps1` drives every script with a fake worker; run it after any skill change |
 
 ## 7. Files
 
@@ -118,7 +123,9 @@ The main lever is still yours: **a brief with no open decisions**. If loops keep
 | `scripts/fix-round.ps1` | appends the next numbered fix round (`-FromGates`, `-FromCrossReview`, `-File`, `-Text`), UTF-8 safe |
 | `scripts/review-pack.ps1` | compact pack for reviewers |
 | `scripts/claude-log.ps1` | records a Claude delegation's tokens in the ledger |
-| `scripts/report.ps1` | worker vs Claude tokens, cost and saving |
+| `scripts/report.ps1` | worker vs Claude tokens (delegations and orchestrator), cost and saving |
+| `scripts/brief-check.ps1` | goldfish review of a brief before dispatch (read-only worker, no history); one-line verdict |
+| `scripts/selftest.ps1` | self-test of every script with a fake worker (`scripts/tests/fake-claude.*`); about a minute, no API calls |
 | `scripts/batch.ps1` | unattended loops, checkpoints and STATUS.md |
 | `scripts/unit.ps1` | start, path, finish and abort a unit worktree |
 | `scripts/init.ps1`, `scripts/check-provider.ps1` | setup and preflight |

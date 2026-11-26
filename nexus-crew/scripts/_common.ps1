@@ -240,6 +240,7 @@ $DefaultBudget = @{
     test   = @{ effort = 'low';    max_turns = 40; timeout_min = 12; thinking_tokens = 3000 }
     fix    = @{ effort = 'low';    max_turns = 30; timeout_min = 10; thinking_tokens = 2000 }
     review = @{ effort = 'medium'; max_turns = 25; timeout_min = 10; thinking_tokens = 6000 }
+    brief  = @{ effort = 'medium'; max_turns = 20; timeout_min = 8;  thinking_tokens = 4000 }
 }
 function Get-WorkerBudget([string]$Mode) {
     $b = @{} + $DefaultBudget[$Mode]

@@ -41,7 +41,14 @@ switch ($Action) {
         }
         $setupNote = ''
         if ($setup) {
-            $r = Invoke-Bounded 'cmd.exe' @('/d', '/c', $setup) $path 900
+            # Through a script file: passing a command with quotes to "cmd /c" as one argument mangles it.
+            if ($IsWin) {
+                $script = Join-Path ([IO.Path]::GetTempPath()) ("crew-setup-$name-" + [guid]::NewGuid().ToString('N').Substring(0, 6) + '.cmd')
+                [IO.File]::WriteAllText($script, "@echo off`r`n$setup`r`n", (New-Object Text.UTF8Encoding $false))
+                try { $r = Invoke-Bounded 'cmd.exe' @('/d', '/c', $script) $path 900 } finally { Remove-Item -LiteralPath $script -Force -ErrorAction SilentlyContinue }
+            } else {
+                $r = Invoke-Bounded 'sh' @('-c', $setup) $path 900
+            }
             if ($r.Code -ne 0) {
                 $tail = (($r.Out + "`n" + $r.Err) -split "`r?`n" | Where-Object { $_ } | Select-Object -Last 5) -join ' | '
                 throw "setup failed for $name ($setup): $tail"

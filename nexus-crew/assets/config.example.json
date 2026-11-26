@@ -67,5 +67,6 @@
   "compare_model": "claude-sonnet",
   "setup": null,
   "gate_lock": true,
-  "retry_failed_gates": 1
+  "retry_failed_gates": 1,
+  "staged_gates": true
 }

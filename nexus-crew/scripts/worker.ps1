@@ -19,7 +19,7 @@
 #>
 param(
     [Parameter(Mandatory)][string]$Unit,
-    [ValidateSet('build', 'test', 'fix', 'review')][string]$Mode = 'build',
+    [ValidateSet('build', 'test', 'fix', 'review', 'brief')][string]$Mode = 'build',
     [int]$Variant = 0,
     [string]$Provider = '',
     [string]$Model = '',
@@ -31,15 +31,23 @@ param(
 $P = Resolve-Provider $Provider $Model
 if (-not $P.Model) { throw ('No model for provider ' + $P.Id + '. Set model in .crew\config.json, CREW_MODEL, or pass -Model.') }
 if ($P.KeyEnv -and -not $P.Key -and -not $DryRun) { throw ($P.KeyEnv + ' is not set: export it, or put it in ' + (Join-Path $CrewRoot '.env') + ' (never commit that file).') }
-if (-not (Get-Command claude -ErrorAction SilentlyContinue)) { throw 'The claude CLI is not on PATH (workers are headless Claude Code sessions).' }
+# NEXUS_CREW_CLAUDE points at a stand-in for the claude CLI (selftest.ps1 uses a fake worker).
+$claudeExe = $env:NEXUS_CREW_CLAUDE
+if (-not $claudeExe) {
+    if (-not (Get-Command claude -ErrorAction SilentlyContinue)) { throw 'The claude CLI is not on PATH (workers are headless Claude Code sessions).' }
+    $claudeExe = (Get-Command claude).Source
+}
 
 $name = Get-UnitName $Unit $Variant
 $work = Get-UnitPath $Unit $Variant -InRepo:$InRepo
+# A brief check runs before the worktree exists, read-only, against the base checkout.
+if ($Mode -eq 'brief' -and -not (Test-Path -LiteralPath $work)) { $work = $CrewRoot }
 if (-not (Test-Path -LiteralPath $work)) { throw "No worktree for $name. Run: unit.ps1 -Action start -Unit $Unit" }
 Set-CrewUnitEnv $work
 
 $bashTools = @(Get-AllowedExe | ForEach-Object { 'Bash(' + $_ + ':*)' })
 if ($Mode -eq 'review') { $tools = 'Read,Glob,Grep,Bash(git diff:*),Bash(git status:*),Bash(git log:*)' }
+elseif ($Mode -eq 'brief') { $tools = 'Read,Glob,Grep' }
 else { $tools = (@('Read', 'Write', 'Edit', 'MultiEdit', 'Glob', 'Grep', 'Bash(git status:*)', 'Bash(git diff:*)') + $bashTools) -join ',' }
 
 if ($DryRun) {
@@ -99,6 +107,7 @@ if ($Mode -eq 'review') {
 } else {
     $payload = Get-Content -Raw -Encoding UTF8 -LiteralPath (Get-BriefPath $Unit)
     $task = "Mode: $Mode. First read the unit brief with the Read tool: '$inputFile'. Work in the current directory. Follow your system instructions exactly."
+    if ($Mode -eq 'brief') { $task = "Mode: brief. You are a Goldfish: you have never seen the conversation that produced this brief. Read it with the Read tool: '$inputFile'. Read only the source files it names, in the current directory, to check its claims. Change nothing. Follow your system instructions exactly." }
 }
 [IO.File]::WriteAllText($inputFile, $payload, (New-Object Text.UTF8Encoding $false))
 
@@ -114,7 +123,10 @@ if ($isolated) {
     $s = Get-Content -Raw -Encoding UTF8 -LiteralPath $settingsFile | ConvertFrom-Json
     $posix = ($CrewRoot -replace '\\', '/')
     if ($posix -match '^([A-Za-z]):(.*)$') { $posix = '/' + $Matches[1].ToLowerInvariant() + $Matches[2] }
-    $s.permissions.deny = @($s.permissions.deny) + @("Edit(/$posix/**)", "Write(/$posix/**)")
+    # "//" = absolute path, drive lowercased (docs: permissions, "How path patterns match"). Edit rules cover
+    # every file-editing tool and Bash redirects; Write(...) rules never match. Scripts that write files
+    # themselves are not covered, which is what the status check below is for.
+    $s.permissions.deny = @($s.permissions.deny) + @("Edit(/$posix/**)")
     [IO.File]::WriteAllText($settingsFile, ($s | ConvertTo-Json -Depth 5), (New-Object Text.UTF8Encoding $false))
     $mainBefore = @(git -C $CrewRoot status --porcelain --untracked-files=all 2>$null | Where-Object { $_ -notmatch '\.crew/' })
 }
@@ -128,7 +140,7 @@ $cliArgs = @('-p', $task, '--bare', '--model', $P.Model, '--add-dir', $run, '--s
     '--strict-mcp-config', '--append-system-prompt-file', $sys, '--permission-mode', 'acceptEdits',
     '--effort', [string]$budget.effort, '--max-turns', [string]$budget.max_turns,
     '--output-format', 'json', '--no-session-persistence', '--allowedTools', $tools)
-$r = Invoke-Bounded (Get-Command claude).Source $cliArgs $work ([int]$budget.timeout_min * 60)
+$r = Invoke-Bounded $claudeExe $cliArgs $work ([int]$budget.timeout_min * 60)
 $raw = $r.Out + $(if ($r.Err) { "`n[stderr]`n" + $r.Err } else { '' })
 $sw = [pscustomobject]@{ Elapsed = [TimeSpan]::FromSeconds($r.Seconds) }
 Write-Utf8 $log $raw
@@ -157,6 +169,9 @@ if ($isolated) {
 }
 if ($Mode -eq 'review' -and $result) {
     [IO.File]::WriteAllText((Join-Path $run "crossreview-$name.md"), $result, (New-Object Text.UTF8Encoding $false))
+}
+if ($Mode -eq 'brief' -and $result) {
+    [IO.File]::WriteAllText((Join-Path $run "brief-check-$name.md"), $result, (New-Object Text.UTF8Encoding $false))
 }
 Add-LedgerRow $Unit $Mode $Variant $P.Id $P.Model ([int]$sw.Elapsed.TotalSeconds) $turns $ok $inTok $outTok
 

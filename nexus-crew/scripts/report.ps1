@@ -51,7 +51,12 @@ $cTok = ($cl | ForEach-Object { $_.TokensIn + $_.TokensOut } | Measure-Object -S
 'Runs by mode: ' + (($rows | Group-Object mode | ForEach-Object { $_.Name + '=' + $_.Count }) -join ', ')
 if (-not $cl.Count) { 'Claude side: nothing logged. Log each Agent result with claude-log.ps1 to measure the split.'; return }
 $share = if ($wTok + $cTok) { [math]::Round(100 * $wTok / ($wTok + $cTok)) } else { 0 }
-"Token split: worker $wTok ($share%), Claude $cTok"
+$orch = @($rows | Where-Object { $_.mode -eq 'claude-orchestrator' })
+$oTok = ($orch | ForEach-Object { To-Num $_.input_tokens } | Measure-Object -Sum).Sum
+"Token split: worker $wTok ($share%), Claude $cTok (delegations $($cTok - $oTok), orchestrator $oTok)"
+if (-not $orch.Count) {
+    'WARNING: the orchestrator (main session) is not logged, so this split overstates the saving. At the end of the batch run: claude-log.ps1 -Unit ALL -Role orchestrator -Model <model> -Tokens <main-session tokens from the host usage view>.'
+}
 $cmp = Get-Cfg 'compare_model' $null
 if (-not $cmp -and $pricing) { $cmp = @($pricing.PSObject.Properties.Name | Where-Object { $_ -like 'claude*' })[0] }
 $cmpPrice = Get-Price $cmp

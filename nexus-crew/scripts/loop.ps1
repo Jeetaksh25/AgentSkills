@@ -61,11 +61,47 @@ function Invoke-Worker([string]$M) {
     Step "worker $M -> $(if ($status) { $status } else { 'no status' }) $meta"
     return [pscustomobject]@{ Status = $status; Out = $out }
 }
-function Invoke-Gates {
-    & (Join-Path $PSScriptRoot 'gates.ps1') @gateArgs 2>&1 | Out-Null
+function Invoke-Gates([switch]$Quick) {
+    $ga = @{} + $gateArgs
+    if ($Quick) { $ga.Quick = $true }
+    & (Join-Path $PSScriptRoot 'gates.ps1') @ga 2>&1 | Out-Null
     $first = (Get-Content -Encoding UTF8 -LiteralPath $dig -TotalCount 1)
     Step "gate 1 -> $first"
     return ($first -match '^GATES PASS')
+}
+# Staged gates (staged_gates, default on): the brief's own checks first, the full project gates only once
+# those pass. A failing unit never waits for, or holds, the project-wide lock on a full suite.
+$staged = [bool](Get-Cfg 'staged_gates' $true)
+function Invoke-StagedGates {
+    if (-not $staged) { return (Invoke-Gates) }
+    if (-not (Invoke-Gates -Quick)) { return $false }
+    $first = (Get-Content -Encoding UTF8 -LiteralPath $dig -TotalCount 1)
+    if ($first -notmatch '\(quick\)') { return $true }   # the brief has no Checks: that was already the full run
+    return (Invoke-Gates)
+}
+# New test files the brief requires (Files lines marked "(new" whose path looks like a test) that are
+# missing or empty after the build. A build or fix worker that runs out of turns often leaves exactly these.
+$work = Get-UnitPath $Unit $Variant -InRepo:$InRepo
+function Get-MissingTests {
+    $briefPath = Get-BriefPath $Unit
+    $missing = @(); $inFiles = $false
+    foreach ($line in Get-Content -Encoding UTF8 -LiteralPath $briefPath) {
+        if ($line -match '^##\s') { $inFiles = ($line -match '^##\s+Files'); continue }
+        if (-not $inFiles -or $line -notmatch '^\s*-\s*`([^`]+)`\s*\(new') { continue }
+        $rel = $Matches[1]
+        if ($rel -notmatch '(\.|_)(test|spec)\.|[\\/](tests?|__tests__)[\\/]') { continue }
+        $full = Join-Path $work $rel
+        $body = if (Test-Path -LiteralPath $full) { @(Get-Content -Encoding UTF8 -LiteralPath $full | Where-Object { $_ -match '\S' }).Count } else { 0 }
+        if ($body -lt 3) { $missing += $rel }
+    }
+    return $missing
+}
+function Repair-MissingTests {
+    $m = @(Get-MissingTests)
+    if (-not $m.Count) { return }
+    Step "missing or empty test files: $($m -join ', ') -> worker test"
+    $t = Invoke-Worker 'test'
+    if (Test-Fatal $t.Status) { Finish 'ESCALATE' "reason=`"writing the missing tests ended $($t.Status)$(Get-Notes $t)`"" }
 }
 # Failing gate lines and their output, without the timestamp header: used to spot a fix round that changed nothing.
 function Get-FailPrint { return ((Get-Content -Encoding UTF8 -LiteralPath $dig | Select-Object -Skip 1 | Where-Object { $_ -notmatch '^\[(PASS|SKIP)\]' }) -join "`n") }
@@ -96,7 +132,8 @@ if ($FixFirst) {
     $f = Invoke-Worker 'fix'
     if (Test-Fatal $f.Status) { Finish 'ESCALATE' "reason=`"fix round ended $($f.Status)$(Get-Notes $f)`"" }
 }
-$pass = Invoke-Gates
+Repair-MissingTests
+$pass = Invoke-StagedGates
 while (-not $pass) {
     if ($round -ge $Rounds) { Finish 'ESCALATE' "reason=`"Gate 1 still failing after $round worker fix rounds`" digest=$dig" }
     $before = Get-FailPrint
@@ -104,7 +141,8 @@ while (-not $pass) {
     & (Join-Path $PSScriptRoot 'fix-round.ps1') @common -FromGates | Out-Null
     $f = Invoke-Worker 'fix'
     if (Test-Fatal $f.Status) { Finish 'ESCALATE' "reason=`"fix round $round ended $($f.Status)$(Get-Notes $f)`" digest=$dig" }
-    $pass = Invoke-Gates
+    Repair-MissingTests
+    $pass = Invoke-StagedGates
     if (-not $pass -and (Get-FailPrint) -eq $before) { Finish 'ESCALATE' "reason=`"no progress: fix round $round left the same failures`" digest=$dig" }
 }
 
@@ -121,7 +159,7 @@ if (-not $NoCrossReview) {
             & (Join-Path $PSScriptRoot 'fix-round.ps1') @common -FromCrossReview | Out-Null
             $f = Invoke-Worker 'fix'
             if (Test-Fatal $f.Status) { Finish 'ESCALATE' "reason=`"cross-review fix round ended $($f.Status)$(Get-Notes $f)`"" }
-            if (-not (Invoke-Gates)) { Finish 'ESCALATE' "reason=`"Gate 1 failed after the cross-review fixes`" digest=$dig" }
+            if (-not (Invoke-StagedGates)) { Finish 'ESCALATE' "reason=`"Gate 1 failed after the cross-review fixes`" digest=$dig" }
             $cross = 'FIXED'
         }
     }

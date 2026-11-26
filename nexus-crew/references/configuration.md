@@ -19,6 +19,7 @@ Created by `scripts/init.ps1`; a full example is `assets/config.example.json`. E
 | `setup` | lockfile detection | command `unit.ps1 -Action start` runs in a new worktree (pnpm/npm/yarn install from the lockfile when null); `""` turns it off |
 | `gate_lock` | `true` | one gate run at a time per project, so parallel loops never run test suites concurrently (waits up to 60 min) |
 | `retry_failed_gates` | `1` | re-runs of a failed gate before it counts as failed; a pass on re-run is reported as flaky |
+| `staged_gates` | `true` | `loop.ps1` runs `gates.ps1 -Quick` (the brief's own Checks plus change, scope and secret checks) first and the full gates only once quick passes |
 | `worker_budget` | see below | per mode (`build`, `test`, `fix`, `review`): `effort` (low, medium, high), `max_turns`, `timeout_min`, `thinking_tokens`; keys you leave out keep the default |
 | `services` | `[]` | local services the gates probe first: `{ name, tcp: "host:port" or check: "<command>", hint, gates: "<regex on gate labels>", when_down: "<command>" }` |
 | `compare_model` | first `claude*` key in `pricing` | the model `report.ps1` prices the worker tokens at, to show the saving |

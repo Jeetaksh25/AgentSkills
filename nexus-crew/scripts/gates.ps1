@@ -23,7 +23,11 @@ param(
     [int]$Variant = 0,
     [switch]$InRepo,
     [string]$Only = '',
-    [string]$Skip = ''
+    [string]$Skip = '',
+    # Quick: only the brief's own Checks plus the change, scope and secret checks; the project-wide gates
+    # (full suites) are left out. loop.ps1 uses it for fix rounds and runs the full gates once quick passes.
+    # Without brief Checks a quick run is a full run.
+    [switch]$Quick
 )
 . "$PSScriptRoot\_common.ps1"
 
@@ -108,7 +112,17 @@ if ([bool](Get-Cfg 'gate_lock' $true)) {
     if ($waited.Elapsed.TotalSeconds -ge 5) { Write-Host "gates: waited $([int]$waited.Elapsed.TotalSeconds)s for another unit's gates" }
 }
 
-$auto = [bool](Get-Cfg 'autodetect_gates' $true)
+$briefFile = Join-Path $CrewDir "units\$Unit.md"
+$briefHasChecks = $false
+if (Test-Path -LiteralPath $briefFile) {
+    $inC = $false
+    foreach ($bl in Get-Content -Encoding UTF8 -LiteralPath $briefFile) {
+        if ($bl -match '^##\s') { $inC = ($bl -match '^##\s+Checks'); continue }
+        if ($inC -and $bl -match '^\s*-\s*`[^`]+`') { $briefHasChecks = $true; break }
+    }
+}
+$quickRun = $Quick -and $briefHasChecks
+$auto = (-not $quickRun) -and [bool](Get-Cfg 'autodetect_gates' $true)
 if ($auto -and (Test-Path -LiteralPath (Join-Path $work 'Cargo.toml'))) {
     Invoke-Gate 'cargo fmt'    'cargo fmt --all -- --check'
     Invoke-Gate 'cargo clippy' 'cargo clippy --all-targets -- -D warnings'
@@ -125,7 +139,8 @@ if ($auto -and (Test-Path -LiteralPath $pkg)) {
         elseif ($scripts -and ($scripts.PSObject.Properties.Name -contains $s)) { Invoke-Gate "$pm $s" "$pm run $s" }
     }
 }
-foreach ($g in @(Get-Cfg 'gates' @())) {
+$configGates = @(Get-Cfg 'gates' @()); if ($quickRun) { $configGates = @() }
+foreach ($g in $configGates) {
     if ($g -is [string]) { Invoke-Gate $g $g }
     elseif ($g.command) {
         $label = $g.name; if (-not $label) { $label = [string]$g.command }
@@ -153,10 +168,12 @@ $base = Get-DiffBase $work -InRepo:$InRepo
 git -C $work add -A -N 2>&1 | Out-Null
 # Changes exist (not for in-repo runs): committed WIP counts.
 if (-not $InRepo) {
-    $changes = git -C $work diff --name-only $base 2>&1
+    # stderr stays out of the list: on Windows git warns "LF will be replaced by CRLF" per file, and those
+    # lines would read as changed paths (the selftest caught it).
+    $changes = @(git -C $work diff --name-only $base 2>$null)
     $gitOk = ($LASTEXITCODE -eq 0)
     $st = 'FAIL'; $dt = 'no changes against the base branch'
-    if (-not $gitOk) { $dt = "git diff failed, so changes could not be read: $(($changes | Out-String).Trim())" }
+    if (-not $gitOk) { $dt = "git diff failed, so changes could not be read: $((git -C $work diff --name-only $base 2>&1 | Out-String).Trim())" }
     elseif ($changes) { $st = 'PASS'; $dt = '' }
     [void]$results.Add([pscustomobject]@{ Gate = 'has changes'; Status = $st; Detail = $dt })
     # Scope: every changed file must be listed under the brief's "## Files" (backticked paths; * and **
@@ -203,6 +220,7 @@ if ($leak) { $ls = 'FAIL'; $ld = $why }
 $overall = 'PASS'; if ($results | Where-Object Status -eq 'FAIL') { $overall = 'FAIL' }
 $skips = @($results | Where-Object Status -eq 'SKIP').Count
 $tag = $overall; if ($skips) { $tag = "$overall ($skips SKIPPED, not verified)" }
+if ($quickRun) { $tag = "$tag (quick)" }
 $lines = @("GATES $tag  unit=$name  $(Get-Date -Format s)")
 foreach ($svc in $downServices) { $lines += "SERVICE DOWN: $($svc.name)$(if ($svc.hint) { ' -> ' + $svc.hint })" }
 if ($serviceNote) { $lines += $serviceNote }
